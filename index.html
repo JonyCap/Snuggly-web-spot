@@ -3,67 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jony's Space 🪐</title>
+    <title>My Assignments</title>
     <style>
         body {
-            background: linear-gradient(135deg, #2E1A47, #1B0037);
-            color: #E0AFFF;
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 0;
-            padding: 0;
+            margin: 20px;
         }
-        .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        h1 {
-            font-size: 2.5rem;
+        .assignment {
             margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            display: inline-block;
+            width: 300px;
+            background-color: #f9f9f9;
         }
-        .number {
-            font-size: 1.2rem;
-            color: #B88AFF;
-            margin-bottom: 20px;
+        .assignment input {
+            width: 90%;
+            padding: 5px;
+            margin-top: 5px;
         }
-        .assignments {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 400px;
+        .assignment button {
+            margin-top: 5px;
+            padding: 5px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
-        .assignments h2 {
-            color: #FFD700;
-        }
-        .assignments a {
-            display: block;
-            color: #A4EFFF;
-            text-decoration: none;
-            margin: 5px 0;
-        }
-        .assignments a:hover {
-            color: #FF99FF;
+        .assignment button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Jony 🪐</h1>
-        <div class="number">(221 78 37)</div>
-        <div class="assignments">
-            <h2>Assignments</h2>
-            <a href="#">Assignment 1</a>
-            <section id="assignment1">
-  <h2>Assignment 1</h2>
-  <a href="https://github.com/your-username/your-repository/path/to/assignment1.pdf" target="_blank">Download Assignment 1</a>
-</section>
-            <a href="#">Assignment 2</a>
-            <a href="#">Assignment 3</a>
-        </div>
-    </div>
+
+    <h1>My Assignments</h1>
+    <p>Upload your assignment links here.</p>
+
+    <div id="assignments-container"></div>
+
+    <script>
+        const assignmentsContainer = document.getElementById("assignments-container");
+
+        for (let i = 1; i <= 35; i++) {
+            const div = document.createElement("div");
+            div.classList.add("assignment");
+            div.innerHTML = `
+                <h3>Assignment ${i}</h3>
+                <input type="text" id="link${i}" placeholder="Paste your assignment link here">
+                <button onclick="saveLink(${i})">Save</button>
+                <p id="savedLink${i}"></p>
+            `;
+            assignmentsContainer.appendChild(div);
+        }
+
+        function saveLink(id) {
+            const input = document.getElementById(`link${id}`);
+            const savedLink = document.getElementById(`savedLink${id}`);
+            if (input.value) {
+                savedLink.innerHTML = 📎 <a href="${input.value}" target="_blank">View Assignment ${id}</a>;
+                input.value = "";
+            } else {
+                alert("Please enter a valid link.");
+            }
+        }
+    </script>
+
 </body>
 </html>
