@@ -1,74 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Assignments</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment Submissions</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-        }
-        .assignment {
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            display: inline-block;
-            width: 300px;
-            background-color: #f9f9f9;
-        }
-        .assignment input {
-            width: 90%;
-            padding: 5px;
-            margin-top: 5px;
-        }
-        .assignment button {
-            margin-top: 5px;
-            padding: 5px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .assignment button:hover {
-            background-color: #218838;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        margin: 10px 0;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 5px;
+      }
+      a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
-
-    <h1>My Assignments</h1>
-    <p>Upload your assignment links here.</p>
-
-    <div id="assignments-container"></div>
-
-    <script>
-        const assignmentsContainer = document.getElementById("assignments-container");
-
-        for (let i = 1; i <= 35; i++) {
-            const div = document.createElement("div");
-            div.classList.add("assignment");
-            div.innerHTML = `
-                <h3>Assignment ${i}</h3>
-                <input type="text" id="link${i}" placeholder="Paste your assignment link here">
-                <button onclick="saveLink(${i})">Save</button>
-                <p id="savedLink${i}"></p>
-            `;
-            assignmentsContainer.appendChild(div);
-        }
-
-        function saveLink(id) {
-            const input = document.getElementById(`link${id}`);
-            const savedLink = document.getElementById(`savedLink${id}`);
-            if (input.value) {
-                savedLink.innerHTML = 📎 <a href="${input.value}" target="_blank">View Assignment ${id}</a>;
-                input.value = "";
-            } else {
-                alert("Please enter a valid link.");
-            }
-        }
-    </script>
-
-</body>
+  </head>
+  <body>
+    <h1>Global Logistics</h1>
+    <h2>JONY</h2>
+    <ul>
+      <li>
+        Assignment 1:
+        <a href="" target="_blank"
+          >View Submission</a
+        >
+      </li>
+      <li>
+        Assignment 2:
+        <a href="" target="_blank">View Submission</a>
+      </li>
+      <li>
+        Assignment 3:
+        <a href="" target="_blank">View Submission</a>
+      </li>
+      <!-- Add more assignments as needed -->
+    </ul>
+  </body>
 </html>
