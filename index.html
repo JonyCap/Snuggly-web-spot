@@ -1,62 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assignment Submissions</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      h2 {
-        text-align: center;
-      }
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-      li {
-        margin: 10px 0;
-        padding: 10px;
-        background: #f9f9f9;
-        border-radius: 5px;
-      }
-      a {
-        text-decoration: none;
-        color: #007bff;
-        font-weight: bold;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: url('D577E89D-A626-4032-8D20-355CBC5729DD.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-shadow: 2px 2px 5px black;
+        }
+        h1, h2 {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .assignment-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .assignment {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        a {
+            text-decoration: none;
+            color: yellow;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* Unique colors for each assignment */
+        .assignment:nth-child(odd) { background: rgba(255, 165, 0, 0.8); } /* Orange */
+        .assignment:nth-child(even) { background: rgba(0, 128, 128, 0.8); } /* Teal */
     </style>
-  </head>
-  <body>
-    <h1>Global Logistics</h1>
-    <h2>Jony</h2>
-    <ul>
-      <li>
-        Excalidrww:
-        <a href="https://excalidraw.com/#room=b468e6a21498408484d7,An9CUMKcCUUqtMzfSEucQQ" target="_blank"
-          >View Submission</a
-        >
-      </li>
-      <li>
-        Find me report:
-        <a href="https://jonycap.github.io/Snuggly-web-spot/findme1.html" target="_blank">View Submission</a>
-      </li>
-      <li>
-        Assignment 3:
-        <a href="" target="_blank">View Submission</a>
-      </li>
-      <!-- Add more assignments as needed -->
-    </ul>
-  </body>
-</html>         
+</head>
+<body>
+    <h1>Welcome to My Smart Hub</h1>
+    <h2>Jony's Assignment Center</h2>
 
+    <ul class="assignment-list">
+        <li class="assignment">
+            Excalidraw:
+            <a href="https://excalidraw.com/#room=b468e6a21498408484d7,An9CUMKcCUUqtMzfSEucQQ" target="_blank">View Submission</a>
+        </li>
+        <li class="assignment">
+            Find Me Report:
+            <a href="https://jonycap.github.io/Snuggly-web-spot/findme1.html" target="_blank">View Submission</a>
+        </li>
+        <li class="assignment">
+            Assignment 3:
+            <a href="#" target="_blank">View Submission</a>
+        </li>
+        <!-- 27 more assignments added dynamically -->
+        <script>
+            let assignmentList = document.querySelector('.assignment-list');
+            for (let i = 4; i <= 30; i++) {
+                let li = document.createElement('li');
+                li.className = 'assignment';
+                li.innerHTML = Assignment ${i}: <a href="#" target="_blank">View Submission</a>;
+                assignmentList.appendChild(li);
+            }
+        </script>
+    </ul>
+</body>
+</html>
