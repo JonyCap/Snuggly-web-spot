@@ -5,117 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jony's Smart Hub</title>
     <style>
-        /* General Styling */
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
             text-align: center;
-            color: white;
-            background: black;
-            overflow-x: hidden;
-        }
-
-        /* Animated Space Background */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://cdn.pixabay.com/photo/2018/01/11/09/47/background-3076211_1280.jpg') no-repeat center center fixed;
+            background: url('https://source.unsplash.com/1600x900/?space,galaxy') no-repeat center center fixed;
             background-size: cover;
-            z-index: -1;
-            animation: moveBackground 50s linear infinite;
+            color: white;
+            text-shadow: 2px 2px 5px black;
         }
-
-        @keyframes moveBackground {
-            0% { background-position: 0 0; }
-            100% { background-position: -1000px -1000px; }
-        }
-
         h1 {
-            margin-top: 50px;
-            font-size: 36px;
-            text-shadow: 3px 3px 5px black;
+            font-size: 32px;
+            margin-top: 20px;
         }
-
         h2 {
-            font-size: 20px;
+            font-size: 24px;
             margin-bottom: 20px;
         }
-
-        /* Sections */
         .container {
-            width: 80%;
+            max-width: 800px;
             margin: auto;
-            padding: 20px;
-            background: rgba(20, 20, 20, 0.8);
+        }
+        .btn {
+            display: block;
+            width: 80%;
+            padding: 15px;
+            margin: 10px auto;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
             border-radius: 10px;
-            margin-bottom: 20px;
+            transition: 0.3s;
         }
-
-        h3 {
-            text-decoration: underline;
-            margin-bottom: 10px;
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
-
-        /* Assignment Links */
+        .assignments {
+            display: none;
+            margin-top: 10px;
+        }
         .assignment {
-            display: block;
-            color: white;
-            background: rgba(50, 50, 50, 0.8);
+            margin: 5px;
             padding: 10px;
-            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 5px;
-            text-decoration: none;
-            transition: 0.3s;
         }
-
-        .assignment:hover {
-            background: rgba(100, 100, 100, 0.9);
+        .comment-box {
+            margin-top: 20px;
         }
-
-        /* Instagram Button */
-        .insta-btn {
-            display: block;
-            background: #FF0066;
-            padding: 12px;
-            width: 200px;
-            font-size: 16px;
+        .instagram {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #E4405F;
             color: white;
-            margin: 30px auto;
-            border-radius: 10px;
             text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .insta-btn:hover {
-            background: #CC0055;
+            border-radius: 10px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
     <h1>Welcome to My Smart Hub</h1>
-    <h2>Jony (221 78 37)</h2>
+    <h2>Jony's Assignment Center (221 78 37)</h2>
 
     <div class="container">
-        <h3>📦 Global Logistics Assignments</h3>
-        <a href="https://excalidraw.com/#room=b468e6a21498408484d7,An9CUMKcCUUqtMzfSEucQQ" class="assignment" target="_blank">📝 Excalidraw</a>
-        <a href="assignments/logistics1.html" class="assignment" target="_blank">📄 Assignment 1</a>
-        <a href="assignments/logistics2.html" class="assignment" target="_blank">📄 Assignment 2</a>
-        <a href="assignments/logistics3.html" class="assignment" target="_blank">📄 Assignment 3</a>
-        <a href="assignments/logistics4.html" class="assignment" target="_blank">📄 Assignment 4</a>
-        <a href="assignments/logistics5.html" class="assignment" target="_blank">📄 Assignment 5</a>
-        <a href="assignments/logistics6.html" class="assignment" target="_blank">📄 Assignment 6</a>
+        <a href="#" class="btn" onclick="toggleAssignments('logistics')">📦 Global Logistics</a>
+        <div id="logistics" class="assignments">
+            <div class="assignment"><a href="excalidraw.html" target="_blank">Assignment 1: Excalidraw</a></div>
+            <div class="assignment"><a href="#" target="_blank">Assignment 2</a></div>
+            <div class="assignment"><a href="#" target="_blank">Assignment 3</a></div>
+            <div class="assignment"><a href="#" target="_blank">Assignment 4</a></div>
+        </div>
+
+        <a href="#" class="btn" onclick="toggleAssignments('digital')">💻 Digital Literacy</a>
+        <div id="digital" class="assignments">
+            <div class="assignment"><a href="findme.html" target="_blank">Assignment 1: Find Me Report</a></div>
+            <div class="assignment"><a href="#" target="_blank">Assignment 2</a></div>
+            <div class="assignment"><a href="#" target="_blank">Assignment 3</a></div>
+            <div class="assignment"><a href="#" target="_blank">Assignment 4</a></div>
+        </div>
+
+        <div class="comment-box">
+            <h3>Leave a Comment</h3>
+            <textarea id="comment" rows="4" cols="50" placeholder="Write your feedback here..."></textarea>
+            <br>
+            <button onclick="saveComment()">Submit</button>
+        </div>
+
+        <a href="https://www.instagram.com/invites/contact/?igsh=1rxyb0zhkernz&utm_content=svhaxzx" class="instagram" target="_blank">📸 Contact me on Instagram</a>
     </div>
 
-    <div class="container">
-        <h3>🖥️ Digital Literacy Assignments</h3>
-        <a href="https://jonycap.github.io/Snuggly-web-spot/findme1.html" class="assignment" target="_blank">🔍 Find Me Report</a>
-        <a href="assignments/digital1.html" class="assignment" target="_blank">📄 Assignment 1</a>
-        <a href="assignments/digital2.html" class="assignment" target="_blank">📄 Assignment 2</a>
-        <a href="assignments/digital3.html" class="assignment" target="_blank">📄 Assignment 3</a>
-        <a href="assignments/digital4.html" class="assignment" target="_blank">📄 Assignment 4</a>
-        <a href="assignments/digital5.html" class="assignment" target="_blank">📄 Assignment 5</a>
+    <script>
+        function toggleAssignments(id) {
+            var section = document.getElementById(id);
+            if (section.style.display === "block") {
+                section.style.display = "none";
+            } else {
+                section.style.display = "block";
+            }
+        }
+
+        function saveComment() {
+            var comment = document.getElementById("comment").value;
+            if (comment) {
+                alert("Your comment has been saved: " + comment);
+            } else {
+                alert("Please write something before submitting!");
+            }
+        }
+    </script>
+
+</body>
+</html>
