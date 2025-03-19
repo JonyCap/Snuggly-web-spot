@@ -61,7 +61,47 @@
             color: white;
             text-decoration: none;
             border-radius: 10px;
-            font-size: 18px;
+            font-size: 18px
+            /* Background animation */
+.stars {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: move-stars linear infinite;
+    opacity: 0.8;
+}
+.planets {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 1) 30%, rgba(255, 140, 0, 0) 70%);
+    border-radius: 50%;
+    animation: move-planets linear infinite;
+}
+
+/* Animation Keyframes */
+@keyframes move-stars {
+    from { transform: translateY(0); }
+    to { transform: translateY(-100vh); }
+}
+
+@keyframes move-planets {
+    from { transform: translateY(0); }
+    to { transform: translateY(-100vh); }
+}
+
+/* Background container */
+.background-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
         }
     </style>
 </body {
@@ -168,6 +208,30 @@
             } else {
                 alert("Please write something before submitting!");
             }
+            <!-- Background Animation Container -->
+<div class="background-container">
+    <script>
+        // Generating stars
+        for (let i = 0; i < 100; i++) {
+            let star = document.createElement("div");
+            star.className = "stars";
+            star.style.top = Math.random() * 100 + "vh";
+            star.style.left = Math.random() * 100 + "vw";
+            star.style.animationDuration = (Math.random() * 5 + 3) + "s";
+            document.querySelector(".background-container").appendChild(star);
+        }
+
+        // Generating planets
+        for (let i = 0; i < 3; i++) {
+            let planet = document.createElement("div");
+            planet.className = "planets";
+            planet.style.top = Math.random() * 100 + "vh";
+            planet.style.left = Math.random() * 100 + "vw";
+            planet.style.animationDuration = (Math.random() * 8 + 5) + "s";
+            document.querySelector(".background-container").appendChild(planet);
+        }
+    </script>
+</div>
         }
     </script>
 
