@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Flowchart Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.17/interact.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        .workspace {
+            flex: 1;
+            background-color: #fff;
+            position: relative;
+            overflow: auto;
+        }
+        .canvas {
+            width: 2000px;
+            height: 1500px;
+            position: relative;
+            background-color: #f9f9f9;
+            background-image: 
+                linear-gradient(#e1e1e1 1px, transparent 1px),
+                linear-gradient(90deg, #e1e1e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .node {
+            width: 120px;
+            height: 80px;
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            text-align: center;
+        }
+        .node.supplier {
+            border-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        .node.warehouse {
+            border-color: #2196F3;
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+        .node.distribution {
+            border-color: #FF9800;
+            background-color: rgba(255, 152, 0, 0.1);
+        }
+        .node.retail {
+            border-color: #E91E63;
+            background-color: rgba(233, 30, 99, 0.1);
+        }
+        .node.transport {
+            border-color: #9C27B0;
+            background-color: rgba(156, 39, 176, 0.1);
+        }
+        .node.custom {
+            border-color: #607D8B;
+            background-color: rgba(96, 125, 139, 0.1);
+        }
+        .node-item {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #444;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .node-item:hover {
+            background-color: #555;
+        }
+        .endpoint {
+            z-index: 11;
+        }
+        .context-menu {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            padding: 5px 0;
+            z-index: 1000;
+            display: none;
+        }
+        .context-menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .context-menu-item:hover {
+            background-color: #f2f2f2;
+        }
+        .toolbar {
+            padding: 10px;
+            background-color: #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            padding: 8px 12px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .btn:hover {
+            background-color: #666;
+        }
+        .btn-export {
+            background-color: #4CAF50;
+        }
+        .btn-export:hover {
+            background-color: #45a049;
+        }
+        .btn-clear {
+            background-color: #f44336;
+        }
+        .btn-clear:hover {
+            background-color: #d32f2f;
+        }
+        .edit-label {
+            position: absolute;
+            z-index: 1001;
+            display: none;
+        }
+        .edit-label input {
+            padding: 5px;
+            width: 150px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 5px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .modal-buttons button {
+            margin-left: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Logistics Flowchart Builder</h2>
+            <div class="toolbar">
+                <button class="btn btn-export" id="exportBtn">Export</button>
+                <button class="btn btn-clear" id="clearBtn">Clear All</button>
+            </div>
+            <h3>Drag & Drop Nodes</h3>
+            <div class="node-item" data-type="supplier">Supplier</div>
+            <div class="node-item" data-type="warehouse">Warehouse</div>
+            <div class="node-item" data-type="distribution">Distribution Center</div>
+            <div class="node-item" data-type="retail">Retail Store</div>
+            <div class="node-item" data-type="transport">Transport</div>
+            <div class="node-item" data-type="custom">Custom Node</div>
+            
+            <h3>Instructions</h3>
+            <ul>
+                <li>Drag nodes from the sidebar to the canvas</li>
+                <li>Connect nodes by dragging from one endpoint to another</li>
+                <li>Right-click on nodes to edit or delete</li>
+                <li>Export your flowchart when finished</li>
+            </ul>
+        </div>
+        <div class="workspace">
+            <div class="canvas" id="canvas"></div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" id="editLabel">Edit Label</div>
+        <div class="context-menu-item" id="deleteNode">Delete Node</div>
+    </div>
+
+    <div class="edit-label" id="editLabelForm">
+        <input type="text" id="nodeLabel">
+    </div>
+
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Export Flowchart</h3>
+            <div>
+                <button class="btn btn-export" id="exportPng">Export as PNG</button>
+                <button class="btn btn-export" id="exportPdf">Export as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customNodeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="customNodeClose">&times;</span>
+            <h3>Custom Node</h3>
+            <label for="customNodeName">Node Name:</label>
+            <input type="text" id="customNodeName" placeholder="Enter node name">
+            <div class="modal-buttons">
+                <button class="btn" id="customNodeCancel">Cancel</button>
+                <button class="btn btn-export" id="customNodeCreate">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize jsPlumb
+            const jsPlumbInstance = jsPlumb.getInstance({
+                Endpoint: ["Dot", { radius: 4 }],
+                Connector: ["Bezier", { curviness: 50 }],
+                HoverPaintStyle: { stroke: "#1e8151", strokeWidth: 2 },
+                ConnectionOverlays: [
+                    ["Arrow", { location: 1, width: 10, length: 10, id: "arrow" }],
+                ]
+            });
+
+            // Initialize variables
+            let nodeIdCounter = 0;
+            let selectedNode = null;
+            let contextMenuNode = null;
+            let customNodePosition = null;
+            
+            // Get DOM elements
+            const canvas = document.getElementById('canvas');
+            const contextMenu = document.getElementById('contextMenu');
+            const editLabelForm = document.getElementById('editLabelForm');
+            const nodeLabelInput = document.getElementById('nodeLabel');
+            const exportModal = document.getElementById('exportModal');
+            const customNodeModal = document.getElementById('customNodeModal');
+            const customNodeNameInput = document.getElementById('customNodeName');
+            
+            // Initialize jsPlumb
+            jsPlumbInstance.setContainer(canvas);
+            
+            // Make nodes draggable from sidebar
+            document.querySelectorAll('.node-item').forEach(nodeItem => {
+                nodeItem.addEventListener('mousedown', function(e) {
+                    const nodeType = this.getAttribute('data-type');
+                    
+                    if (nodeType === 'custom') {
+                        customNodePosition = { x: 50, y: 50 };
+                        customNodeModal.style.display = 'block';
+                        return;
+                    }
+                    
+                    createNode(nodeType, 50, 50);
+                    
+                    e.preventDefault();
+                });
+            });
+            
+            // Function to create a new node
+            function createNode(type, x, y, label = '') {
+                const nodeId = `node-${nodeIdCounter++}`;
+                const node = document.createElement('div');
+                node.id = nodeId;
+                node.className = `node ${type}`;
+                node.style.left = `${x}px`;
+                node.style.top = `${y}px`;
+                
+                // Set default label based on type if not provided
+                if (!label) {
+                    switch (type) {
+                        case 'supplier': label = 'Supplier'; break;
+                        case 'warehouse': label = 'Warehouse'; break;
+                        case 'distribution': label = 'Distribution Center'; break;
+                        case 'retail': label = 'Retail Store'; break;
+                        case 'transport': label = 'Transport'; break;
+                        default: label = 'Custom Node';
+                    }
+                }
+                
+                node.textContent = label;
+                canvas.appendChild(node);
+                
+                // Make node draggable on the canvas
+                interact(`#${nodeId}`).draggable({
+                    inertia: true,
+                    modifiers: [
+                        interact.modifiers.restrictRect({
+                            restriction: 'parent',
+                            endOnly: true
+                        })
+                    ],
+                    autoScroll: true,
+                    onmove: dragMoveListener
+                }).on('tap', function(event) {
+                    selectedNode = event.target;
+                });
+                
+                // Add endpoints to the node
+                jsPlumbInstance.makeSource(node, {
+                    filter: ".ep",
+                    anchor: "Right",
+                    connectorStyle: { stroke: "#5c96bc", strokeWidth: 2, outlineStroke: "transparent", outlineWidth: 4 },
+                    maxConnections: -1
+                });
+                
+                jsPlumbInstance.makeTarget(node, {
+                    dropOptions: { hoverClass: "dragHover" },
+                    anchor: "Left",
+                    allowLoopback: false
+                });
+                
+                // Add endpoint for outgoing connections
+                const sourceEndpoint = jsPlumbInstance.addEndpoint(node, {
+                    anchor: "Right",
+                    isSource: true,
+                    isTarget: false,
+                    maxConnections: -1,
+                    endpoint: ["Dot", { radius: 7 }],
+                    paintStyle: { fill: "#5c96bc" },
+                    connectorStyle: { stroke: "#5c96bc", strokeWidth: 2 },
+                    connectorOverlays: [
+                        ["Arrow", { location: 1, width: 10, length: 10, id: "arrow" }]
+                    ]
+                });
+                
+                // Add endpoint for incoming connections
+                const targetEndpoint = jsPlumbInstance.addEndpoint(node, {
+                    anchor: "Left",
+                    isSource: false,
+                    isTarget: true,
+                    maxConnections: -1,
+                    endpoint: ["Dot", { radius: 7 }],
+                    paintStyle: { fill: "#5c96bc" },
+                    connectorStyle: { stroke: "#5c96bc", strokeWidth: 2 }
+                });
+                
+                // Add context menu
+                node.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    contextMenuNode = node;
+                    contextMenu.style.display = 'block';
+                    contextMenu.style.left = `${e.pageX}px`;
+                    contextMenu.style.top = `${e.pageY}px`;
+                });
+                
+                return node;
+            }
+            
+            // Function to handle node drag movement
+            function dragMoveListener(event) {
+                const target = event.target;
+                const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+                
+                // Update the element's transform
+                target.style.transform = `translate(${x}px, ${y}px)`;
+                target.setAttribute('data-x', x);
+                target.setAttribute('data-y', y);
+                
+                // Refresh jsPlumb connections when the node is moved
+                jsPlumbInstance.revalidate(target);
+            }
+            
+            // Event listener for closing context menu
+            document.addEventListener('click', function() {
+                contextMenu.style.display = 'none';
+            });
+            
+            // Context menu actions
+            document.getElementById('editLabel').addEventListener('click', function() {
+                if (contextMenuNode) {
+                    nodeLabelInput.value = contextMenuNode.textContent;
+                    editLabelForm.style.display = 'block';
+                    editLabelForm.style.left = contextMenuNode.style.left;
+                    editLabelForm.style.top = contextMenuNode.style.top;
+                    nodeLabelInput.focus();
+                }
+            });
+            
+            document.getElementById('deleteNode').addEventListener('click', function() {
+                if (contextMenuNode) {
+                    jsPlumbInstance.remove(contextMenuNode);
+                    contextMenuNode = null;
+                }
+            });
+            
+            // Event listener for node label input
+            nodeLabelInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    if (contextMenuNode) {
+                        contextMenuNode.textContent = nodeLabelInput.value;
+                        editLabelForm.style.display = 'none';
+                    }
+                }
+            });
+            
+            nodeLabelInput.addEventListener('blur', function() {
+                if (contextMenuNode) {
+                    contextMenuNode.textContent = nodeLabelInput.value;
+                    editLabelForm.style.display = 'none';
+                }
+            });
+            
+            // Export button event listener
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                exportModal.style.display = 'block';
+            });
+            
+            // Export as PNG
+            document.getElementById('exportPng').addEventListener('click', function() {
+                html2canvas(canvas).then(function(canvas) {
+                    const link = document.createElement('a');
+                    link.download = 'logistics-flowchart.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    exportModal.style.display = 'none';
+                });
+            });
+            
+            // Export as PDF
+            document.getElementById('exportPdf').addEventListener('click', function() {
+                html2canvas(canvas).then(function(canvas) {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jspdf.jsPDF({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                    });
+                    
+                    // Calculate dimensions
+                    const imgWidth = 280;
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    
+                    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                    pdf.save('logistics-flowchart.pdf');
+                    exportModal.style.display = 'none';
+                });
+            });
+            
+            // Clear button event listener
+            document.getElementById('clearBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear the entire flowchart?')) {
+                    jsPlumbInstance.deleteEveryEndpoint();
+                    while (canvas.firstChild) {
+                        canvas.removeChild(canvas.firstChild);
+                    }
+                    nodeIdCounter = 0;
+                }
+            });
+            
+            // Custom node modal
+            document.getElementById('customNodeCreate').addEventListener('click', function() {
+                const customNodeName = customNodeNameInput.value.trim() || 'Custom Node';
+                if (customNodePosition) {
+                    createNode('custom', customNodePosition.x, customNodePosition.y, customNodeName);
+                    customNodeModal.style.display = 'none';
+                    customNodeNameInput.value = '';
+                }
+            });
+            
+            document.getElementById('customNodeCancel').addEventListener('click', function() {
+                customNodeModal.style.display = 'none';
+                customNodeNameInput.value = '';
+            });
+            
+            document.getElementById('customNodeClose').addEventListener('click', function() {
+                customNodeModal.style.display = 'none';
+                customNodeNameInput.value = '';
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === exportModal) {
+                    exportModal.style.display = 'none';
+                }
+                if (event.target === customNodeModal) {
+                    customNodeModal.style.display = 'none';
+                }
+            });
+            
+            // Close modal when clicking on X
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    exportModal.style.display = 'none';
+                    customNodeModal.style.display = 'none';
+                });
+            });
+            
+            // Add examples to show functionality
+            const supplier = createNode('supplier', 100, 100);
+            const warehouse = createNode('warehouse', 300, 100);
+            const distribution = createNode('distribution', 500, 100);
+            const retail = createNode('retail', 700, 100);
+            
+            // Connect example nodes
+            setTimeout(() => {
+                jsPlumbInstance.connect({
+                    source: supplier,
+                    target: warehouse,
+                    anchors: ["Right", "Left"],
+                    connector: ["Bezier", { curviness: 50 }],
+                    paintStyle: { stroke: "#5c96bc", strokeWidth: 2 },
+                    overlays: [
+                        ["Arrow", { location: 1, width: 10, length: 10, id: "arrow" }]
+                    ]
+                });
+                
+                jsPlumbInstance.connect({
+                    source: warehouse,
+                    target: distribution,
+                    anchors: ["Right", "Left"],
+                    connector: ["Bezier", { curviness: 50 }],
+                    paintStyle: { stroke: "#5c96bc", strokeWidth: 2 },
+                    overlays: [
+                        ["Arrow", { location: 1, width: 10, length: 10, id: "arrow" }]
+                    ]
+                });
+                
+                jsPlumbInstance.connect({
+                    source: distribution,
+                    target: retail,
+                    anchors: ["Right", "Left"],
+                    connector: ["Bezier", { curviness: 50 }],
+                    paintStyle: { stroke: "#5c96bc", strokeWidth: 2 },
+                    overlays: [
+                        ["Arrow", { location: 1, width: 10, length: 10, id: "arrow" }]
+                    ]
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
