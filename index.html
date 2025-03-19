@@ -64,8 +64,58 @@
             font-size: 18px;
         }
     </style>
-</head>
-<body>
+</body {
+    background: black;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Creating multiple moving stars */
+@keyframes move-stars {
+    from { transform: translateY(0); }
+    to { transform: translateY(-100vh); }
+}
+
+.stars {
+    width: 2px;
+    height: 2px;
+    background: white;
+    position: absolute;
+    animation: move-stars linear infinite;
+    opacity: 0.8;
+}
+
+/* Generate multiple stars */
+.star-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.star-container div {
+    position: absolute;
+    background: white;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    animation: move-stars linear infinite;
+}
+
+/* Random placement for stars */
+.star-container div:nth-child(1) { top: 10%; left: 20%; animation-duration: 5s; }
+.star-container div:nth-child(2) { top: 40%; left: 80%; animation-duration: 6s; }
+.star-container div:nth-child(3) { top: 70%; left: 30%; animation-duration: 4s; }
+.star-container div:nth-child(4) { top: 90%; left: 60%; animation-duration: 7s; }
+.star-container div:nth-child(5) { top: 50%; left: 10%; animation-duration: 5s; }
+.star-container div:nth-child(6) { top: 20%; left: 50%; animation-duration: 8s; }
+.star-container div:nth-child(7) { top: 85%; left: 75%; animation-duration: 3s; }
+.star-container div:nth-child(8) { top: 30%; left: 95%; animation-duration: 6s; }
+.star-container div:nth-child(9) { top: 60%; left: 40%; animation-duration: 4.5s; }
+.star-container div:nth-child(10) { top: 15%; left: 5%; animation-duration: 7s; }>
+<<div class="star-container">
+    <div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div>
+</div>>
 
     <h1>Welcome to My Smart Hub</h1>
     <h2>Jony's Assignment Center (221 78 37)</h2>
