@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courier Runner: Gemini-X Edition</title>
+    <link rel="stylesheet" href="runner_style.css">
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    
+    <div id="hud">
+        <div id="fuel">Fuel: 100%</div>
+        <div id="score">Parcels: 0 / 5</div>
+    </div>
+
+    <div id="missionComplete" class="hidden">
+        <h1>MISSION COMPLETE</h1>
+        <p>You’ve successfully delivered all parcels and returned to Gemini HQ.</p>
+        <p>Efficiency Score: <span id="finalScore"></span></p>
+        <p>Built by Jony — IBM Logistics Team 2025</p>
+    </div>
+
+    <script src="runner_game.js"></script>
+</body>
+</html>
