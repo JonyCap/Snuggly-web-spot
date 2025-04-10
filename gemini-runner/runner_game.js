@@ -1,21 +1,21 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let ship = { x: 400, y: 300, width: 40, height: 40, speed: 3 };
+let ship = { x: 380, y: 280, width: 40, height: 40, speed: 3 };
 let keys = {};
 let parcels = [];
 let collected = 0;
 let fuel = 100;
 let gameActive = true;
-
-let base = { x: 380, y: 50, width: 50, height: 50 };
 let gameEnded = false;
 
-// Initialize parcels in random spots
+let base = { x: 370, y: 50, width: 60, height: 60 };
+
+// Create parcels within visible canvas area
 for (let i = 0; i < 5; i++) {
     parcels.push({
-        x: Math.random() * 750 + 25,
-        y: Math.random() * 550 + 25,
+        x: Math.random() * 720 + 40,
+        y: Math.random() * 500 + 80,
         collected: false
     });
 }
@@ -40,7 +40,7 @@ function drawParcels() {
 }
 
 function drawBase() {
-    ctx.fillStyle = "#5555ff";
+    ctx.fillStyle = "#4455ff";
     ctx.fillRect(base.x, base.y, base.width, base.height);
 }
 
@@ -52,18 +52,15 @@ function update() {
     if (keys["ArrowLeft"] || keys["a"]) ship.x -= ship.speed;
     if (keys["ArrowRight"] || keys["d"]) ship.x += ship.speed;
 
-    // Keep inside canvas
     ship.x = Math.max(0, Math.min(canvas.width - ship.width, ship.x));
     ship.y = Math.max(0, Math.min(canvas.height - ship.height, ship.y));
 
-    // Fuel decreases as you move
     fuel -= 0.05;
     if (fuel <= 0) {
         endGame(false);
         return;
     }
 
-    // Parcel collection
     parcels.forEach(p => {
         if (!p.collected &&
             ship.x < p.x + 10 &&
@@ -76,7 +73,6 @@ function update() {
         }
     });
 
-    // Check win
     if (collected === 5 &&
         ship.x < base.x + base.width &&
         ship.x + ship.width > base.x &&
@@ -85,12 +81,13 @@ function update() {
         endGame(true);
     }
 
-    // Update HUD
     document.getElementById("fuel").innerText = Fuel: ${Math.max(0, fuel.toFixed(0))}%;
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#000015"; // background space color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     drawBase();
     drawParcels();
     drawShip();
