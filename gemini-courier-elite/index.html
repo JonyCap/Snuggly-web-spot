@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gemini Courier: Elite Delivery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="space-canvas"></canvas>
+    <div class="container">
+        <h1>Gemini Courier: Elite Delivery</h1>
+        <div class="instructions">
+            <h2>Mission Brief</h2>
+            <p>You are a Gemini Courier pilot tasked with collecting parcels from distant planets and returning to your base (GemHQ). 
+            Navigate efficiently using minimal fuel. Your choices affect your mission score!</p>
+            <h3>How to Play</h3>
+            <ul>
+                <li>Click each planet once to visit it and plan your route.</li>
+                <li>Plan a full loop — start and end at the same planet.</li>
+                <li>Lines will connect your path. Fuel bar shows how much energy you're burning.</li>
+                <li>After finishing, you'll get a full mission report!</li>
+            </ul>
+            <button onclick="startGame()">Start New Game</button>
+            <button onclick="toggleMusic()">Toggle Music</button>
+        </div>
+        <div id="fuel-bar-container">
+            <div id="fuel-bar"></div>
+        </div>
+        <div id="map" class="map"></div>
+        <div id="result" class="result"></div>
+        <footer>
+            <p>Created by Jony — IBM Logistics Team 2025</p>
+        </footer>
+    </div>
+    <audio id="bg-music" loop>
+        <source src="https://files.catbox.moe/1t8n9a.mp3" type="audio/mpeg">
+    </audio>
+    <script src="game_data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
