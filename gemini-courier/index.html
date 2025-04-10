@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gemini Courier: Route Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gemini Courier: Route Challenge</h1>
+        <div class="instructions">
+            <h2>Mission Brief</h2>
+            <p>You are a Gemini Courier pilot tasked with collecting parcels from 5 planets and returning to your base (GemHQ). 
+            Your goal is to select the most efficient route — lowest total cost — by clicking planets in the order you wish to visit them.</p>
+            <h3>How to Play</h3>
+            <ul>
+                <li>Click on each planet once to add it to your route.</li>
+                <li>You must visit all planets and return to your starting point (GemHQ).</li>
+                <li>Your total route cost will be shown when you're done.</li>
+                <li>Try different routes to beat your best score!</li>
+            </ul>
+            <button onclick="startGame()">Start New Game</button>
+        </div>
+        <div id="map" class="map"></div>
+        <div id="result" class="result"></div>
+    </div>
+    <script src="game_data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
