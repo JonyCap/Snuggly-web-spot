@@ -1,16 +1,12 @@
 let selectedPath = [];
 let isGameActive = false;
 
-window.onload = function () {
-    window.startGame = function () {
-        selectedPath = [];
-        isGameActive = true;
-        document.getElementById("result").innerHTML = "";
-        renderMap();
-    };
-
+function startGame() {
+    selectedPath = [];
+    isGameActive = true;
+    document.getElementById("result").innerHTML = "";
     renderMap();
-};
+}
 
 function renderMap() {
     const mapDiv = document.getElementById("map");
@@ -52,3 +48,8 @@ function finishGame() {
         <p>Try again to find a better route!</p>
     `;
 }
+
+// Wait until the page loads before assigning function to window
+window.onload = () => {
+    window.startGame = startGame;
+};
