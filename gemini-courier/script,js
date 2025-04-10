@@ -1,12 +1,16 @@
 let selectedPath = [];
 let isGameActive = false;
 
-function startGame() {
-    selectedPath = [];
-    isGameActive = true;
-    document.getElementById("result").innerHTML = "";
+window.onload = function () {
+    window.startGame = function () {
+        selectedPath = [];
+        isGameActive = true;
+        document.getElementById("result").innerHTML = "";
+        renderMap();
+    };
+
     renderMap();
-}
+};
 
 function renderMap() {
     const mapDiv = document.getElementById("map");
