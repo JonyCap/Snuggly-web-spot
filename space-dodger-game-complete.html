@@ -3,599 +3,860 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Dodger</title>
+    <title>Cosmic Courier: The Interstellar Route Challenge</title>
     <style>
         body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a0a1a;
+            color: #e0e0ff;
             margin: 0;
-            overflow-x: hidden;
-            background-color: #000;
-            font-family: Arial, sans-serif;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        #game-container {
-            position: relative;
-            width: 600px;
-            height: 400px;
-            border: 2px solid #333;
-            background-image: url('/api/placeholder/600/400');
-            background-size: cover;
+            padding: 0;
             overflow: hidden;
-            margin-bottom: 30px;
-            max-width: 100%;
-        }
-        
-        #player {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background-color: #4f8;
-            border-radius: 50%;
-            bottom: 20px;
-            left: 280px;
-            transition: left 0.1s;
-        }
-        
-        .asteroid {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: #f44;
-            border-radius: 50%;
-            top: -30px;
-        }
-        
-        #score-display {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 20px;
-            color: white;
-        }
-        
-        #game-over {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        
-        #restart-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4f8;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        
-        #start-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+            height: 100vh;
         }
         
-        #start-btn {
-            margin-top: 20px;
+        header {
+            background-color: #1a1a3a;
             padding: 10px 20px;
-            background-color: #4f8;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        
-        .instructions {
-            max-width: 80%;
             text-align: center;
-            margin-bottom: 20px;
+            box-shadow: 0 0 15px #5d5dff;
         }
         
-        /* New styles for how to play and report sections */
-        .page-section {
-            background-color: rgba(30, 30, 50, 0.8);
-            border-radius: 10px;
+        h1 {
+            margin: 0;
+            color: #7d7dff;
+            text-shadow: 0 0 5px #5d5dff;
+        }
+        
+        .game-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+        
+        .star-map {
+            flex: 3;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            flex: 1;
+            background-color: #1a1a3a;
             padding: 20px;
-            margin-bottom: 30px;
-            width: 800px;
-            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 15px rgba(93, 93, 255, 0.3);
         }
         
-        .section-title {
-            color: #4f8;
-            border-bottom: 2px solid #4f8;
-            padding-bottom: 10px;
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .star {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 0 15px;
+        }
+        
+        .star.unvisited {
+            background-color: rgba(30, 30, 70, 0.7);
+            border: 2px solid #7d7dff;
+            color: #7d7dff;
+            box-shadow: 0 0 15px #5d5dff;
+        }
+        
+        .star.visited {
+            background-color: rgba(30, 70, 30, 0.7);
+            border: 2px solid #7dff7d;
+            color: #7dff7d;
+            box-shadow: 0 0 15px #5dff5d;
+        }
+        
+        .star.hub {
+            background-color: rgba(70, 30, 30, 0.7);
+            border: 2px solid #ff7d7d;
+            color: #ff7d7d;
+            box-shadow: 0 0 15px #ff5d5d;
+        }
+        
+        .star.selected {
+            transform: scale(1.2);
+        }
+        
+        .path {
+            position: absolute;
+            background-color: rgba(93, 93, 255, 0.3);
+            transform-origin: 0 50%;
+            height: 2px;
+            pointer-events: none;
+        }
+        
+        .path-cost {
+            position: absolute;
+            background-color: rgba(30, 30, 70, 0.7);
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 12px;
+            color: #e0e0ff;
+            transform: translate(-50%, -50%);
+        }
+        
+        .route-path {
+            position: absolute;
+            background-color: rgba(255, 215, 0, 0.6);
+            transform-origin: 0 50%;
+            height: 3px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .ship {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffcc00"><path d="M12 2L4 12h4v8h8v-8h4z"/></svg>');
+            background-repeat: no-repeat;
+            background-size: contain;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+        }
+        
+        .stats {
             margin-bottom: 20px;
         }
         
-        .section-content {
-            line-height: 1.6;
-        }
-        
-        .controls-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        .controls-table th, .controls-table td {
-            border: 1px solid #444;
-            padding: 10px;
-            text-align: left;
-        }
-        
-        .controls-table th {
-            background-color: #222;
-        }
-        
-        .subsection {
-            margin-top: 20px;
-        }
-        
-        .subsection-title {
-            color: #4f8;
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 10px;
         }
         
-        .menu-bar {
-            display: flex;
-            justify-content: center;
+        .route-list {
+            flex: 1;
+            overflow-y: auto;
+            background-color: rgba(30, 30, 70, 0.5);
+            border-radius: 5px;
+            padding: 10px;
             margin-bottom: 20px;
-            gap: 10px;
         }
         
-        .menu-button {
-            padding: 10px 20px;
-            background-color: #333;
-            border: none;
-            border-radius: 5px;
+        .route-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: rgba(93, 93, 255, 0.2);
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .route-item.hub {
+            background-color: rgba(255, 93, 93, 0.2);
+        }
+        
+        button {
+            background-color: #5d5dff;
             color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            margin-bottom: 10px;
+            transition: all 0.3s;
         }
         
-        .menu-button:hover {
-            background-color: #4f8;
-            color: black;
+        button:hover {
+            background-color: #7d7dff;
+            box-shadow: 0 0 10px #5d5dff;
         }
         
-        .menu-button.active {
-            background-color: #4f8;
-            color: black;
+        button:disabled {
+            background-color: #3d3d7f;
+            cursor: not-allowed;
         }
         
-        @media (max-width: 600px) {
-            #game-container {
-                width: 100%;
-                height: 350px;
-            }
-            
-            .page-section {
-                padding: 15px;
-            }
+        .rating {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .star-rating {
+            color: #aaa;
+            font-size: 24px;
+            margin: 0 2px;
+        }
+        
+        .star-rating.active {
+            color: gold;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #1a1a3a;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 25px #5d5dff;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .cosmic-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0a0a2a 0%, #050510 100%);
+            z-index: -1;
+        }
+        
+        .tiny-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: white;
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
-    <h1>Space Dodger</h1>
+    <div class="cosmic-background" id="cosmicBackground"></div>
     
-    <div class="menu-bar">
-        <button class="menu-button active" data-target="game">Play Game</button>
-        <button class="menu-button" data-target="how-to-play">How to Play</button>
-        <button class="menu-button" data-target="report">Game Report</button>
-    </div>
+    <header>
+        <h1>COSMIC COURIER: THE INTERSTELLAR ROUTE CHALLENGE</h1>
+    </header>
     
-    <div id="game" class="content-section">
-        <div id="game-container">
-            <div id="player"></div>
-            <div id="score-display">Score: 0</div>
-            
-            <div id="start-screen">
-                <h1>Space Dodger</h1>
-                <div class="instructions">
-                    <p>Use the left and right arrow keys or swipe to move your spaceship.</p>
-                    <p>Dodge the incoming asteroids for as long as you can!</p>
+    <div class="game-container">
+        <div class="star-map" id="starMap">
+            <div class="stars" id="stars"></div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="stats">
+                <div class="stats-item">
+                    <span>Mission Status:</span>
+                    <span id="missionStatus">Planning Route</span>
                 </div>
-                <button id="start-btn">Start Game</button>
+                <div class="stats-item">
+                    <span>Systems Visited:</span>
+                    <span id="systemsVisited">0/0</span>
+                </div>
+                <div class="stats-item">
+                    <span>Warp Juice:</span>
+                    <span id="warpJuice">0</span>
+                </div>
             </div>
             
-            <div id="game-over">
-                <h1>Game Over!</h1>
-                <h2 id="final-score">Score: 0</h2>
-                <button id="restart-btn">Play Again</button>
+            <h3>Delivery Route</h3>
+            <div class="route-list" id="routeList"></div>
+            
+            <button id="clearRouteBtn">Clear Route</button>
+            <button id="executeRouteBtn" disabled>Execute Route</button>
+            <button id="newGameBtn">New Mission</button>
+            
+            <div class="rating">
+                <span class="star-rating" id="star1">★</span>
+                <span class="star-rating" id="star2">★</span>
+                <span class="star-rating" id="star3">★</span>
+                <span class="star-rating" id="star4">★</span>
+                <span class="star-rating" id="star5">★</span>
             </div>
         </div>
     </div>
     
-    <div id="how-to-play" class="content-section page-section" style="display: none;">
-        <h2 class="section-title">How to Play Space Dodger</h2>
-        <div class="section-content">
-            <p>Space Dodger is a simple yet challenging arcade-style game where you control a spaceship and must avoid incoming asteroids. The longer you survive, the higher your score!</p>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Controls</h3>
-                <table class="controls-table">
-                    <tr>
-                        <th>Device</th>
-                        <th>Control</th>
-                        <th>Action</th>
-                    </tr>
-                    <tr>
-                        <td>Keyboard</td>
-                        <td>Left Arrow Key</td>
-                        <td>Move spaceship left</td>
-                    </tr>
-                    <tr>
-                        <td>Keyboard</td>
-                        <td>Right Arrow Key</td>
-                        <td>Move spaceship right</td>
-                    </tr>
-                    <tr>
-                        <td>Mobile/Tablet</td>
-                        <td>Swipe Left</td>
-                        <td>Move spaceship left</td>
-                    </tr>
-                    <tr>
-                        <td>Mobile/Tablet</td>
-                        <td>Swipe Right</td>
-                        <td>Move spaceship right</td>
-                    </tr>
-                </table>
+    <div class="modal" id="completionModal">
+        <div class="modal-content">
+            <h2>Mission Complete!</h2>
+            <p>You've successfully completed all deliveries and returned to the Central Hub.</p>
+            <div class="stats-item">
+                <span>Total Warp Juice Used:</span>
+                <span id="finalWarpJuice">0</span>
             </div>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Game Rules</h3>
-                <ul>
-                    <li>Your spaceship (green circle) appears at the bottom of the screen</li>
-                    <li>Asteroids (red circles) fall from the top of the screen at random positions</li>
-                    <li>Each asteroid you successfully avoid adds 10 points to your score</li>
-                    <li>If an asteroid hits your spaceship, the game is over</li>
-                    <li>As your score increases, the game becomes progressively harder:</li>
-                    <ul>
-                        <li>Asteroids fall faster</li>
-                        <li>Asteroids appear more frequently</li>
-                    </ul>
-                </ul>
+            <div class="stats-item">
+                <span>Efficiency Rating:</span>
+                <div class="rating">
+                    <span class="star-rating" id="finalStar1">★</span>
+                    <span class="star-rating" id="finalStar2">★</span>
+                    <span class="star-rating" id="finalStar3">★</span>
+                    <span class="star-rating" id="finalStar4">★</span>
+                    <span class="star-rating" id="finalStar5">★</span>
+                </div>
             </div>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Tips</h3>
-                <ul>
-                    <li>Stay alert and plan your movements in advance</li>
-                    <li>Look for patterns in the falling asteroids</li>
-                    <li>Try to position yourself in areas with fewer incoming asteroids</li>
-                    <li>Be prepared for the increasing difficulty as your score grows</li>
-                    <li>On mobile devices, use small, controlled swipes for precise movement</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    
-    <div id="report" class="content-section page-section" style="display: none;">
-        <h2 class="section-title">Game Development Report</h2>
-        <div class="section-content">
-            <div class="subsection">
-                <h3 class="subsection-title">Project Overview</h3>
-                <p>Space Dodger is a browser-based arcade game developed as a web programming assignment. The game demonstrates core principles of interactive web development, including HTML structure, CSS styling, and JavaScript functionality.</p>
-            </div>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Technical Implementation</h3>
-                <p>The game is built using standard web technologies:</p>
-                <ul>
-                    <li><strong>HTML5:</strong> Provides the structural foundation for the game elements</li>
-                    <li><strong>CSS3:</strong> Handles all visual styling and animations</li>
-                    <li><strong>JavaScript:</strong> Powers the game logic, controls, collision detection, and scoring system</li>
-                </ul>
-                <p>No external libraries or frameworks were used in the development of this game, making it lightweight and fast-loading.</p>
-            </div>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Key Features</h3>
-                <ul>
-                    <li><strong>Responsive Design:</strong> The game adapts to different screen sizes and devices</li>
-                    <li><strong>Touch Controls:</strong> Support for both keyboard and touch-based input methods</li>
-                    <li><strong>Dynamic Difficulty:</strong> Game speed and asteroid frequency increase as the player's score rises</li>
-                    <li><strong>Score Tracking:</strong> Real-time score display and final score on game over</li>
-                    <li><strong>UI Components:</strong> Start screen, game over screen, and instructional elements</li>
-                </ul>
-            </div>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Development Challenges</h3>
-                <p>Several challenges were addressed during the development process:</p>
-                <ul>
-                    <li><strong>Collision Detection:</strong> Implementing efficient collision detection between the player and asteroids</li>
-                    <li><strong>Cross-device Compatibility:</strong> Ensuring consistent gameplay experience across desktop and mobile devices</li>
-                    <li><strong>Performance Optimization:</strong> Managing the game loop and object creation/removal for smooth gameplay</li>
-                    <li><strong>Progressive Difficulty:</strong> Creating a balanced difficulty curve that challenges players without feeling unfair</li>
-                </ul>
-            </div>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Future Enhancements</h3>
-                <p>Several features could be added to enhance the game in future updates:</p>
-                <ul>
-                    <li>Power-ups and special abilities</li>
-                    <li>Multiple levels with different themes</li>
-                    <li>High score leaderboard using local storage</li>
-                    <li>Sound effects and background music</li>
-                    <li>Visual enhancements with sprite-based graphics</li>
-                    <li>Additional obstacle types beyond basic asteroids</li>
-                </ul>
-            </div>
-            
-            <div class="subsection">
-                <h3 class="subsection-title">Learning Outcomes</h3>
-                <p>This project demonstrated practical application of:</p>
-                <ul>
-                    <li>Game loop implementation using requestAnimationFrame</li>
-                    <li>DOM manipulation for creating and managing game elements</li>
-                    <li>Event handling for user input across different devices</li>
-                    <li>State management for game progression</li>
-                    <li>Responsive design principles for cross-device compatibility</li>
-                </ul>
-            </div>
+            <button id="newMissionBtn">New Mission</button>
         </div>
     </div>
 
     <script>
-        // Game variables
-        let player;
-        let gameContainer;
-        let score = 0;
-        let gameActive = false;
-        let asteroidSpeed = 3;
-        let asteroidInterval = 1000;
-        let touchStartX = 0;
-        let gameLoopId;
-        let asteroidGeneratorId;
+        // Game data
+        const starSystems = [];
+        const paths = [];
+        const routeOrder = [];
+        let hubSystem = null;
+        let selectedSystem = null;
+        let currentSystem = null;
+        let optimalCost = 0;
+        let ship = null;
+        let isAnimating = false;
         
-        // Initialize the game when the window loads
-        window.onload = function() {
-            player = document.getElementById('player');
-            gameContainer = document.getElementById('game-container');
+        // Initialize game
+        function initGame() {
+            // Clear existing data
+            starSystems.length = 0;
+            paths.length = 0;
+            routeOrder.length = 0;
+            hubSystem = null;
+            selectedSystem = null;
+            currentSystem = null;
             
-            // Add event listeners for controls
-            document.addEventListener('keydown', handleKeyPress);
-            gameContainer.addEventListener('touchstart', handleTouchStart);
-            gameContainer.addEventListener('touchmove', handleTouchMove);
+            // Create cosmic background
+            createCosmicBackground();
             
-            // Start screen and game over buttons
-            document.getElementById('start-btn').addEventListener('click', startGame);
-            document.getElementById('restart-btn').addEventListener('click', restartGame);
+            // Clear DOM elements
+            document.getElementById('stars').innerHTML = '';
+            document.getElementById('routeList').innerHTML = '';
             
-            // Setup navigation
-            setupNavigation();
-        };
-        
-        function setupNavigation() {
-            const menuButtons = document.querySelectorAll('.menu-button');
+            // Create star systems (nodes)
+            const numSystems = 7; // 6 systems + hub
+            const mapWidth = document.getElementById('starMap').offsetWidth;
+            const mapHeight = document.getElementById('starMap').offsetHeight;
             
-            menuButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    menuButtons.forEach(btn => btn.classList.remove('active'));
-                    
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    // Hide all content sections
-                    const contentSections = document.querySelectorAll('.content-section');
-                    contentSections.forEach(section => section.style.display = 'none');
-                    
-                    // Show target section
-                    const targetId = this.getAttribute('data-target');
-                    document.getElementById(targetId).style.display = 'block';
-                    
-                    // If switching away from game, pause game functionality
-                    if (targetId !== 'game' && gameActive) {
-                        pauseGame();
-                    }
-                    
-                    // If switching to game and it was active, resume it
-                    if (targetId === 'game' && gameActive) {
-                        resumeGame();
-                    }
+            // Create the hub first
+            const hub = {
+                id: 0,
+                name: 'Central Hub',
+                x: mapWidth / 2,
+                y: mapHeight / 2,
+                visited: false,
+                isHub: true
+            };
+            starSystems.push(hub);
+            hubSystem = hub;
+            currentSystem = hub;
+            
+            // Create other star systems
+            for (let i = 1; i < numSystems; i++) {
+                // Create in a circle around the hub
+                const angle = (i - 1) * (2 * Math.PI / (numSystems - 1));
+                const radius = Math.min(mapWidth, mapHeight) * 0.4;
+                const x = hub.x + radius * Math.cos(angle);
+                const y = hub.y + radius * Math.sin(angle);
+                
+                starSystems.push({
+                    id: i,
+                    name: `System ${String.fromCharCode(65 + i - 1)}`, // A, B, C, etc.
+                    x: x,
+                    y: y,
+                    visited: false,
+                    isHub: false
                 });
+            }
+            
+            // Create paths between systems
+            for (let i = 0; i < starSystems.length; i++) {
+                for (let j = i + 1; j < starSystems.length; j++) {
+                    const system1 = starSystems[i];
+                    const system2 = starSystems[j];
+                    
+                    // Calculate distance
+                    const dx = system2.x - system1.x;
+                    const dy = system2.y - system1.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Calculate energy cost (10-30)
+                    const cost = Math.floor(distance / 20) + 10;
+                    
+                    paths.push({
+                        from: system1.id,
+                        to: system2.id,
+                        cost: cost,
+                        distance: distance,
+                        angle: Math.atan2(dy, dx) * (180 / Math.PI)
+                    });
+                }
+            }
+            
+            // Calculate optimal cost
+            calculateOptimalCost();
+            
+            // Render game elements
+            renderStarMap();
+            updateStats();
+            
+            // Add event listeners
+            document.getElementById('clearRouteBtn').addEventListener('click', clearRoute);
+            document.getElementById('executeRouteBtn').addEventListener('click', executeRoute);
+            document.getElementById('newGameBtn').addEventListener('click', initGame);
+            document.getElementById('newMissionBtn').addEventListener('click', function() {
+                document.getElementById('completionModal').style.display = 'none';
+                initGame();
             });
         }
         
-        function pauseGame() {
-            if (gameActive) {
-                cancelAnimationFrame(gameLoopId);
-                clearInterval(asteroidGeneratorId);
-            }
-        }
-        
-        function resumeGame() {
-            if (gameActive) {
-                gameLoopId = requestAnimationFrame(gameLoop);
-                asteroidGeneratorId = setInterval(generateAsteroid, asteroidInterval);
-            }
-        }
-        
-        function startGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            gameActive = true;
-            score = 0;
-            updateScoreDisplay();
+        // Create background stars
+        function createCosmicBackground() {
+            const background = document.getElementById('cosmicBackground');
+            background.innerHTML = '';
             
-            // Start generating asteroids
-            asteroidGeneratorId = setInterval(generateAsteroid, asteroidInterval);
-            
-            // Start the game loop
-            gameLoopId = requestAnimationFrame(gameLoop);
-        }
-        
-        function restartGame() {
-            // Remove all asteroids
-            const asteroids = document.querySelectorAll('.asteroid');
-            asteroids.forEach(asteroid => asteroid.remove());
-            
-            // Reset player position
-            player.style.left = '280px';
-            
-            // Hide game over screen
-            document.getElementById('game-over').style.display = 'none';
-            
-            // Reset speed and interval
-            asteroidSpeed = 3;
-            asteroidInterval = 1000;
-            
-            // Start the game again
-            startGame();
-        }
-        
-        function handleKeyPress(e) {
-            if (!gameActive) return;
-            
-            const playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
-            const playerWidth = parseInt(window.getComputedStyle(player).getPropertyValue('width'));
-            const containerWidth = parseInt(window.getComputedStyle(gameContainer).getPropertyValue('width'));
-            
-            // Move left
-            if (e.key === 'ArrowLeft' && playerLeft > 0) {
-                player.style.left = Math.max(0, playerLeft - 20) + 'px';
-            }
-            
-            // Move right
-            if (e.key === 'ArrowRight' && playerLeft + playerWidth < containerWidth) {
-                player.style.left = Math.min(containerWidth - playerWidth, playerLeft + 20) + 'px';
-            }
-        }
-        
-        function handleTouchStart(e) {
-            touchStartX = e.touches[0].clientX;
-        }
-        
-        function handleTouchMove(e) {
-            if (!gameActive) return;
-            e.preventDefault();
-            
-            const touchX = e.touches[0].clientX;
-            const diffX = touchX - touchStartX;
-            touchStartX = touchX;
-            
-            const playerLeft = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
-            const playerWidth = parseInt(window.getComputedStyle(player).getPropertyValue('width'));
-            const containerWidth = parseInt(window.getComputedStyle(gameContainer).getPropertyValue('width'));
-            
-            player.style.left = Math.min(
-                Math.max(0, playerLeft + diffX),
-                containerWidth - playerWidth
-            ) + 'px';
-        }
-        
-        function generateAsteroid() {
-            if (!gameActive) return;
-            
-            const asteroid = document.createElement('div');
-            asteroid.className = 'asteroid';
-            
-            // Random horizontal position
-            const containerWidth = parseInt(window.getComputedStyle(gameContainer).getPropertyValue('width'));
-            const asteroidWidth = 30; // from CSS
-            const randomLeft = Math.floor(Math.random() * (containerWidth - asteroidWidth));
-            
-            asteroid.style.left = randomLeft + 'px';
-            gameContainer.appendChild(asteroid);
-        }
-        
-        function gameLoop() {
-            if (!gameActive) return;
-            
-            // Move all asteroids down
-            const asteroids = document.querySelectorAll('.asteroid');
-            const containerHeight = parseInt(window.getComputedStyle(gameContainer).getPropertyValue('height'));
-            
-            asteroids.forEach(asteroid => {
-                const top = parseInt(window.getComputedStyle(asteroid).getPropertyValue('top'));
+            // Add tiny stars
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'tiny-star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.opacity = Math.random() * 0.7 + 0.3;
                 
-                // Move asteroid down
-                asteroid.style.top = (top + asteroidSpeed) + 'px';
+                // Random twinkle animation
+                const duration = 2 + Math.random() * 5;
+                star.style.animation = `twinkle ${duration}s infinite`;
                 
-                // Remove asteroid if it goes off-screen
-                if (top > containerHeight) {
-                    asteroid.remove();
-                    score += 10;
-                    updateScoreDisplay();
-                    
-                    // Increase difficulty every 100 points
-                    if (score % 100 === 0) {
-                        increaseSpeed();
-                    }
-                }
+                background.appendChild(star);
+            }
+        }
+        
+        // Render the star map
+        function renderStarMap() {
+            const starsContainer = document.getElementById('stars');
+            
+            // Create star system nodes
+            starSystems.forEach(system => {
+                const star = document.createElement('div');
+                star.className = `star ${system.isHub ? 'hub' : 'unvisited'}`;
+                star.id = `star-${system.id}`;
+                star.style.left = `${system.x}px`;
+                star.style.top = `${system.y}px`;
+                star.textContent = system.name;
+                star.title = system.name;
                 
-                // Check for collision
-                if (detectCollision(asteroid, player)) {
-                    gameOver();
+                star.addEventListener('click', () => selectSystem(system));
+                
+                starsContainer.appendChild(star);
+            });
+            
+            // Create paths between systems
+            paths.forEach((path, index) => {
+                const fromSystem = starSystems.find(s => s.id === path.from);
+                const toSystem = starSystems.find(s => s.id === path.to);
+                
+                // Create path line
+                const pathLine = document.createElement('div');
+                pathLine.className = 'path';
+                pathLine.id = `path-${path.from}-${path.to}`;
+                pathLine.style.left = `${fromSystem.x}px`;
+                pathLine.style.top = `${fromSystem.y}px`;
+                pathLine.style.width = `${path.distance}px`;
+                pathLine.style.transform = `rotate(${path.angle}deg)`;
+                
+                // Create cost indicator
+                const costIndicator = document.createElement('div');
+                costIndicator.className = 'path-cost';
+                costIndicator.textContent = path.cost;
+                costIndicator.style.left = `${(fromSystem.x + toSystem.x) / 2}px`;
+                costIndicator.style.top = `${(fromSystem.y + toSystem.y) / 2}px`;
+                
+                starsContainer.appendChild(pathLine);
+                starsContainer.appendChild(costIndicator);
+            });
+            
+            // Create ship
+            ship = document.createElement('div');
+            ship.className = 'ship';
+            ship.style.left = `${hubSystem.x}px`;
+            ship.style.top = `${hubSystem.y}px`;
+            starsContainer.appendChild(ship);
+        }
+        
+        // Select a star system
+        function selectSystem(system) {
+            if (isAnimating) return;
+            
+            // If we're selecting the same system, deselect it
+            if (selectedSystem === system) {
+                selectedSystem = null;
+                document.querySelectorAll('.star.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                return;
+            }
+            
+            // Check if this is a valid move
+            if (routeOrder.length > 0) {
+                const lastSystem = starSystems.find(s => s.id === routeOrder[routeOrder.length - 1]);
+                
+                // Can't select already visited systems unless it's the hub at the end
+                if (system.visited && !(system.isHub && routeOrder.length === starSystems.length - 1)) {
                     return;
                 }
+                
+                // Can only select hub at the end (when all others are visited)
+                if (system.isHub && routeOrder.length < starSystems.length - 1) {
+                    return;
+                }
+            } else {
+                // First selection must be the hub
+                if (!system.isHub) {
+                    return;
+                }
+            }
+            
+            // Visual selection
+            document.querySelectorAll('.star.selected').forEach(el => {
+                el.classList.remove('selected');
             });
             
-            // Continue the game loop
-            gameLoopId = requestAnimationFrame(gameLoop);
-        }
-        
-        function detectCollision(asteroid, player) {
-            const playerRect = player.getBoundingClientRect();
-            const asteroidRect = asteroid.getBoundingClientRect();
+            document.getElementById(`star-${system.id}`).classList.add('selected');
+            selectedSystem = system;
             
-            return !(
-                playerRect.right < asteroidRect.left ||
-                playerRect.left > asteroidRect.right ||
-                playerRect.bottom < asteroidRect.top ||
-                playerRect.top > asteroidRect.bottom
-            );
+            // Add to route
+            addToRoute(system);
         }
         
-        function updateScoreDisplay() {
-            document.getElementById('score-display').innerText = `Score: ${score}`;
-        }
-        
-        function increaseSpeed() {
-            asteroidSpeed += 0.5;
+        // Add system to route
+        function addToRoute(system) {
+            // Already in route
+            if (routeOrder.includes(system.id)) {
+                return;
+            }
             
-            // Make asteroids appear more frequently
-            if (asteroidInterval > 400) {
-                clearInterval(asteroidGeneratorId);
-                asteroidInterval -= 50;
-                asteroidGeneratorId = setInterval(generateAsteroid, asteroidInterval);
+            // Add to route order
+            routeOrder.push(system.id);
+            
+            // Mark as "visited" in planning
+            system.visited = true;
+            const starElement = document.getElementById(`star-${system.id}`);
+            if (!system.isHub) {
+                starElement.classList.remove('unvisited');
+                starElement.classList.add('visited');
+            }
+            
+            // Update route list
+            const routeList = document.getElementById('routeList');
+            const routeItem = document.createElement('div');
+            routeItem.className = `route-item ${system.isHub ? 'hub' : ''}`;
+            routeItem.id = `route-item-${system.id}`;
+            routeItem.innerHTML = `
+                <span>${system.name}</span>
+                <span>${getRouteCost(routeOrder)}</span>
+            `;
+            routeList.appendChild(routeItem);
+            
+            // Calculate route cost if we've added a stop
+            if (routeOrder.length > 1) {
+                updateRoutePaths();
+            }
+            
+            // Enable execute button if route is complete
+            const executeBtn = document.getElementById('executeRouteBtn');
+            executeBtn.disabled = !(isRouteComplete());
+            
+            // Update stats
+            updateStats();
+        }
+        
+        // Update route paths visualization
+        function updateRoutePaths() {
+            // Clear existing route paths
+            document.querySelectorAll('.route-path').forEach(el => el.remove());
+            
+            // Draw paths for the current route
+            for (let i = 0; i < routeOrder.length - 1; i++) {
+                const fromId = routeOrder[i];
+                const toId = routeOrder[i + 1];
+                const fromSystem = starSystems.find(s => s.id === fromId);
+                const toSystem = starSystems.find(s => s.id === toId);
+                
+                // Calculate angle and distance
+                const dx = toSystem.x - fromSystem.x;
+                const dy = toSystem.y - fromSystem.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                
+                // Create route path line
+                const pathLine = document.createElement('div');
+                pathLine.className = 'route-path';
+                pathLine.style.left = `${fromSystem.x}px`;
+                pathLine.style.top = `${fromSystem.y}px`;
+                pathLine.style.width = `${distance}px`;
+                pathLine.style.transform = `rotate(${angle}deg)`;
+                
+                document.getElementById('stars').appendChild(pathLine);
             }
         }
         
-        function gameOver() {
-            gameActive = false;
-            cancelAnimationFrame(gameLoopId);
-            clearInterval(asteroidGeneratorId);
+        // Calculate cost between two systems
+        function getPathCost(fromId, toId) {
+            const path = paths.find(p => 
+                (p.from === fromId && p.to === toId) || 
+                (p.from === toId && p.to === fromId)
+            );
             
-            // Show game over screen
-            document.getElementById('final-score').innerText = `Score: ${score}`;
-            document.getElementById('game-over').style.display = 'flex';
+            return path ? path.cost : 0;
         }
+        
+        // Calculate total route cost
+        function getRouteCost(route) {
+            let totalCost = 0;
+            
+            for (let i = 0; i < route.length - 1; i++) {
+                totalCost += getPathCost(route[i], route[i + 1]);
+            }
+            
+            return totalCost;
+        }
+        
+        // Check if route is complete
+        function isRouteComplete() {
+            // Must start and end at hub
+            if (routeOrder.length === 0 || routeOrder[0] !== hubSystem.id || 
+                routeOrder[routeOrder.length - 1] !== hubSystem.id) {
+                return false;
+            }
+            
+            // Must visit all systems once
+            const visitedSystems = new Set(routeOrder);
+            return visitedSystems.size === starSystems.length;
+        }
+        
+        // Calculate an optimal solution for rating
+        function calculateOptimalCost() {
+            // This is a simplified approach - using nearest neighbor heuristic
+            const visited = new Set([hubSystem.id]);
+            const route = [hubSystem.id];
+            
+            // Visit each non-hub system
+            while (visited.size < starSystems.length) {
+                const lastId = route[route.length - 1];
+                let bestNextId = -1;
+                let bestCost = Infinity;
+                
+                // Find closest unvisited system
+                starSystems.forEach(system => {
+                    if (!visited.has(system.id) && !system.isHub) {
+                        const cost = getPathCost(lastId, system.id);
+                        if (cost < bestCost) {
+                            bestCost = cost;
+                            bestNextId = system.id;
+                        }
+                    }
+                });
+                
+                route.push(bestNextId);
+                visited.add(bestNextId);
+            }
+            
+            // Return to hub
+            route.push(hubSystem.id);
+            
+            // Calculate total cost
+            optimalCost = getRouteCost(route);
+            
+            // Make the optimal cost a bit lower to give room for improvement
+            optimalCost = Math.floor(optimalCost * 0.9);
+        }
+        
+        // Clear the current route
+        function clearRoute() {
+            if (isAnimating) return;
+            
+            routeOrder.length = 0;
+            
+            // Reset stars to unvisited
+            starSystems.forEach(system => {
+                system.visited = false;
+                const starElement = document.getElementById(`star-${system.id}`);
+                if (!system.isHub) {
+                    starElement.classList.remove('visited');
+                    starElement.classList.add('unvisited');
+                }
+            });
+            
+            // Clear route list
+            document.getElementById('routeList').innerHTML = '';
+            
+            // Clear route paths
+            document.querySelectorAll('.route-path').forEach(el => el.remove());
+            
+            // Reset ship
+            ship.style.left = `${hubSystem.x}px`;
+            ship.style.top = `${hubSystem.y}px`;
+            
+            // Disable execute button
+            document.getElementById('executeRouteBtn').disabled = true;
+            
+            // Update stats
+            updateStats();
+        }
+        
+        // Execute the planned route
+        function executeRoute() {
+            if (!isRouteComplete() || isAnimating) return;
+            
+            isAnimating = true;
+            document.getElementById('missionStatus').textContent = 'Executing Mission';
+            document.getElementById('executeRouteBtn').disabled = true;
+            document.getElementById('clearRouteBtn').disabled = true;
+            
+            // Animate ship movement
+            animateRoute(0);
+        }
+        
+        // Animate ship movement along route
+        function animateRoute(index) {
+            if (index >= routeOrder.length - 1) {
+                // Animation complete
+                completeRoute();
+                return;
+            }
+            
+            const fromId = routeOrder[index];
+            const toId = routeOrder[index + 1];
+            const fromSystem = starSystems.find(s => s.id === fromId);
+            const toSystem = starSystems.find(s => s.id === toId);
+            const duration = 1000; // 1 second
+            
+            // Highlight current route segment
+            document.querySelectorAll('.route-item').forEach(el => {
+                el.style.backgroundColor = '';
+            });
+            document.getElementById(`route-item-${toId}`).style.backgroundColor = 'rgba(255, 215, 0, 0.4)';
+            
+            // Animate ship
+            const startTime = performance.now();
+            function moveShip(time) {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const x = fromSystem.x + (toSystem.x - fromSystem.x) * progress;
+                const y = fromSystem.y + (toSystem.y - fromSystem.y) * progress;
+                
+                ship.style.left = `${x}px`;
+                ship.style.top = `${y}px`;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(moveShip);
+                } else {
+                    // Move to next segment
+                    setTimeout(() => {
+                        animateRoute(index + 1);
+                    }, 500);
+                }
+            }
+            
+            requestAnimationFrame(moveShip);
+        }
+        
+        // Complete the route execution
+        function completeRoute() {
+            isAnimating = false;
+            document.getElementById('missionStatus').textContent = 'Mission Complete!';
+            document.getElementById('clearRouteBtn').disabled = false;
+            
+            // Calculate final score
+            const finalCost = getRouteCost(routeOrder);
+            document.getElementById('finalWarpJuice').textContent = finalCost;
+            
+            // Show completion modal
+            document.getElementById('completionModal').style.display = 'flex';
+            
+            // Set star rating
+            const efficiency = calculateEfficiency(finalCost);
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`finalStar${i}`);
+                if (i <= efficiency) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            }
+        }
+        
+        // Calculate efficiency rating (1-5 stars)
+        function calculateEfficiency(cost) {
+            // Rating thresholds based on optimal cost
+            const thresholds = [
+                2.0 * optimalCost,  // 1 star
+                1.7 * optimalCost,  // 2 stars
+                1.4 * optimalCost,  // 3 stars
+                1.2 * optimalCost,  // 4 stars
+                1.1 * optimalCost   // 5 stars
+            ];
+            
+            let rating = 1;
+            for (let i = 0; i < thresholds.length; i++) {
+                if (cost < thresholds[i]) {
+                    rating = i + 1;
+                }
+            }
+            
+            return rating;
+        }
+        
+        // Update game stats
+        function updateStats() {
+            const visitedCount = routeOrder.filter(id => {
+                const system = starSystems.find(s => s.id === id);
+                return !system.isHub;
+            }).length;
+            
+            document.getElementById('systemsVisited').textContent = 
+                `${visitedCount}/${starSystems.length - 1}`; // Exclude hub in count
+            
+            const warpJuice = routeOrder.length > 1 ? getRouteCost(routeOrder) : 0;
+            document.getElementById('warpJuice').textContent = warpJuice;
+            
+            // Update star rating
+            if (warpJuice > 0) {
+                const efficiency = calculateEfficiency(warpJuice);
+                for (let i = 1; i <= 5; i++) {
+                    const star = document.getElementById(`star${i}`);
+                    if (i <= efficiency) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                }
+            } else {
+                // Reset rating
+                for (let i = 1; i <= 5; i++) {
+                    document.getElementById(`star${i}`).classList.remove('active');
+                }
+            }
+        }
+        
+        // Initialize the game when page loads
+        window.addEventListener('load', initGame);
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (!isAnimating) {
+                initGame();
+            }
+        });
     </script>
 </body>
 </html>
