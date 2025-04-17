@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cryptography Showcase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #1f1c2c, #928dab);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      padding: 1.5rem;
+      text-align: center;
+      background-color: rgba(0,0,0,0.3);
+    }
+    h1 {
+      margin: 0;
+    }
+    main {
+      padding: 2rem;
+      max-width: 960px;
+      margin: auto;
+    }
+    textarea, select, input, button {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      border: none;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      margin-top: 0.5rem;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .result, .explanation {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0,0,0,0.2);
+      margin-top: 3rem;
+    }
+    .file-upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+    }
+    .file-upload label {
+      cursor: pointer;
+      background-color: #3498db;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    .file-upload label:hover {
+      background-color: #2980b9;
+    }
+    .file-upload input {
+      display: none;
+    }
+    .file-name {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .tab-container {
+      display: flex;
+      margin-top: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: rgba(0,0,0,0.2);
+      cursor: pointer;
+      border-radius: 6px 6px 0 0;
+      margin-right: 0.5rem;
+    }
+    .tab.active {
+      background: rgba(255,255,255,0.1);
+    }
+    .tab-content {
+      display: none;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 0 0 8px 8px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .report-section {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+    }
+    .report-content {
+      margin-top: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    th {
+      background-color: rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cryptography Showcase</h1>
+    <p>Encrypt & Decrypt using 6 different algorithms</p>
+  </header>
+
+  <main>
+    <div class="tab-container">
+      <div class="tab active" onclick="openTab('encrypt-decrypt')">Encrypt/Decrypt</div>
+      <div class="tab" onclick="openTab('learning')">What It Teaches</div>
+      <div class="tab" onclick="openTab('report')">Report</div>
+    </div>
+    
+    <div id="encrypt-decrypt" class="tab-content active">
+      <div class="file-upload">
+        <label for="fileInput">Upload Text File</label>
+        <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload(event)">
+        <div class="file-name" id="fileName">No file selected</div>
+      </div>
+      
+      <label>Enter your text:</label>
+      <textarea id="inputText" rows="6" placeholder="Type or paste text here..."></textarea>
+
+      <label>Select Algorithm:</label>
+      <select id="algorithmSelect">
+        <option value="caesar">Caesar Cipher</option>
+        <option value="atbash">Atbash Cipher</option>
+        <option value="vigenere">Vigenère Cipher</option>
+        <option value="transposition">Transposition Cipher</option>
+        <option value="rsa">RSA (Demo)</option>
+        <option value="aes">AES (Demo)</option>
+      </select>
+
+      <input type="text" id="keyInput" placeholder="Key (Caesar: number, Vigenère/AES: word, Transposition: number)">
+
+      <button onclick="process(true)">Encrypt</button>
+      <button onclick="process(false)">Decrypt</button>
+
+      <div class="result" id="outputBox">Result will appear here...</div>
+      <div class="explanation" id="explanationBox">Explanation will appear here...</div>
+    </div>
+    
+    <div id="learning" class="tab-content">
+      <h2>What This Cryptography Showcase Teaches:</h2>
+      
+      <h3>Core Concepts</h3>
+      <ul>
+        <li><strong>Substitution Ciphers</strong> - Caesar and Atbash show how characters can be replaced with other characters</li>
+        <li><strong>Polyalphabetic Ciphers</strong> - Vigenère demonstrates multiple substitution alphabets</li>
+        <li><strong>Transposition Ciphers</strong> - Shows how rearranging characters creates encryption</li>
+        <li><strong>Symmetric vs Asymmetric</strong> - Contrasts methods like AES (symmetric) and RSA (asymmetric)</li>
+      </ul>
+      
+      <h3>Historical Context</h3>
+      <p>These algorithms span from ancient Rome (Caesar) to modern secure communication (AES/RSA), showing the evolution of cryptography through history.</p>
+      
+      <h3>Security Principles</h3>
+      <ul>
+        <li><strong>Key Management</strong> - The importance of secure key exchange and storage</li>
+        <li><strong>Complexity vs Security</strong> - How algorithm complexity impacts security strength</li>
+        <li><strong>Attack Vectors</strong> - Introduction to frequency analysis and other cryptanalysis techniques</li>
+      </ul>
+      
+      <h3>Programming Concepts</h3>
+      <p>This showcase demonstrates:</p>
+      <ul>
+        <li>String manipulation and character encoding</li>
+        <li>Array operations and matrix transformations</li>
+        <li>Modular arithmetic</li>
+        <li>Basic cryptographic implementation principles</li>
+      </ul>
+    </div>
+    
+    <div id="report" class="tab-content">
+      <h2>Cryptography Report</h2>
+      
+      <div class="report-section">
+        <h3>Encryption Activity Log</h3>
+        <div class="report-content" id="encryptionLog">
+          <p>No encryption activities recorded yet.</p>
+        </div>
+      </div>
+      
+      <div class="report-section">
+        <h3>Algorithm Performance</h3>
+        <table id="performanceTable">
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Avg. Processing Time</th>
+              <th>Usage Count</th>
+              <th>Security Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Caesar Cipher</td>
+              <td>< 1ms</td>
+              <td id="caesarCount">0</td>
+              <td>Very Low</td>
+            </tr>
+            <tr>
+              <td>Atbash Cipher</td>
+              <td>< 1ms</td>
+              <td id="atbashCount">0</td>
+              <td>Very Low</td>
+            </tr>
+            <tr>
+              <td>Vigenère Cipher</td>
+              <td>< 1ms</td>
+              <td id="vigenereCount">0</td>
+              <td>Low</td>
+            </tr>
+            <tr>
+              <td>Transposition Cipher</td>
+              <td>< 1ms</td>
+              <td id="transpositionCount">0</td>
+              <td>Low</td>
+            </tr>
+            <tr>
+              <td>RSA (Demo)</td>
+              <td>-</td>
+              <td id="rsaCount">0</td>
+              <td>High</td>
+            </tr>
+            <tr>
+              <td>AES (Demo)</td>
+              <td>-</td>
+              <td id="aesCount">0</td>
+              <td>High</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="report-section">
+        <h3>Security Analysis</h3>
+        <p>The implemented algorithms vary greatly in security:</p>
+        <ul>
+          <li><strong>Caesar & Atbash:</strong> Historical interest only; can be broken instantly with modern computing</li>
+          <li><strong>Vigenère:</strong> More complex but still vulnerable to frequency analysis with sufficient ciphertext</li>
+          <li><strong>Transposition:</strong> Security depends on key length, but generally weak against modern cryptanalysis</li>
+          <li><strong>RSA & AES:</strong> Modern algorithms with strong security when properly implemented (demo only)</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Created by Jony's Team | April 2025</p>
+  </footer>
+
+  <script>
+    // Algorithm counters
+    const algorithmCounts = {
+      caesar: 0,
+      atbash: 0,
+      vigenere: 0,
+      transposition: 0,
+      rsa: 0,
+      aes: 0
+    };
+    
+    // Activity log
+    const activities = [];
+    
+    function openTab(tabName) {
+      const tabs = document.getElementsByClassName("tab");
+      const tabContents = document.getElementsByClassName("tab-content");
+      
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove("active");
+      }
+      
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove("active");
+      }
+      
+      document.getElementById(tabName).classList.add("active");
+      document.querySelector(`.tab:nth-child(${Array.from(document.querySelectorAll('.tab')).findIndex(tab => tab.textContent.toLowerCase().includes(tabName.replace('-', ' '))) + 1})`).classList.add("active");
+    }
+    
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        document.getElementById("fileName").textContent = file.name;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById("inputText").value = e.target.result;
+        };
+        reader.readAsText(file);
+      }
+    }
+    
+    function updateReport(algorithm, action, inputLength) {
+      // Update counts
+      algorithmCounts[algorithm]++;
+      document.getElementById(algorithm + "Count").textContent = algorithmCounts[algorithm];
+      
+      // Add to activity log
+      const now = new Date();
+      const timestamp = now.toLocaleTimeString();
+      activities.unshift(`[${timestamp}] ${action} using ${algorithm.charAt(0).toUpperCase() + algorithm.slice(1)} Cipher (${inputLength} characters)`);
+      
+      // Update log display
+      const logElement = document.getElementById("encryptionLog");
+      if (activities.length > 0) {
+        logElement.innerHTML = activities.slice(0, 10).map(activity => `<p>${activity}</p>`).join("");
+      }
+    }
+    
+    function process(isEncrypt) {
+      const input = document.getElementById("inputText").value;
+      const algo = document.getElementById("algorithmSelect").value;
+      const key = document.getElementById("keyInput").value;
+      let output = "";
+      const startTime = performance.now();
+
+      switch (algo) {
+        case "caesar":
+          const shift = parseInt(key) || 3;
+          output = caesar(input, shift, isEncrypt);
+          break;
+        case "atbash":
+          output = atbash(input); // Same logic for both
+          break;
+        case "vigenere":
+          if (!key) return alert("Enter a keyword for Vigenère Cipher.");
+          output = vigenere(input, key, isEncrypt);
+          break;
+        case "transposition":
+          const num = parseInt(key) || 4;
+          output = transposition(input, num, isEncrypt);
+          break;
+        case "rsa":
+          output = "(Demo) RSA logic placeholder - implement with library";
+          break;
+        case "aes":
+          output = "(Demo) AES logic placeholder - implement with library";
+          break;
+      }
+
+      document.getElementById("outputBox").textContent = output;
+      document.getElementById("explanationBox").textContent = explain(algo);
+      
+      // Update report
+      const action = isEncrypt ? "Encrypted" : "Decrypted";
+      updateReport(algo, action, input.length);
+    }
+
+    function caesar(text, shift, encrypt) {
+      if (!encrypt) shift = (26 - shift) % 26;
+      return text.split("").map(char => {
+        const code = char.charCodeAt(0);
+        if (char >= 'A' && char <= 'Z') return String.fromCharCode((code - 65 + shift) % 26 + 65);
+        if (char >= 'a' && char <= 'z') return String.fromCharCode((code - 97 + shift) % 26 + 97);
+        return char;
+      }).join("");
+    }
+
+    function atbash(text) {
+      return text.split("").map(char => {
+        if (char >= 'A' && char <= 'Z') return String.fromCharCode(90 - (char.charCodeAt(0) - 65));
+        if (char >= 'a' && char <= 'z') return String.fromCharCode(122 - (char.charCodeAt(0) - 97));
+        return char;
+      }).join("");
+    }
+
+    function vigenere(text, keyword, encrypt) {
+      keyword = keyword.toUpperCase();
+      let result = "";
+      let j = 0;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (/[a-zA-Z]/.test(c)) {
+          const isUpper = c === c.toUpperCase();
+          const base = isUpper ? 65 : 97;
+          const textCode = c.charCodeAt(0) - base;
+          const keyCode = keyword[j % keyword.length].charCodeAt(0) - 65;
+          const shift = encrypt ? keyCode : 26 - keyCode;
+          result += String.fromCharCode((textCode + shift) % 26 + base);
+          j++;
+        } else {
+          result += c;
+        }
+      }
+      return result;
+    }
+
+    function transposition(text, key, encrypt) {
+      if (key < 2) return "Key must be >= 2";
+      if (encrypt) {
+        const rows = Math.ceil(text.length / key);
+        let grid = Array.from({ length: key }, () => "");
+        for (let i = 0; i < text.length; i++) {
+          grid[i % key] += text[i];
+        }
+        return grid.join("");
+      } else {
+        const cols = Math.ceil(text.length / key);
+        let output = "";
+        const shortCols = key * cols - text.length;
+        let arr = Array(key).fill(0).map((_, i) =>
+          text.slice(i * cols - Math.max(0, i - key + shortCols), (i + 1) * cols - Math.max(0, i - key + shortCols)).split("")
+        );
+        for (let i = 0; i < cols; i++) {
+          for (let j = 0; j < key; j++) {
+            if (arr[j][i]) output += arr[j][i];
+          }
+        }
+        return output;
+      }
+    }
+
+    function explain(algo) {
+      const map = {
+        caesar: "Caesar Cipher: shifts letters by key. Decryption reverses the shift.",
+        atbash: "Atbash Cipher: reverses the alphabet. Same logic for encrypt and decrypt.",
+        vigenere: "Vigenère Cipher: letter shifts based on keyword. Decryption subtracts keyword shift.",
+        transposition: "Transposition Cipher: rearranges characters in patterns. Decryption rebuilds rows.",
+        rsa: "RSA is an asymmetric algorithm using key pairs. Demo only.",
+        aes: "AES is a symmetric algorithm using fixed-length keys. Demo only."
+      };
+      return map[algo];
+    }
+  </script>
+</body>
+</html>
