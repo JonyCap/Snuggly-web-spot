@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cosmic Courier: Final Layout Update</title>
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at center, #080820 0%, #000010 100%);
+      color: #e0e0ff;
+      margin: 0;
+      overflow: hidden;
+    }
+    h1 {
+      text-align: center;
+      color: #7d7dff;
+      text-shadow: 0 0 10px #5d5dff;
+      padding: 10px 0;
+    }
+    #gameArea {
+      width: 100vw;
+      height: 80vh;
+      position: relative;
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+      background-size: cover;
+    }
+    .star {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      position: absolute;
+      text-align: center;
+      line-height: 30px;
+      font-weight: bold;
+      color: #fff;
+      z-index: 2;
+      cursor: pointer;
+    }
+    .hub {
+      background: #ff4444;
+      box-shadow: 0 0 15px #ff4444;
+      border: 2px solid #fff;
+    }
+    .system {
+      background: #5555ff;
+      box-shadow: 0 0 10px #8888ff;
+      border: 2px solid #ffffff33;
+    }
+    #stats, #route, #leaderboard {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,50,0.7);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      z-index: 5;
+    }
+    #route {
+      top: auto;
+      bottom: 20px;
+      right: 20px;
+    }
+    #leaderboard {
+      top: 20px;
+      left: 20px;
+    }
+    button {
+      background-color: #5d5dff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #7d7dff;
+      box-shadow: 0 0 10px #5d5dff;
+    }
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    line {
+      stroke: cyan;
+      stroke-width: 2;
+    }
+
+    /* New styles for How to Play and Report */
+    .panel-button {
+      position: absolute;
+      z-index: 10;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #5d5dff;
+      color: white;
+      border: none;
+    }
+    #howToPlayBtn {
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    #reportBtn {
+      bottom: 20px;
+      left: 20px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 100;
+      overflow: auto;
+    }
+    .modal-content {
+      background: rgba(20,20,60,0.9);
+      margin: 5% auto;
+      padding: 20px;
+      width: 70%;
+      max-width: 800px;
+      border-radius: 15px;
+      border: 2px solid #5d5dff;
+      box-shadow: 0 0 20px #5d5dff;
+      color: #e0e0ff;
+    }
+    .close {
+      color: #7d7dff;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #e0e0ff;
+      text-shadow: 0 0 10px #5d5dff;
+    }
+    #missionReport {
+      background: rgba(0,0,50,0.7);
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #5d5dff;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: rgba(93, 93, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1>COSMIC COURIER: INTERSTELLAR ROUTE CHALLENGE</h1>
+  <div id="gameArea">
+    <svg id="pathLines" width="100%" height="100%"></svg>
+  </div>
+
+  <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ul id="topScores"></ul>
+  </div>
+
+  <div id="stats">
+    <div><strong>Distance:</strong> <span id="totalDistance">0</span> km</div>
+    <div><strong>Energy:</strong> <span id="totalEnergy">0</span> units</div>
+    <div><strong>Visited:</strong> <span id="systemsVisited">0</span></div>
+  </div>
+
+  <div id="route">
+    <div>Route: <span id="routeDisplay">None</span></div>
+    <button onclick="clearRoute()">Clear Route</button>
+    <button onclick="startRoute()" id="startBtn" disabled>Execute Route</button>
+  </div>
+
+  <!-- New How to Play button -->
+  <button id="howToPlayBtn" class="panel-button" onclick="openHowToPlay()">How to Play</button>
+  
+  <!-- New Report button -->
+  <button id="reportBtn" class="panel-button" onclick="openReport()">Mission Report</button>
+
+  <!-- How to Play Modal -->
+  <div id="howToPlayModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeHowToPlay()">&times;</span>
+      <h2>HOW TO PLAY COSMIC COURIER</h2>
+      <p>Welcome, courier! Your mission is to deliver cargo across star systems with maximum efficiency.</p>
+      
+      <h3>Game Objective</h3>
+      <p>Plan and execute the most efficient delivery route between star systems while using minimal energy.</p>
+      
+      <h3>Instructions</h3>
+      <ol>
+        <li><strong>Plan Your Route:</strong> Click on stars to add them to your delivery route.</li>
+        <li><strong>Central Hub:</strong> The red star (H) is your central hub where all courier missions begin and end.</li>
+        <li><strong>Delivery Systems:</strong> Blue stars (A-F) are delivery points you need to visit.</li>
+        <li><strong>Execute Route:</strong> Once you've planned your route, click "Execute Route" to dispatch your courier ship.</li>
+        <li><strong>Complete Loop:</strong> For a valid mission, your ship must return to the starting hub.</li>
+        <li><strong>Optimize Energy:</strong> The less energy you use, the better your score on the leaderboard!</li>
+      </ol>
+      
+      <h3>Scoring</h3>
+      <p>Your performance is measured by:</p>
+      <ul>
+        <li><strong>Distance:</strong> Total distance traveled in km</li>
+        <li><strong>Energy:</strong> Fuel consumed (calculated as 80% of distance)</li>
+        <li><strong>Systems Visited:</strong> Number of star systems in your route</li>
+      </ul>
+      
+      <p>The Cosmic Courier with the lowest energy consumption will top the leaderboard!</p>
+    </div>
+  </div>
+
+  <!-- Report Modal -->
+  <div id="reportModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeReport()">&times;</span>
+      <h2>MISSION REPORT</h2>
+      <p>Detailed analysis of your courier operations:</p>
+      
+      <div id="missionReport">
+        <h3>Current Mission</h3>
+        <div><strong>Route:</strong> <span id="reportRoute">None</span></div>
+        <div><strong>Total Distance:</strong> <span id="reportDistance">0</span> km</div>
+        <div><strong>Energy Consumed:</strong> <span id="reportEnergy">0</span> units</div>
+        <div><strong>Star Systems Visited:</strong> <span id="reportSystems">0</span></div>
+        <div><strong>Mission Status:</strong> <span id="missionStatus">Not started</span></div>
+      </div>
+      
+      <h3>Route Efficiency Analysis</h3>
+      <table id="routeTable">
+        <thead>
+          <tr>
+            <th>Segment</th>
+            <th>Distance (km)</th>
+            <th>Energy (units)</th>
+          </tr>
+        </thead>
+        <tbody id="routeTableBody">
+          <!-- Route segments will be populated here -->
+        </tbody>
+      </table>
+      
+      <h3>Optimization Tips</h3>
+      <ul>
+        <li>Try to visit all systems in a single run</li>
+        <li>Order your visits to minimize total distance</li>
+        <li>Remember that the shortest route is not always a straight line between all points</li>
+        <li>Consider the "Traveling Salesman Problem" approach for optimal routing</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const stars = [];
+    const route = [];
+    const gameArea = document.getElementById('gameArea');
+    const routeDisplay = document.getElementById('routeDisplay');
+    const startBtn = document.getElementById('startBtn');
+    const pathLines = document.getElementById('pathLines');
+    const totalDistanceDisplay = document.getElementById('totalDistance');
+    const totalEnergyDisplay = document.getElementById('totalEnergy');
+    const systemsVisitedDisplay = document.getElementById('systemsVisited');
+    const topScoresList = document.getElementById('topScores');
+    let ship;
+
+    function createStar(x, y, name, isHub = false) {
+      const star = document.createElement('div');
+      star.className = isHub ? 'star hub' : 'star system';
+      star.style.left = x + 'px';
+      star.style.top = y + 'px';
+      star.textContent = name;
+      gameArea.appendChild(star);
+      star.addEventListener('click', () => {
+        if (!route.includes(star)) {
+          route.push(star);
+          updateStats();
+          drawLines();
+        }
+        if (route.length >= 2) startBtn.disabled = false;
+      });
+      stars.push({ x, y, name, isHub, element: star });
+    }
+
+    function updateStats() {
+      routeDisplay.textContent = route.map(s => s.textContent).join(' → ');
+      systemsVisitedDisplay.textContent = route.length;
+
+      let total = 0;
+      for (let i = 0; i < route.length - 1; i++) {
+        const dx = route[i + 1].offsetLeft - route[i].offsetLeft;
+        const dy = route[i + 1].offsetTop - route[i].offsetTop;
+        total += Math.round(Math.sqrt(dx * dx + dy * dy));
+      }
+      if (route.length > 1 && route[0] !== route[route.length - 1]) {
+        const dx = route[0].offsetLeft - route[route.length - 1].offsetLeft;
+        const dy = route[0].offsetTop - route[route.length - 1].offsetTop;
+        total += Math.round(Math.sqrt(dx * dx + dy * dy));
+      }
+      totalDistanceDisplay.textContent = total;
+      totalEnergyDisplay.textContent = Math.round(total * 0.8);
+      
+      // Update report values
+      document.getElementById('reportRoute').textContent = routeDisplay.textContent;
+      document.getElementById('reportDistance').textContent = total;
+      document.getElementById('reportEnergy').textContent = Math.round(total * 0.8);
+      document.getElementById('reportSystems').textContent = route.length;
+      updateRouteTable();
+    }
+
+    function drawLines() {
+      pathLines.innerHTML = '';
+      for (let i = 0; i < route.length - 1; i++) {
+        const x1 = route[i].offsetLeft + 15;
+        const y1 = route[i].offsetTop + 15;
+        const x2 = route[i + 1].offsetLeft + 15;
+        const y2 = route[i + 1].offsetTop + 15;
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+        pathLines.appendChild(line);
+      }
+    }
+
+    function clearRoute() {
+      route.length = 0;
+      updateStats();
+      pathLines.innerHTML = '';
+      startBtn.disabled = true;
+      document.getElementById('missionStatus').textContent = "Not started";
+      updateRouteTable();
+    }
+
+    function startRoute() {
+      if (!ship) {
+        ship = document.createElement('div');
+        ship.id = 'ship';
+        ship.style.width = '20px';
+        ship.style.height = '20px';
+        ship.style.background = 'gold';
+        ship.style.borderRadius = '50%';
+        ship.style.position = 'absolute';
+        ship.style.zIndex = '10';
+        ship.style.transform = 'translate(-50%, -50%)';
+        gameArea.appendChild(ship);
+      }
+      document.getElementById('missionStatus').textContent = "In progress";
+      moveShip(0);
+    }
+
+    function moveShip(index) {
+      if (index >= route.length) {
+        if (route[0] !== route[route.length - 1]) {
+          route.push(route[0]);
+          updateStats();
+          drawLines();
+          moveShip(index);
+        } else {
+          document.getElementById('missionStatus').textContent = "Completed";
+          saveScore();
+        }
+        return;
+      }
+      const from = index === 0 ? route[0] : route[index - 1];
+      const to = route[index];
+      const startX = from.offsetLeft + 15;
+      const startY = from.offsetTop + 15;
+      const endX = to.offsetLeft + 15;
+      const endY = to.offsetTop + 15;
+
+      let progress = 0;
+      function animate() {
+        progress += 0.01;
+        if (progress >= 1) progress = 1;
+        const x = startX + (endX - startX) * progress;
+        const y = startY + (endY - startY) * progress;
+        ship.style.left = x + 'px';
+        ship.style.top = y + 'px';
+        if (progress < 1) requestAnimationFrame(animate);
+        else moveShip(index + 1);
+      }
+      animate();
+    }
+
+    function saveScore() {
+      const energy = parseInt(totalEnergyDisplay.textContent);
+      const routeStr = route.map(s => s.textContent).join(' → ');
+      const score = { energy, routeStr };
+      const stored = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      stored.push(score);
+      stored.sort((a, b) => a.energy - b.energy);
+      localStorage.setItem('leaderboard', JSON.stringify(stored.slice(0, 5)));
+      loadLeaderboard();
+    }
+
+    function loadLeaderboard() {
+      const scores = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      topScoresList.innerHTML = '';
+      scores.forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = `${s.energy} units - ${s.routeStr}`;
+        topScoresList.appendChild(li);
+      });
+    }
+
+    // New improved star layout
+    createStar(350, 250, 'H', true); // Central Hub
+    createStar(500, 100, 'A');
+    createStar(650, 200, 'B');
+    createStar(600, 350, 'C');
+    createStar(300, 400, 'D');
+    createStar(150, 300, 'E');
+    createStar(200, 150, 'F');
+
+    loadLeaderboard();
+
+    // New modal functions
+    function openHowToPlay() {
+      document.getElementById('howToPlayModal').style.display = 'block';
+    }
+
+    function closeHowToPlay() {
+      document.getElementById('howToPlayModal').style.display = 'none';
+    }
+
+    function openReport() {
+      document.getElementById('reportModal').style.display = 'block';
+      updateRouteTable();
+    }
+
+    function closeReport() {
+      document.getElementById('reportModal').style.display = 'none';
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      if (event.target == document.getElementById('howToPlayModal')) {
+        closeHowToPlay();
+      }
+      if (event.target == document.getElementById('reportModal')) {
+        closeReport();
+      }
+    }
+
+    // Update route table in report
+    function updateRouteTable() {
+      const tableBody = document.getElementById('routeTableBody');
+      tableBody.innerHTML = '';
+      
+      if (route.length <= 1) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="3">No route segments yet</td>`;
+        tableBody.appendChild(row);
+        return;
+      }
+      
+      let totalDistance = 0;
+      
+      for (let i = 0; i < route.length - 1; i++) {
+        const from = route[i];
+        const to = route[i + 1];
+        const dx = to.offsetLeft - from.offsetLeft;
+        const dy = to.offsetTop - from.offsetTop;
+        const distance = Math.round(Math.sqrt(dx * dx + dy * dy));
+        const energy = Math.round(distance * 0.8);
+        totalDistance += distance;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${from.textContent} → ${to.textContent}</td>
+          <td>${distance}</td>
+          <td>${energy}</td>
+        `;
+        tableBody.appendChild(row);
+      }
+      
+      // Add total row
+      const totalRow = document.createElement('tr');
+      totalRow.style.fontWeight = 'bold';
+      totalRow.innerHTML = `
+        <td>TOTAL</td>
+        <td>${totalDistance}</td>
+        <td>${Math.round(totalDistance * 0.8)}</td>
+      `;
+      tableBody.appendChild(totalRow);
+    }
+  </script>
+</body>
+</html>
