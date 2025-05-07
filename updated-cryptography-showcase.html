@@ -149,6 +149,17 @@
       margin-top: 0.5rem;
       word-break: break-all;
     }
+    #shareableUrl {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      padding: 0.5rem;
+    }
+    .copy-message {
+      font-size: 0.9rem;
+      color: #4cd137;
+      margin-top: 0.25rem;
+    }
     a {
       color: #3498db;
       text-decoration: none;
@@ -243,16 +254,24 @@
       <button onclick="saveAssignmentLink()">Save Link</button>
       
       <div class="assignment-link">
-        <h3>Current Assignment Link:</h3>
+        <h3>Current Documentation Link:</h3>
         <div id="savedLinkDisplay" class="link-display">No link has been added yet.</div>
       </div>
       
+      <div class="report-section" id="sharingInfo" style="display: none;">
+        <h3>Share with Your Professor</h3>
+        <div class="report-content">
+          <!-- Content will be filled by JavaScript -->
+        </div>
+      </div>
+      
       <div class="report-section">
-        <h3>Assignment Instructions</h3>
+        <h3>Documentation Instructions</h3>
         <ul>
-          <li>Complete the assignment in a Google Doc or similar platform</li>
+          <li>Complete your final documentation in a Google Doc or similar platform</li>
           <li>Paste the shareable link in the input field above</li>
           <li>Click "Save Link" to store your submission</li>
+          <li>Share the generated URL with your professor so they can access your documentation</li>
           <li>Make sure your document permissions allow viewing access</li>
         </ul>
       </div>
@@ -367,14 +386,34 @@
     
     // Load saved assignment link if it exists
     window.onload = function() {
-      if (storageAvailable('localStorage')) {
+      // Check for URL parameters first
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlDocLink = urlParams.get('doclink');
+      
+      if (urlDocLink) {
+        // If we have a link in the URL, use that
+        const decodedLink = decodeURIComponent(urlDocLink);
+        document.getElementById('assignmentLinkInput').value = decodedLink;
+        updateLinkDisplay(decodedLink);
+        
+        // Also save to localStorage for future visits
+        if (storageAvailable('localStorage')) {
+          localStorage.setItem('assignmentLink', decodedLink);
+        }
+        
+        // Switch to the documentation tab
+        openTab('assignment1');
+      } else if (storageAvailable('localStorage')) {
+        // Fall back to localStorage if no URL parameter
         const savedLink = localStorage.getItem('assignmentLink');
         if (savedLink) {
           document.getElementById('assignmentLinkInput').value = savedLink;
           updateLinkDisplay(savedLink);
         }
-        
-        // Load algorithm counts
+      }
+      
+      // Load algorithm counts
+      if (storageAvailable('localStorage')) {
         for (const algo in algorithmCounts) {
           const count = localStorage.getItem(algo + 'Count');
           if (count !== null) {
@@ -431,9 +470,35 @@
         }
         
         updateLinkDisplay(link);
+        
+        // Generate shareable URL with the link as a parameter
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('doclink', encodeURIComponent(link));
+        
+        // Show sharing info
+        const sharingInfo = document.getElementById('sharingInfo');
+        sharingInfo.innerHTML = `
+          <p>Share this URL with your professor to let them see your documentation link:</p>
+          <input type="text" id="shareableUrl" value="${currentUrl.href}" readonly>
+          <button onclick="copyShareableUrl()">Copy URL</button>
+          <p class="copy-message" id="copyMessage"></p>
+        `;
+        sharingInfo.style.display = 'block';
       } else {
         alert('Please enter a valid link.');
       }
+    }
+    
+    function copyShareableUrl() {
+      const urlField = document.getElementById('shareableUrl');
+      urlField.select();
+      document.execCommand('copy');
+      
+      const copyMessage = document.getElementById('copyMessage');
+      copyMessage.textContent = 'URL copied to clipboard!';
+      setTimeout(() => {
+        copyMessage.textContent = '';
+      }, 3000);
     }
     
     function updateLinkDisplay(link) {
