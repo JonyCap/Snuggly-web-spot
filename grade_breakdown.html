@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      font-family: 'Arial', sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #ff00ff;
+    }
+    
+    .grade-card {
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 1px solid #00c2cb;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px #00c2cb, 0 0 20px rgba(0, 194, 203, 0.5);
+    }
+    
+    .grade-title {
+      font-size: 1.3rem;
+      color: #00c2cb;
+      margin-bottom: 15px;
+    }
+    
+    .grade-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .grade-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .grade-item {
+      color: #4dffc3;
+      font-size: 1rem;
+    }
+    
+    .percentage {
+      font-weight: bold;
+      margin-left: auto;
+    }
+    
+    .perfect {
+      color: #00ffaa;
+      text-shadow: 0 0 5px #00ffaa;
+    }
+    
+    .high {
+      color: #4dffc3;
+    }
+    
+    .medium {
+      color: #ffcc00;
+    }
+    
+    .low {
+      color: #ff6666;
+    }
+    
+    .summary {
+      background-color: rgba(0, 0, 0, 0.6);
+      border: 1px solid #ff00ff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 10px;
+      box-shadow: 0 0 10px #ff00ff, 0 0 20px rgba(255, 0, 255, 0.5);
+    }
+    
+    .summary-title {
+      font-size: 1.5rem;
+      color: #ff00ff;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    .summary-content {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+    
+    .summary-item {
+      padding: 10px;
+    }
+    
+    .summary-label {
+      font-size: 0.9rem;
+      color: #eee;
+      margin-bottom: 5px;
+    }
+    
+    .summary-value {
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px #00ffaa;
+    }
+    
+    .progress-container {
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #00c2cb, #00ffaa);
+      box-shadow: 0 0 5px #00ffaa, 0 0 10px #00c2cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Grade Breakdown</h1>
+      <div>Course: DL</div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Current Attendance</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 16 / 16</div>
+          <div class="grade-item percentage perfect">100.0%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Week 2 - Find Me!</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 2.25 / 3</div>
+          <div class="grade-item percentage high">75.0%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 75%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Week 3 - CLI</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 2.5 / 3</div>
+          <div class="grade-item percentage high">83.3%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 83.3%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Week 4 - Quiz 1</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 2 / 5</div>
+          <div class="grade-item percentage low">40.0%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 40%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Week 4 - Virtual Library</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 2.75 / 3</div>
+          <div class="grade-item percentage high">91.7%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 91.7%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Week 5 - Idea Sourcing</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 3 / 3</div>
+          <div class="grade-item percentage perfect">100.0%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Week 6 - Crypto</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 9 / 10</div>
+          <div class="grade-item percentage high">90.0%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 90%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grade-card">
+      <div class="grade-title">Week 7 - Backend Simulation</div>
+      <div class="grade-info">
+        <div class="grade-row">
+          <div class="grade-item">Received: 3 / 3</div>
+          <div class="grade-item percentage perfect">100.0%</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="summary">
+      <div class="summary-title">Course Summary</div>
+      <div class="summary-content">
+        <div class="summary-item">
+          <div class="summary-label">Total Points</div>
+          <div class="summary-value">40.5 / 46</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Overall Grade</div>
+          <div class="summary-value">88.0%</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Status</div>
+          <div class="summary-value">Excellent</div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</body>
+</html>
