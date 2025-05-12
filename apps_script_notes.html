@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apps Script Notes & CCG Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f7;
+        }
+        header {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1, h2, h3 {
+            color: #1a73e8;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .section h2 {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        ul, ol {
+            padding-left: 25px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffd54f;
+            border-radius: 3px;
+        }
+        .pros-cons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .pros, .cons {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .pros {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        .cons {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        code {
+            background-color: #f1f3f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .calculator {
+            background-color: #e8eaf6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f8e9;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0d47a1;
+        }
+        .note {
+            font-style: italic;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .feynman-box {
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Google Apps Script: Backend Simulation</h1>
+        <p>Understanding and implementing Apps Script for the Current Course Grade Calculator</p>
+    </header>
+
+    <div class="section">
+        <h2>What is Google Apps Script?</h2>
+        <p>Google Apps Script is a JavaScript-based scripting platform developed by Google for building lightweight applications within Google Workspace (formerly G Suite). It allows users to automate tasks across Google products like Docs, Sheets, Forms, and Gmail, and even build web applications.</p>
+        
+        <div class="feynman-box">
+            <h3>The Feynman Technique Approach</h3>
+            <p>The Feynman technique suggests that to truly understand something, you should be able to explain it simply to someone else. Let's break down Apps Script in the simplest terms:</p>
+            <p>"Google Apps Script is like a special glue that connects different Google tools together. It's a way to write small programs that can talk to your Google Sheets, Docs, Gmail, and other Google services. With Apps Script, you can tell these tools to do things automatically without you having to do them manually."</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>5Ws: Questions to Consider When Understanding Apps Script</h2>
+        
+        <h3>Who?</h3>
+        <ul>
+            <li><strong>Who created Apps Script?</strong> Google developed Apps Script to extend the functionality of Google Workspace.</li>
+            <li><strong>Who can use Apps Script?</strong> Anyone with a Google account can create and use Apps Script, from beginners to experienced developers.</li>
+            <li><strong>Who benefits from Apps Script?</strong> Students, educators, office workers, data analysts, and developers who want to automate tasks within the Google ecosystem.</li>
+        </ul>
+        
+        <h3>What?</h3>
+        <ul>
+            <li><strong>What is Apps Script at its core?</strong> A cloud-based JavaScript platform that integrates with Google services.</li>
+            <li><strong>What can it access?</strong> Google Sheets, Docs, Forms, Gmail, Calendar, Drive, Maps, and many other Google services.</li>
+            <li><strong>What programming knowledge is needed?</strong> Basic JavaScript understanding, though beginners can start with simple scripts and examples.</li>
+        </ul>
+        
+        <h3>When?</h3>
+        <ul>
+            <li><strong>When should you use Apps Script?</strong> When you need to automate repetitive tasks, customize Google Workspace applications, or build simple web apps without a separate server.</li>
+            <li><strong>When was it introduced?</strong> Google launched Apps Script in 2009, and it has been regularly updated since.</li>
+            <li><strong>When does it execute?</strong> Scripts can run on triggers (time-based, on open, on edit), on form submission, or when manually executed.</li>
+        </ul>
+        
+        <h3>Where?</h3>
+        <ul>
+            <li><strong>Where does Apps Script run?</strong> In Google's cloud servers, not on your local computer.</li>
+            <li><strong>Where can you access it?</strong> Directly from Google Docs, Sheets, Forms, or through the script.google.com editor.</li>
+            <li><strong>Where is the code stored?</strong> In Google Drive, like other Google documents.</li>
+        </ul>
+        
+        <h3>Why?</h3>
+        <ul>
+            <li><strong>Why use Apps Script instead of other programming tools?</strong> For its seamless integration with Google services, requiring no additional setup or servers.</li>
+            <li><strong>Why is it valuable for education?</strong> It allows for custom educational tools, automated grading, and personalized learning experiences.</li>
+            <li><strong>Why learn it?</strong> It provides practical automation skills with minimal setup requirements and no cost.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Creative Uses of Google Apps Script</h2>
+        <ol>
+            <li><strong>Automated Email System</strong>: Send personalized emails to students based on their performance or submission status.</li>
+            <li><strong>Custom Feedback Forms</strong>: Create forms that dynamically change questions based on previous answers.</li>
+            <li><strong>Assignment Tracker</strong>: Build a system that monitors student submissions and sends reminders for upcoming deadlines.</li>
+            <li><strong>Attendance System</strong>: Use Google Forms with Apps Script to track and visualize attendance patterns.</li>
+            <li><strong>Random Group Generator</strong>: Create balanced student groups for projects based on skill levels or other criteria.</li>
+            <li><strong>Plagiarism Checker</strong>: Compare student submissions across a database of previously submitted work.</li>
+            <li><strong>Custom Certificates Generator</strong>: Automatically create and email course completion certificates.</li>
+            <li><strong>Interactive Quiz Builder</strong>: Create quizzes that adapt difficulty based on previous answers.</li>
+            <li><strong>Course Material Organizer</strong>: Organize and distribute course materials based on the course schedule.</li>
+            <li><strong>Data Visualization Dashboard</strong>: Create custom visualization of class performance metrics.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Conversation with AI about Apps Script</h2>
+        <div class="highlight">
+            <h3>Chat with Claude AI about Apps Script Implementation:</h3>
+            <p><strong>Me:</strong> How would I use Apps Script to pull data from a Google Sheet and calculate a weighted grade average?</p>
+            <p><strong>Claude:</strong> To calculate weighted grades with Google Apps Script, you'd follow these basic steps:</p>
+            <ol>
+                <li>Access your Google Sheet with grades using <code>SpreadsheetApp.getActiveSpreadsheet()</code></li>
+                <li>Get the specific sheet with <code>getSheetByName("Grades")</code></li>
+                <li>Get the data range with <code>getDataRange().getValues()</code></li>
+                <li>Loop through the data, multiplying each grade by its weight</li>
+                <li>Sum weighted grades and divide by the sum of weights</li>
+            </ol>
+            <p><strong>Me:</strong> How would I handle missing assignments or different weighting categories?</p>
+            <p><strong>Claude:</strong> For missing assignments, you could:</p>
+            <ul>
+                <li>Check if the cell is empty with an <code>if(value === "")</code> condition</li>
+                <li>Decide whether to count it as zero or exclude it from calculations</li>
+                <li>For different categories (homework 30%, exams 50%, projects 20%), group assignments by type and apply the appropriate category weight</li>
+                <li>Use a multi-dimensional approach where you first calculate category averages, then apply category weights</li>
+            </ul>
+            <p>This approach gives you flexibility to handle complex grading policies and special cases.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Pros and Cons of Using Apps Script</h2>
+        <div class="pros-cons">
+            <div class="pros">
+                <h3>Pros</h3>
+                <ul>
+                    <li><strong>Easy Integration</strong>: Seamlessly works with Google Workspace products.</li>
+                    <li><strong>No Server Required</strong>: Cloud-based execution removes the need for server management.</li>
+                    <li><strong>Free to Use</strong>: No additional cost beyond your Google account.</li>
+                    <li><strong>Accessibility</strong>: Scripts are available anywhere you can access your Google account.</li>
+                    <li><strong>Low Learning Curve</strong>: Based on JavaScript with many ready-to-use examples.</li>
+                    <li><strong>Built-in Security</strong>: Uses Google's authentication and permission system.</li>
+                    <li><strong>Triggers</strong>: Can run on time-based or event-based triggers.</li>
+                    <li><strong>Collaboration</strong>: Multiple users can edit and use the same script.</li>
+                </ul>
+            </div>
+            <div class="cons">
+                <h3>Cons</h3>
+                <ul>
+                    <li><strong>Performance Limitations</strong>: Not suitable for heavy computational tasks.</li>
+                    <li><strong>Execution Time Limits</strong>: Scripts have a 6-minute runtime limit.</li>
+                    <li><strong>Limited External Access</strong>: Restricted to approved APIs and services.</li>
+                    <li><strong>Versioning Challenges</strong>: Basic version control compared to professional systems.</li>
+                    <li><strong>Debugging Difficulty</strong>: Limited debugging tools compared to full IDEs.</li>
+                    <li><strong>Google Ecosystem Dependency</strong>: Tightly coupled with Google services.</li>
+                    <li><strong>Quotas and Limits</strong>: Daily usage quotas may affect large-scale applications.</li>
+                    <li><strong>Mobile Access Limitations</strong>: Limited functionality on mobile devices.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section calculator">
+        <h2>Current Course Grade (CCG) Calculator</h2>
+        <p>This calculator uses Apps Script to fetch grade data from a connected Google Sheet and calculate your current course grade based on weighted categories.</p>
+
+        <div class="highlight">
+            <p><strong>Note:</strong> This is a frontend demonstration. In a real implementation, the button below would trigger an Apps Script function that:</p>
+            <ol>
+                <li>Connects to a specified Google Sheet containing grades</li>
+                <li>Retrieves the grade data for the current student</li>
+                <li>Applies the appropriate weights to each category</li>
+                <li>Calculates and displays the current overall grade</li>
+            </ol>
+        </div>
+
+        <h3>Sample Grade Data</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Weight</th>
+                    <th>Average Score</th>
+                    <th>Weighted Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Homework</td>
+                    <td>20%</td>
+                    <td>85%</td>
+                    <td>17.0%</td>
+                </tr>
+                <tr>
+                    <td>Quizzes</td>
+                    <td>15%</td>
+                    <td>78%</td>
+                    <td>11.7%</td>
+                </tr>
+                <tr>
+                    <td>Projects</td>
+                    <td>30%</td>
+                    <td>92%</td>
+                    <td>27.6%</td>
+                </tr>
+                <tr>
+                    <td>Midterm</td>
+                    <td>15%</td>
+                    <td>88%</td>
+                    <td>13.2%</td>
+                </tr>
+                <tr>
+                    <td>Final</td>
+                    <td>20%</td>
+                    <td>Not Yet</td>
+                    <td>0.0%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f8e9; padding: 20px; border-radius: 8px; margin-top: 20px;">
+            <div>
+                <h3 style="margin: 0;">Current Overall Grade: 69.5%</h3>
+                <p style="margin: 5px 0 0 0;">Current Letter Grade: C+</p>
+            </div>
+            <button>Refresh Grade Data</button>
+        </div>
+        
+        <p class="note">The actual implementation would use Apps Script to pull live data from your Google Sheet, allowing for real-time grade calculation and updates.</p>
+    </div>
+
+    <div class="section">
+        <h2>How Apps Script Connects to Google Sheets</h2>
+        <p>For our CCG calculator to work, we need to understand how Apps Script connects to and retrieves data from Google Sheets:</p>
+        
+        <h3>Basic Connection Code:</h3>
+        <pre><code>
+function calculateGrade() {
+  // Connect to the spreadsheet containing grades
+  var spreadsheet = SpreadsheetApp.openById('YOUR_SPREADSHEET_ID');
+  
+  // Get the specific sheet with grade data
+  var sheet = spreadsheet.getSheetByName('Grades');
+  
+  // Get all data from the sheet
+  var data = sheet.getDataRange().getValues();
+  
+  // Process the data and calculate weighted grades
+  // ...calculation code here...
+  
+  // Return the calculated grade
+  return calculatedGrade;
+}
+        </code></pre>
+        
+        <h3>Key Concepts for the CCG Implementation:</h3>
+        <ol>
+            <li><strong>Sheet Structure</strong>: Your grade sheet should have columns for categories, weights, and scores.</li>
+            <li><strong>Data Validation</strong>: Always validate data from the sheet (check for empty cells, incorrect formats).</li>
+            <li><strong>Error Handling</strong>: Implement try/catch blocks to gracefully handle potential errors.</li>
+            <li><strong>Caching</strong>: Consider caching results to improve performance for frequent calculations.</li>
+        </ol>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #666; border-top: 1px solid #ddd;">
+        <p>Created for Week 7 (April 16th-21st) - App Script: Backend Simulation</p>
+    </footer>
+
+    <script>
+        // This would be where you'd add JavaScript for any interactive elements
+        // In a real implementation, this would include calls to the Apps Script functions
+        document.querySelector('button').addEventListener('click', function() {
+            alert('In a real implementation, this would trigger an Apps Script function to fetch and calculate updated grade data from your Google Sheet.');
+        });
+    </script>
+</body>
+</html>
