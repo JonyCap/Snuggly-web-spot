@@ -121,34 +121,44 @@
         .star-container div:nth-child(9) { top: 60%; left: 40%; animation-duration: 4.5s; }
         .star-container div:nth-child(10) { top: 15%; left: 5%; animation-duration: 7s; }
         
-        /* Course Grade Section Styles - Simplified */
-        .grade-section {
+        /* Grade Section Styles */
+        .grades-container {
             position: absolute;
             top: 20px;
             right: 20px;
+            z-index: 100;
+        }
+        
+        .grade-section {
             background: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
             padding: 15px;
             text-align: center;
-            width: 200px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-            z-index: 100;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            border-left: 4px solid #4d94ff;
+            width: 180px;
+        }
+        
+        .grade-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
         
         .grade-title {
             font-size: 18px;
             margin-top: 0;
             margin-bottom: 10px;
-            color: #ff4d94;
+            color: #4d94ff;
         }
         
         .grade-value {
             font-size: 50px;
             font-weight: bold;
             margin: 15px 0;
-            color: #ff4d94;
+            color: #4d94ff;
         }
         
         .grade-date {
@@ -157,29 +167,20 @@
             margin-top: 5px;
         }
         
-        .grade-button {
-            background: #ff4d94;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin-top: 10px;
-            cursor: pointer;
+        .loading {
+            font-style: italic;
+            color: #aaa;
             font-size: 14px;
-            transition: background 0.3s;
-        }
-        
-        .grade-button:hover {
-            background: #d83a7d;
         }
         
         @media (max-width: 768px) {
-            .grade-section {
+            .grades-container {
                 position: relative;
                 top: auto;
                 right: auto;
                 margin: 20px auto;
-                width: 80%;
+                width: 100%;
+                max-width: 250px;
             }
         }
     </style>
@@ -190,12 +191,15 @@
         <div></div><div></div><div></div><div></div><div></div>
     </div>
     
-    <!-- Simplified Course Grade Section -->
-    <div class="grade-section">
-        <h3 class="grade-title">Current Course Grade</h3>
-        <div class="grade-value">93</div>
-        <div class="grade-date">Last updated: 11.05.2025, 17:28:00</div>
-        <button class="grade-button" onclick="window.location.href='https://jonycap.github.io/Snuggly-web-spot/updated-cryptography-showcase.html'">Cryptography Tool</button>
+    <!-- Single DL CCG Grade Section -->
+    <div class="grades-container">
+        <div class="grade-section dl-grade">
+            <h3 class="grade-title">DL CCG Score</h3>
+            <div class="grade-value" id="dl-grade">
+                <span class="loading">Loading...</span>
+            </div>
+            <div class="grade-date" id="dl-updated">Last updated: Loading...</div>
+        </div>
     </div>
 
     <h1>Welcome to My Smart Hub</h1>
@@ -216,7 +220,7 @@
             <div class="assignment"><a href="#" target="_blank">Assignment 10</a></div>
         </div>
            
- <a href="#" class="btn" onclick="toggleAssignments('digital')">💻 Digital Literacy</a>
+        <a href="#" class="btn" onclick="toggleAssignments('digital')">💻 Digital Literacy</a>
         <div id="digital" class="assignments">
             <div class="assignment"><a href="https://jonycap.github.io/Snuggly-web-spot/findme1.html" target="_blank">Assignment 1: Find Me Report</a></div>
             <div class="assignment"><a href="https://jonycap.github.io/Snuggly-web-spot/CLIDungoenCrawlerReport.html" target="_blank">Assignment 2 CLI Dungeon Crawler</a></div>
@@ -241,6 +245,30 @@
     </div>
 
     <script>
+        // Fetch grades from Google Apps Script
+        const GRADES_API_URL = "https://script.google.com/macros/s/AKfycbyZt4t81_XD19AnzKft_Kuh1Sk_UmWJU2Ud6ikBDe_TYDqOBvRyIRzZBPFWd_N7PffX/exec";
+        
+        function fetchGrades() {
+            fetch(GRADES_API_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update only the DL CCG grade
+                    document.getElementById('dl-grade').textContent = data.dlGrade || '91';
+                    document.getElementById('dl-updated').textContent = 'Last updated: ' + (data.lastUpdated || '16.05.2025, 14:30:00');
+                })
+                .catch(error => {
+                    console.error('Error fetching grades:', error);
+                    // Set fallback values if fetch fails
+                    document.getElementById('dl-grade').textContent = '91';
+                    document.getElementById('dl-updated').textContent = 'Last updated: 16.05.2025, 14:30:00';
+                });
+        }
+
         function toggleAssignments(id) {
             var section = document.getElementById(id);
             if (section.style.display === "block") {
@@ -259,10 +287,16 @@
             }
         }
 
-        // Fix for initial display - this makes sure assignments are properly hidden initially
+        // Initial setup
         window.onload = function() {
             document.getElementById('logistics').style.display = "none";
             document.getElementById('digital').style.display = "none";
+            
+            // Fetch grades when page loads
+            fetchGrades();
+            
+            // Refresh grades every 5 minutes (300000 ms)
+            setInterval(fetchGrades, 300000);
         };
     </script>
 </body>
