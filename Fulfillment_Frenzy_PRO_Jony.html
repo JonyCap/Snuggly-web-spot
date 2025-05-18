@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fulfillment Frenzy – Logistics Simulation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body {
+            background: linear-gradient(to right, #001f3f, #0074D9);
+            color: #dddddd;
+            font-family: 'Poppins', sans-serif;
+            padding: 40px;
+            line-height: 1.6;
+             /* A logistics world map background */
+            
+            
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid #007acc;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        h1, h2, h3 {
+            color: #007acc;
+            
+        }
+
+        h1 {
+            font-size: 36px;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 10px;
+        }
+
+        .highlight {
+            color: #32CD32;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+
+        body {
+            background-color: #0d0d0d;
+            color: #00ffe1;
+            font-family: 'Poppins', sans-serif;
+            padding: 40px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #1a1a1a;
+            border: 2px solid #00ffe1;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px #00ffe1;
+        }
+
+        h1, h2, h3 {
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        h1 {
+            font-size: 36px;
+            border-bottom: 2px solid #ff00ff;
+            padding-bottom: 10px;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        ul {
+            list-style-type: square;
+            margin-left: 20px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #999;
+            border-top: 1px solid #555;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fulfillment Frenzy</h1>
+        <h2>Understanding Real-World Challenges in Order Fulfillment & Distribution</h2>
+
+        <div class="section">
+            <h3>Stage Chosen:</h3>
+            <p class="highlight">Order Fulfillment & Distribution (Outbound)</p>
+        </div>
+
+        <div class="section">
+            <h3>Problem Research</h3>
+            <p><strong>What’s the Issue?</strong><br>
+            Order fulfillment is one of the most time-sensitive and customer-facing stages in global logistics—especially in e-commerce. 
+            With rising demand for rapid delivery, companies struggle to deliver quickly and accurately, particularly during flash sales or peak seasons.</p>
+
+            <p><strong>Why Is It Happening?</strong></p>
+            <ul>
+                <li>Poor coordination between warehouses and couriers</li>
+                <li>Outdated systems and tech infrastructure</li>
+                <li>Unpredictable and expensive last-mile delivery</li>
+                <li>Understaffing or limited automation during spikes</li>
+                <li>Errors in picking, packing, or inventory communication</li>
+            </ul>
+
+            <p><strong>Real Examples:</strong></p>
+            <ul>
+                <li><span class="highlight">Amazon</span> adds temp staff and centers during Prime Day</li>
+                <li><span class="highlight">Zara</span> uses centralized hubs – delays in Spain affect global flow</li>
+                <li><span class="highlight">Small sellers</span> on Etsy struggle with DIY fulfillment</li>
+            </ul>
+
+            <p><strong>Consequences:</strong></p>
+            <ul>
+                <li>Late or incorrect deliveries</li>
+                <li>Low reviews and customer loss</li>
+                <li>High costs from returns/refunds</li>
+                <li>Burnout and higher error rates</li>
+                <li>Brand damage and lost trust</li>
+            </ul>
+        </div>
+
+        
+<div class="section">
+    <h3>Learning Activity Proposal</h3>
+    <p><strong>Problem Statement:</strong><br>
+    How can logistics teams maintain speed, accuracy, and customer satisfaction in order fulfillment—even during extreme demand surges like flash sales or global campaigns?</p>
+
+    <p><strong>Activity Title:</strong> <span class="highlight">Fulfillment Frenzy: Global Dispatch Crisis</span></p>
+
+    <p><strong>Concept Overview:</strong><br>
+    This is a web-based <strong>interactive simulation game</strong> where students take the role of fulfillment managers during a global mega-sale. They’ll face real-world constraints and make split-second decisions to deliver success.</p>
+
+    <p><strong>Student Tasks:</strong></p>
+    <ul>
+        <li>Design warehouse layout using drag-and-drop zones</li>
+        <li>Assign roles: pickers, packers, QA, dispatch</li>
+        <li>Set and track KPIs (speed, cost, satisfaction)</li>
+        <li>Respond to live disruptions: delays, breakdowns, weather</li>
+        <li>Balance in-house vs 3PL fulfillment options</li>
+    </ul>
+
+    <p><strong>Tools & Data Used:</strong></p>
+    <ul>
+        <li>Google Sheets for KPI dashboards</li>
+        <li>Web app sliders and layout builders</li>
+        <li>Scenario cards introducing unpredictable events</li>
+    </ul>
+
+    <p><strong>Why It’s Useful:</strong><br>
+    This immersive activity mimics real-world pressure, improves quick decision-making, and strengthens logistics thinking under demand chaos.</p>
+
+    <p><strong>PRD (Product Requirements Document):</strong></p>
+    <ul>
+        <li><strong>Platform:</strong> Browser-based (HTML/JS)</li>
+        <li><strong>Players:</strong> 1–4 per team</li>
+        <li><strong>Duration:</strong> 20–30 minutes</li>
+        <li><strong>Scoring:</strong> Efficiency, delivery speed, customer happiness</li>
+        <li><strong>Outcome:</strong> End-game analytics compared to industry benchmarks</li>
+    </ul>
+</div>
+
+
+        <div class="section">
+            <h3>Sources</h3>
+            <ul>
+                <li>McKinsey & Co. – The Future of Last-Mile Delivery</li>
+                <li>HBR – Zara’s Secret to Fast Fashion</li>
+                <li>DHL E-commerce Logistics Report</li>
+                <li>Business Insider – How Amazon Handles Holiday Chaos</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            Created by: <strong>Jony / 2217837</strong> <br>
+            Global Logistics – Problem Research & Design Assignment
+        </div>
+    </div>
+</body>
+</html>
