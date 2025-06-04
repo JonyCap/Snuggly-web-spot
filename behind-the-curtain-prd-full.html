@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Behind the Curtain - Interactive Web Request Journey (PRD)</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            background: linear-gradient(270deg, #1f1c2c, #928dab, #1f1c2c);
+            background-size: 600% 600%;
+            animation: bgMove 30s ease infinite;
+        }
+
+        @keyframes bgMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 960px;
+            margin: auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0,255,255,0.15);
+        }
+
+        h1, h2, h3 {
+            color: #00ffff;
+            text-shadow: 0 0 8px #00ffff;
+        }
+
+        p, ul {
+            line-height: 1.6;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        section {
+            margin-bottom: 35px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Behind the Curtain: Interactive Web Request Journey</h1>
+        <h2>Product Requirements Document (PRD)</h2>
+
+        <section>
+            <h3>📌 Project Overview</h3>
+            <p><strong>Type:</strong> Educational Web Application<br>
+               <strong>Goal:</strong> Make the web request process visually understandable for all users.</p>
+        </section>
+
+        <section>
+            <h3>🚨 Problem Statement</h3>
+            <p>Many users and developers don’t understand what happens when they enter a URL, making it hard to troubleshoot or optimize performance.</p>
+        </section>
+
+        <section>
+            <h3>🎯 Goals & Objectives</h3>
+            <ul>
+                <li>Visualize the full web request lifecycle</li>
+                <li>Offer step-by-step interactive learning</li>
+                <li>Provide a classroom-ready tool</li>
+                <li>Build awareness of performance issues</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>👤 Target Users</h3>
+            <ul>
+                <li>CS Students (16–25)</li>
+                <li>Web Dev Beginners (20–40)</li>
+                <li>Educators (25–55)</li>
+                <li>Tech Enthusiasts (18–65)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>🌟 Core Features (MVP)</h3>
+            <ul>
+                <li>Interactive simulation (step-by-step)</li>
+                <li>6 key steps: URL ➝ DNS ➝ TCP ➝ HTTP ➝ Server ➝ Render</li>
+                <li>Clickable or auto-play options</li>
+                <li>Educational overlays & technical details toggle</li>
+                <li>Visuals: browser, server, network, DNS</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>⚙️ Enhanced Features</h3>
+            <ul>
+                <li>Custom URL entry</li>
+                <li>Performance scenarios (slow/fast, cache hit/miss)</li>
+                <li>Error simulations (DNS fail, server timeout)</li>
+                <li>Controls: play/pause, speed, reset</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>🔧 Advanced Features (Stretch Goals)</h3>
+            <ul>
+                <li>Detailed packet view, HTTP headers</li>
+                <li>SSL/TLS handshake & status codes</li>
+                <li>Side-by-side comparison mode</li>
+                <li>Geographic distance impact view</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>🧑‍💻 UX & Design</h3>
+            <ul>
+                <li>Minimalist, modern interface</li>
+                <li>Responsive across desktop/tablet/mobile</li>
+                <li>60fps smooth animations</li>
+                <li>WCAG 2.1 AA accessible</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>💻 Tech Stack</h3>
+            <ul>
+                <li>HTML5, CSS3, Vanilla JS</li>
+                <li>SVG animations</li>
+                <li>Fully client-side, no backend needed</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>🕓 Timeline</h3>
+            <ul>
+                <li>Week 1: Structure, CSS, base animations</li>
+                <li>Week 2: Implement simulation, content</li>
+                <li>Week 3: Add enhancements</li>
+                <li>Week 4: Testing, polish, screenshots</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>📊 Success Criteria</h3>
+            <ul>
+                <li>Users understand all 6 steps after 1 use</li>
+                <li>Average session > 3 minutes</li>
+                <li>Loads in < 2s, runs at 60fps</li>
+                <li>Works on all major browsers/devices</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>🚨 Risks & Mitigation</h3>
+            <ul>
+                <li><strong>Performance:</strong> fallback modes</li>
+                <li><strong>UX clarity:</strong> beginner testing</li>
+                <li><strong>Scope creep:</strong> phase-by-phase goals</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>📈 Future Ideas</h3>
+            <ul>
+                <li>Gamification: quizzes, rewards</li>
+                <li>Multi-language support</li>
+                <li>Integration with LMS platforms</li>
+                <li>Advanced topics: CDNs, load balancers</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
