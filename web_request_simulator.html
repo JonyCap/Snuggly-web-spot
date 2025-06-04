@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behind the Curtain: Web Request Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .url-input {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 300px;
+            min-width: 200px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .speed-slider {
+            width: 100px;
+        }
+
+        .simulation-area {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .network-diagram {
+            position: relative;
+            height: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 50px 0;
+        }
+
+        .component {
+            position: relative;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .component-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .browser {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+            color: white;
+        }
+
+        .dns {
+            background: linear-gradient(135deg, #4ECDC4, #6ED6D0);
+            color: white;
+        }
+
+        .server {
+            background: linear-gradient(135deg, #45B7D1, #5DCCF0);
+            color: white;
+        }
+
+        .component-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .component-status {
+            font-size: 0.9rem;
+            color: #666;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .component.active .component-status {
+            opacity: 1;
+        }
+
+        .component.active .component-icon {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: #ddd;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .line1 {
+            left: 15%;
+            width: 25%;
+        }
+
+        .line2 {
+            right: 15%;
+            width: 25%;
+        }
+
+        .data-packet {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            opacity: 0;
+            z-index: 3;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .data-packet::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            top: 6px;
+            left: 6px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .step-info {
+            background: rgba(79, 172, 254, 0.1);
+            border-left: 4px solid #4FACFE;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .step-info.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-number {
+            background: #4FACFE;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .step-info p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .technical-details {
+            background: rgba(108, 117, 125, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            border: 1px solid rgba(108, 117, 125, 0.2);
+        }
+
+        .status-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 200px;
+            z-index: 1000;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .status-value {
+            font-weight: 600;
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(79, 172, 254, 0.3);
+            border-radius: 50%;
+            border-top-color: #4FACFE;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .network-diagram {
+                flex-direction: column;
+                height: auto;
+                gap: 40px;
+            }
+
+            .connection-line {
+                display: none;
+            }
+
+            .url-input {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .url-input-group {
+                justify-content: center;
+            }
+
+            .status-panel {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 Behind the Curtain</h1>
+            <p>Interactive Web Request Journey - See what happens when you visit a website</p>
+        </div>
+
+        <div class="controls">
+            <div class="url-input-group">
+                <input type="text" class="url-input" id="urlInput" placeholder="Enter a URL (e.g., example.com)" value="example.com">
+                <button class="btn btn-primary" id="startBtn">🚀 Start Journey</button>
+                <button class="btn btn-secondary" id="resetBtn">🔄 Reset</button>
+            </div>
+            
+            <div class="speed-control">
+                <span>Speed:</span>
+                <input type="range" class="speed-slider" id="speedSlider" min="0.5" max="3" step="0.5" value="1">
+                <span id="speedValue">1x</span>
+            </div>
+        </div>
+
+        <div class="simulation-area">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="network-diagram">
+                <div class="component browser" id="browserComponent">
+                    <div class="component-icon">💻</div>
+                    <div class="component-label">Your Browser</div>
+                    <div class="component-status">Ready to browse</div>
+                </div>
+
+                <div class="connection-line line1"></div>
+
+                <div class="component dns" id="dnsComponent">
+                    <div class="component-icon">🌐</div>
+                    <div class="component-label">DNS Server</div>
+                    <div class="component-status">Looking up address</div>
+                </div>
+
+                <div class="connection-line line2"></div>
+
+                <div class="component server" id="serverComponent">
+                    <div class="component-icon">🖥️</div>
+                    <div class="component-label">Web Server</div>
+                    <div class="component-status">Processing request</div>
+                </div>
+
+                <div class="data-packet" id="dataPacket"></div>
+            </div>
+
+            <div class="step-info" id="stepInfo">
+                <h3><span class="step-number" id="stepNumber">1</span><span id="stepTitle">Ready to Start</span></h3>
+                <p id="stepDescription">Click "Start Journey" to begin the web request simulation. You can enter any URL to see how your browser fetches that website.</p>
+                <div class="technical-details" id="technicalDetails" style="display: none;">
+                    <strong>Technical Details:</strong><br>
+                    <span id="technicalInfo">The journey begins when you type a URL and press Enter...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-panel">
+            <div class="status-item">
+                <span>Current Step:</span>
+                <span class="status-value" id="currentStep">Ready</span>
+            </div>
+            <div class="status-item">
+                <span>Progress:</span>
+                <span class="status-value" id="progressPercent">0%</span>
+            </div>
+            <div class="status-item">
+                <span>Time Elapsed:</span>
+                <span class="status-value" id="timeElapsed">0ms</span>
+            </div>
+            <div class="status-item">
+                <span>Target URL:</span>
+                <span class="status-value" id="targetUrl">example.com</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class WebRequestSimulator {
+            constructor() {
+                this.currentStep = 0;
+                this.totalSteps = 6;
+                this.isRunning = false;
+                this.speed = 1;
+                this.startTime = 0;
+                this.animationId = null;
+                
+                this.steps = [
+                    {
+                        title: "URL Parsing & Validation",
+                        description: "Your browser analyzes the URL you entered, checking its format and extracting the domain name, protocol, and path. It validates the URL structure and prepares for the request.",
+                        technical: "Browser parses URL components:\n• Protocol: http/https\n• Domain: example.com\n• Path: /index.html\n• Port: 80/443 (default)",
+                        duration: 500,
+                        component: 'browser'
+                    },
+                    {
+                        title: "DNS Lookup Request",
+                        description: "Your browser sends a request to a DNS server to translate the human-readable domain name into an IP address that computers can understand.",
+                        technical: "DNS Query Process:\n• Browser → DNS Resolver\n• Query Type: A record\n• Domain: example.com\n• Response: IP address",
+                        duration: 800,
+                        component: 'dns'
+                    },
+                    {
+                        title: "DNS Response Received",
+                        description: "The DNS server responds with the IP address of the web server hosting your requested website. Your browser now knows exactly where to send the request.",
+                        technical: "DNS Response:\n• Status: NOERROR\n• Answer: 93.184.216.34\n• TTL: 86400 seconds\n• Cached for future use",
+                        duration: 600,
+                        component: 'dns'
+                    },
+                    {
+                        title: "TCP Connection Established",
+                        description: "Your browser establishes a TCP connection with the web server using the IP address. This creates a reliable communication channel for data transfer.",
+                        technical: "TCP Three-Way Handshake:\n• SYN: Browser to Server\n• SYN-ACK: Server to Browser\n• ACK: Browser to Server\n• Connection: ESTABLISHED",
+                        duration: 700,
+                        component: 'server'
+                    },
+                    {
+                        title: "HTTP Request Sent",
+                        description: "Your browser sends an HTTP request to the web server, asking for the specific webpage. The request includes headers with information about your browser and preferences.",
+                        technical: "HTTP Request:\nGET / HTTP/1.1\nHost: example.com\nUser-Agent: Browser/1.0\nAccept: text/html\nConnection: keep-alive",
+                        duration: 900,
+                        component: 'server'
+                    },
+                    {
+                        title: "Response & Rendering",
+                        description: "The server processes your request and sends back the HTML, CSS, and JavaScript files. Your browser then renders the webpage, displaying the final result on your screen.",
+                        technical: "HTTP Response:\nHTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 1256\n\n<html>...</html>",
+                        duration: 1200,
+                        component: 'browser'
+                    }
+                ];
+
+                this.initializeElements();
+                this.bindEvents();
+                this.updateDisplay();
+            }
+
+            initializeElements() {
+                this.elements = {
+                    startBtn: document.getElementById('startBtn'),
+                    resetBtn: document.getElementById('resetBtn'),
+                    urlInput: document.getElementById('urlInput'),
+                    speedSlider: document.getElementById('speedSlider'),
+                    speedValue: document.getElementById('speedValue'),
+                    progressFill: document.getElementById('progressFill'),
+                    stepInfo: document.getElementById('stepInfo'),
+                    stepNumber: document.getElementById('stepNumber'),
+                    stepTitle: document.getElementById('stepTitle'),
+                    stepDescription: document.getElementById('stepDescription'),
+                    technicalDetails: document.getElementById('technicalDetails'),
+                    technicalInfo: document.getElementById('technicalInfo'),
+                    currentStep: document.getElementById('currentStep'),
+                    progressPercent: document.getElementById('progressPercent'),
+                    timeElapsed: document.getElementById('timeElapsed'),
+                    targetUrl: document.getElementById('targetUrl'),
+                    dataPacket: document.getElementById('dataPacket'),
+                    browserComponent: document.getElementById('browserComponent'),
+                    dnsComponent: document.getElementById('dnsComponent'),
+                    serverComponent: document.getElementById('serverComponent')
+                };
+            }
+
+            bindEvents() {
+                this.elements.startBtn.addEventListener('click', () => this.startSimulation());
+                this.elements.resetBtn.addEventListener('click', () => this.resetSimulation());
+                this.elements.speedSlider.addEventListener('input', (e) => {
+                    this.speed = parseFloat(e.target.value);
+                    this.elements.speedValue.textContent = `${this.speed}x`;
+                });
+                this.elements.urlInput.addEventListener('input', (e) => {
+                    this.elements.targetUrl.textContent = e.target.value || 'example.com';
+                });
+            }
+
+            startSimulation() {
+                if (this.isRunning) return;
+                
+                this.isRunning = true;
+                this.startTime = Date.now();
+                this.elements.startBtn.disabled = true;
+                this.elements.startBtn.innerHTML = '<div class="loading"></div> Running...';
+                
+                this.runStep(0);
+            }
+
+            runStep(stepIndex) {
+                if (stepIndex >= this.totalSteps) {
+                    this.completeSimulation();
+                    return;
+                }
+
+                this.currentStep = stepIndex;
+                const step = this.steps[stepIndex];
+                
+                // Update UI
+                this.updateStepInfo(step, stepIndex + 1);
+                this.updateProgress((stepIndex + 1) / this.totalSteps * 100);
+                this.highlightComponent(step.component);
+                
+                // Animate data packet
+                this.animateDataPacket(step.component);
+                
+                // Update status
+                this.elements.currentStep.textContent = step.title;
+                
+                // Schedule next step
+                const adjustedDuration = step.duration / this.speed;
+                setTimeout(() => {
+                    if (this.isRunning) {
+                        this.runStep(stepIndex + 1);
+                    }
+                }, adjustedDuration);
+            }
+
+            updateStepInfo(step, stepNumber) {
+                this.elements.stepNumber.textContent = stepNumber;
+                this.elements.stepTitle.textContent = step.title;
+                this.elements.stepDescription.textContent = step.description;
+                this.elements.technicalInfo.textContent = step.technical;
+                
+                this.elements.stepInfo.classList.add('visible', 'fade-in');
+                this.elements.technicalDetails.style.display = 'block';
+            }
+
+            updateProgress(percentage) {
+                this.elements.progressFill.style.width = `${percentage}%`;
+                this.elements.progressPercent.textContent = `${Math.round(percentage)}%`;
+            }
+
+            highlightComponent(componentType) {
+                // Remove all active classes
+                [this.elements.browserComponent, this.elements.dnsComponent, this.elements.serverComponent]
+                    .forEach(comp => comp.classList.remove('active', 'pulse'));
+                
+                // Add active class to current component
+                const componentMap = {
+                    'browser': this.elements.browserComponent,
+                    'dns': this.elements.dnsComponent,
+                    'server': this.elements.serverComponent
+                };
+                
+                if (componentMap[componentType]) {
+                    componentMap[componentType].classList.add('active', 'pulse');
+                }
+            }
+
+            animateDataPacket(targetComponent) {
+                const packet = this.elements.dataPacket;
+                const browser = this.elements.browserComponent;
+                const dns = this.elements.dnsComponent;
+                const server = this.elements.serverComponent;
+                
+                // Reset packet position and make visible
+                packet.style.opacity = '1';
+                packet.style.transform = 'scale(1)';
+                
+                // Define movement patterns based on current step
+                const movements = {
+                    'browser': () => {
+                        packet.style.left = '12%';
+                        packet.style.top = '45%';
+                    },
+                    'dns': () => {
+                        packet.style.left = '47%';
+                        packet.style.top = '35%';
+                        setTimeout(() => {
+                            packet.style.left = '12%';
+                            packet.style.top = '45%';
+                        }, 400 / this.speed);
+                    },
+                    'server': () => {
+                        packet.style.left = '82%';
+                        packet.style.top = '45%';
+                        setTimeout(() => {
+                            packet.style.left = '12%';
+                            packet.style.top = '55%';
+                        }, 600 / this.speed);
+                    }
+                };
+                
+                if (movements[targetComponent]) {
+                    movements[targetComponent]();
+                }
+            }
+
+            updateTimer() {
+                if (this.isRunning && this.startTime) {
+                    const elapsed = Date.now() - this.startTime;
+                    this.elements.timeElapsed.textContent = `${elapsed}ms`;
+                    requestAnimationFrame(() => this.updateTimer());
+                }
+            }
+
+            completeSimulation() {
+                this.isRunning = false;
+                this.elements.startBtn.disabled = false;
+                this.elements.startBtn.innerHTML = '✅ Complete! Start Again?';
+                this.elements.currentStep.textContent = 'Completed';
+                
+                // Hide data packet
+                this.elements.dataPacket.style.opacity = '0';
+                
+                // Show completion message
+                setTimeout(() => {
+                    this.elements.stepInfo.innerHTML = `
+                        <h3><span class="step-number">✓</span><span>Journey Complete!</span></h3>
+                        <p>🎉 Congratulations! You've successfully traced the complete path of a web request from your browser to the server and back. The webpage "${this.elements.urlInput.value}" is now loaded and ready to view!</p>
+                        <div class="technical-details" style="display: block;">
+                            <strong>Summary:</strong><br>
+                            • Total time: ${Date.now() - this.startTime}ms<br>
+                            • Steps completed: ${this.totalSteps}<br>
+                            • Data transferred: ~2.3KB<br>
+                            • Connection: Successful
+                        </div>
+                    `;
+                }, 500);
+            }
+
+            resetSimulation() {
+                this.isRunning = false;
+                this.currentStep = 0;
+                this.startTime = 0;
+                
+                // Reset UI elements
+                this.elements.startBtn.disabled = false;
+                this.elements.startBtn.innerHTML = '🚀 Start Journey';
+                this.elements.progressFill.style.width = '0%';
+                this.elements.progressPercent.textContent = '0%';
+                this.elements.timeElapsed.textContent = '0ms';
+                this.elements.currentStep.textContent = 'Ready';
+                this.elements.dataPacket.style.opacity = '0';
+                
+                // Remove active states
+                [this.elements.browserComponent, this.elements.dnsComponent, this.elements.serverComponent]
+                    .forEach(comp => comp.classList.remove('active', 'pulse'));
+                
+                // Reset step info
+                this.elements.stepInfo.classList.remove('visible');
+                this.updateDisplay();
+                
+                // Clear any running timers
+                if (this.animationId) {
+                    clearTimeout(this.animationId);
+                }
+            }
+
+            updateDisplay() {
+                this.elements.stepNumber.textContent = '1';
+                this.elements.stepTitle.textContent = 'Ready to Start';
+                this.elements.stepDescription.textContent = 'Click "Start Journey" to begin the web request simulation. You can enter any URL to see how your browser fetches that website.';
+                this.elements.technicalDetails.style.display = 'none';
+                this.elements.targetUrl.textContent = this.elements.urlInput.value || 'example.com';
+            }
+        }
+
+        // Initialize the simulator when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const simulator = new WebRequestSimulator();
+            
+            // Start timer updates
+            setInterval(() => {
+                if (simulator.isRunning) {
+                    simulator.updateTimer();
+                }
+            }, 100);
+            
+            // Add some interactive enhancements
+            document.querySelectorAll('.component').forEach(component => {
+                component.addEventListener('mouseenter', () => {
+                    if (!simulator.isRunning) {
+                        component.style.transform = 'scale(1.05)';
+                    }
+                });
+                
+                component.addEventListener('mouseleave', () => {
+                    if (!component.classList.contains('active')) {
+                        component.style.transform = 'scale(1)';
+                    }
+                });
+            });
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.target === simulator.elements.urlInput) {
+                    simulator.startSimulation();
+                }
+                if (e.key === 'Escape') {
+                    simulator.resetSimulation();
+                }
+                if (e.key === ' ' && e.target !== simulator.elements.urlInput) {
+                    e.preventDefault();
+                    if (simulator.isRunning) {
+                        simulator.resetSimulation();
+                    } else {
+                        simulator.startSimulation();
+                    }
+                }
+            });
+            
+            // Add URL validation and suggestions
+            const urlInput = simulator.elements.urlInput;
+            const commonSites = ['google.com', 'github.com', 'stackoverflow.com', 'wikipedia.org', 'youtube.com'];
+            
+            urlInput.addEventListener('input', (e) => {
+                const value = e.target.value.toLowerCase();
+                
+                // Simple URL validation
+                if (value && !value.includes('.') && value.length > 2) {
+                    const suggestion = commonSites.find(site => site.startsWith(value));
+                    if (suggestion) {
+                        // You could add autocomplete functionality here
+                    }
+                }
+            });
+            
+            // Add educational tooltips
+            const tooltips = {
+                '.browser .component-icon': 'Your web browser (Chrome, Firefox, Safari, etc.) that renders web pages',
+                '.dns .component-icon': 'Domain Name System server that translates domain names to IP addresses',
+                '.server .component-icon': 'Web server hosting the website you want to visit'
+            };
+            
+            Object.entries(tooltips).forEach(([selector, text]) => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.title = text;
+                }
+            });
+        });
+
+        // Add some performance monitoring
+        window.addEventListener('load', () => {
+            const loadTime = performance.now();
+            console.log(`🚀 Behind the Curtain loaded in ${Math.round(loadTime)}ms`);
+            
+            // Log performance metrics
+            if ('performance' in window && 'getEntriesByType' in performance) {
+                const navigation = performance.getEntriesByType('navigation')[0];
+                console.log('📊 Performance Metrics:', {
+                    'DNS Lookup': Math.round(navigation.domainLookupEnd - navigation.domainLookupStart) + 'ms',
+                    'TCP Connection': Math.round(navigation.connectEnd - navigation.connectStart) + 'ms',
+                    'Request/Response': Math.round(navigation.responseEnd - navigation.requestStart) + 'ms',
+                    'DOM Processing': Math.round(navigation.domContentLoadedEventEnd - navigation.responseEnd) + 'ms'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
