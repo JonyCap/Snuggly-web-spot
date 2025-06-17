@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStore with AES Encryption</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4c63d2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .demo-section {
+            background: #f8f9ff;
+            border: 2px solid #e1e5fe;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .demo-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .demo-section h3 {
+            color: #4c63d2;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        input, textarea, select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4c63d2;
+            box-shadow: 0 0 0 3px rgba(76, 99, 210, 0.1);
+        }
+
+        button {
+            background: linear-gradient(45deg, #4c63d2, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 99, 210, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .toggle-button {
+            background: #28a745;
+        }
+
+        .toggle-button.active {
+            background: #dc3545;
+        }
+
+        .result {
+            background: #f1f3f4;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .debug-log {
+            background: #1a1a1a;
+            color: #00ff00;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #856404;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #155724;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border: 2px solid #e1e5fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4c63d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 SmartStore with AES Encryption</h1>
+        
+        <div class="demo-section">
+            <h3>⚙️ Configuration</h3>
+            <div class="input-group">
+                <input type="text" id="secretKey" placeholder="Enter secret key for encryption" value="my-secret-key-123">
+                <button onclick="configureSmartStore()">Configure</button>
+                <button id="debugToggle" class="toggle-button" onclick="toggleDebug()">Debug: OFF</button>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="fallbackToCookies" checked>
+                <label for="fallbackToCookies">Fallback to Cookies</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="autoCleanup" checked>
+                <label for="autoCleanup">Auto Cleanup Expired Items</label>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>📝 Store Data</h3>
+            <div class="input-group">
+                <input type="text" id="storeKey" placeholder="Key" value="myData">
+                <textarea id="storeValue" placeholder="Value (can be object, array, or string)" rows="3">{"name": "John Doe", "age": 30, "preferences": ["coding", "music"]}</textarea>
+            </div>
+            
+            <div class="input-group">
+                <input type="number" id="expiresIn" placeholder="Expires in (seconds)" value="">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="encryptData">
+                    <label for="encryptData">Encrypt Data</label>
+                </div>
+                <button onclick="storeData()">Store Data</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>📤 Retrieve Data</h3>
+            <div class="input-group">
+                <input type="text" id="retrieveKey" placeholder="Key to retrieve" value="myData">
+                <button onclick="retrieveData()">Get Data</button>
+                <button onclick="checkExpiration()">Check Expiration</button>
+            </div>
+            <div class="result" id="retrieveResult">Retrieved data will appear here...</div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🗑️ Management</h3>
+            <div class="input-group">
+                <input type="text" id="removeKey" placeholder="Key to remove" value="">
+                <button onclick="removeData()">Remove Key</button>
+                <button onclick="clearAll()">Clear All</button>
+                <button onclick="showAllKeys()">Show All Keys</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>📊 Statistics</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalKeys">0</div>
+                    <div>Total Keys</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="encryptedKeys">0</div>
+                    <div>Encrypted Keys</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="expiredKeys">0</div>
+                    <div>Expired Keys</div>
+                </div>
+            </div>
+            <button onclick="updateStats()">Refresh Stats</button>
+        </div>
+
+        <div class="demo-section">
+            <h3>🐛 Debug Log</h3>
+            <button onclick="clearDebugLog()">Clear Log</button>
+            <div class="debug-log" id="debugLog">Debug mode is OFF. Enable it to see operation logs...</div>
+        </div>
+    </div>
+
+    <script>
+        // SmartStore Implementation with AES Encryption
+        const SmartStore = (function() {
+            let config = {
+                secretKey: null,
+                debug: false,
+                fallbackToCookies: true,
+                autoCleanup: true,
+                cookieDefaults: {
+                    expires: 30,
+                    path: '/',
+                    sameSite: 'Lax'
+                }
+            };
+
+            let debugLog = [];
+
+            // Utility functions
+            function log(message, type = 'info') {
+                if (config.debug) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+                    debugLog.push(logEntry);
+                    console.log(logEntry);
+                    updateDebugDisplay();
+                }
+            }
+
+            function updateDebugDisplay() {
+                const debugElement = document.getElementById('debugLog');
+                if (debugElement) {
+                    debugElement.textContent = debugLog.slice(-50).join('\n');
+                    debugElement.scrollTop = debugElement.scrollHeight;
+                }
+            }
+
+            function isStorageAvailable(type) {
+                try {
+                    const storage = window[type];
+                    const x = '__storage_test__';
+                    storage.setItem(x, x);
+                    storage.removeItem(x);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function encrypt(data, key) {
+                if (!key) {
+                    throw new Error('Encryption key not set. Use SmartStore.configure({ secretKey: "your-key" })');
+                }
+                return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
+            }
+
+            function decrypt(encryptedData, key) {
+                if (!key) {
+                    throw new Error('Decryption key not set');
+                }
+                const bytes = CryptoJS.AES.decrypt(encryptedData, key);
+                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+            }
+
+            function setCookie(name, value, options = {}) {
+                const opts = { ...config.cookieDefaults, ...options };
+                let cookieString = `${name}=${encodeURIComponent(value)}`;
+                
+                if (opts.expires) {
+                    const date = new Date();
+                    date.setTime(date.getTime() + (opts.expires * 24 * 60 * 60 * 1000));
+                    cookieString += `; expires=${date.toUTCString()}`;
+                }
+                
+                if (opts.path) cookieString += `; path=${opts.path}`;
+                if (opts.sameSite) cookieString += `; SameSite=${opts.sameSite}`;
+                
+                document.cookie = cookieString;
+                log(`Cookie set: ${name}`, 'cookie');
+            }
+
+            function getCookie(name) {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) {
+                        const value = decodeURIComponent(c.substring(nameEQ.length, c.length));
+                        log(`Cookie retrieved: ${name}`, 'cookie');
+                        return value;
+                    }
+                }
+                return null;
+            }
+
+            function removeCookie(name) {
+                document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                log(`Cookie removed: ${name}`, 'cookie');
+            }
+
+            function cleanupExpired() {
+                if (!config.autoCleanup) return;
+                
+                const now = Date.now();
+                const keys = Object.keys(localStorage);
+                let cleanedCount = 0;
+                
+                keys.forEach(key => {
+                    if (key.startsWith('__ss_')) {
+                        try {
+                            const data = JSON.parse(localStorage.getItem(key));
+                            if (data.expires && now > data.expires) {
+                                localStorage.removeItem(key);
+                                cleanedCount++;
+                            }
+                        } catch (e) {
+                            // Invalid data, remove it
+                            localStorage.removeItem(key);
+                            cleanedCount++;
+                        }
+                    }
+                });
+                
+                if (cleanedCount > 0) {
+                    log(`Cleaned up ${cleanedCount} expired items`, 'cleanup');
+                }
+            }
+
+            // Main API
+            return {
+                configure(options = {}) {
+                    config = { ...config, ...options };
+                    log(`SmartStore configured: ${JSON.stringify(options)}`, 'config');
+                    
+                    if (config.autoCleanup) {
+                        cleanupExpired();
+                    }
+                    
+                    return this;
+                },
+
+                set(key, value, options = {}) {
+                    const storageKey = `__ss_${key}`;
+                    const useLocalStorage = isStorageAvailable('localStorage');
+                    
+                    // Auto JSON handling - stringify objects/arrays
+                    let processedValue = value;
+                    if (typeof value === 'object' && value !== null) {
+                        processedValue = value;
+                        log(`Auto JSON handling: Object/Array detected for key "${key}"`, 'json');
+                    }
+
+                    const data = {
+                        value: processedValue,
+                        encrypted: !!options.encrypt,
+                        expires: options.expires ? Date.now() + (options.expires * 1000) : null,
+                        timestamp: Date.now()
+                    };
+
+                    if (options.encrypt) {
+                        if (!config.secretKey) {
+                            const error = 'Encryption requested but no secret key configured';
+                            log(error, 'error');
+                            throw new Error(error);
+                        }
+                        data.value = encrypt(data.value, config.secretKey);
+                        log(`Data encrypted for key "${key}"`, 'encrypt');
+                    }
+
+                    const serializedData = JSON.stringify(data);
+                    
+                    if (useLocalStorage) {
+                        try {
+                            localStorage.setItem(storageKey, serializedData);
+                            log(`LocalStorage SET: ${key} (encrypted: ${!!options.encrypt}, expires: ${options.expires || 'never'})`, 'storage');
+                        } catch (e) {
+                            if (config.fallbackToCookies) {
+                                setCookie(storageKey, serializedData, { expires: options.expires ? options.expires / 86400 : undefined });
+                                log(`Fallback to cookies for key "${key}"`, 'fallback');
+                            } else {
+                                throw e;
+                            }
+                        }
+                    } else if (config.fallbackToCookies) {
+                        setCookie(storageKey, serializedData, { expires: options.expires ? options.expires / 86400 : undefined });
+                        log(`Cookies SET: ${key} (localStorage unavailable)`, 'storage');
+                    } else {
+                        const error = 'Storage unavailable and fallback disabled';
+                        log(error, 'error');
+                        throw new Error(error);
+                    }
+
+                    return this;
+                },
+
+                get(key) {
+                    const storageKey = `__ss_${key}`;
+                    let serializedData = null;
+                    let storageType = 'unknown';
+
+                    // Try localStorage first
+                    if (isStorageAvailable('localStorage')) {
+                        serializedData = localStorage.getItem(storageKey);
+                        storageType = 'localStorage';
+                    }
+
+                    // Fallback to cookies
+                    if (!serializedData && config.fallbackToCookies) {
+                        serializedData = getCookie(storageKey);
+                        storageType = 'cookies';
+                    }
+
+                    if (!serializedData) {
+                        log(`GET: ${key} - Not found`, 'storage');
+                        return null;
+                    }
+
+                    try {
+                        const data = JSON.parse(serializedData);
+                        
+                        // Check expiration
+                        if (data.expires && Date.now() > data.expires) {
+                            log(`GET: ${key} - Expired (${storageType})`, 'storage');
+                            this.remove(key); // Clean up expired data
+                            return null;
+                        }
+
+                        let value = data.value;
+                        
+                        if (data.encrypted) {
+                            if (!config.secretKey) {
+                                const error = 'Cannot decrypt: no secret key configured';
+                                log(error, 'error');
+                                throw new Error(error);
+                            }
+                            value = decrypt(value, config.secretKey);
+                            log(`Data decrypted for key "${key}"`, 'decrypt');
+                        }
+
+                        log(`GET: ${key} - Retrieved from ${storageType} (encrypted: ${data.encrypted})`, 'storage');
+                        return value;
+                        
+                    } catch (e) {
+                        log(`GET: ${key} - Parse error: ${e.message}`, 'error');
+                        this.remove(key); // Clean up corrupted data
+                        return null;
+                    }
+                },
+
+                remove(key) {
+                    const storageKey = `__ss_${key}`;
+                    
+                    if (isStorageAvailable('localStorage')) {
+                        localStorage.removeItem(storageKey);
+                    }
+                    
+                    if (config.fallbackToCookies) {
+                        removeCookie(storageKey);
+                    }
+                    
+                    log(`REMOVE: ${key}`, 'storage');
+                    return this;
+                },
+
+                clear() {
+                    let clearedCount = 0;
+                    
+                    if (isStorageAvailable('localStorage')) {
+                        const keys = Object.keys(localStorage);
+                        keys.forEach(key => {
+                            if (key.startsWith('__ss_')) {
+                                localStorage.removeItem(key);
+                                clearedCount++;
+                            }
+                        });
+                    }
+
+                    log(`CLEAR: Removed ${clearedCount} items`, 'storage');
+                    return this;
+                },
+
+                keys() {
+                    const keys = [];
+                    
+                    if (isStorageAvailable('localStorage')) {
+                        Object.keys(localStorage).forEach(key => {
+                            if (key.startsWith('__ss_')) {
+                                keys.push(key.substring(5)); // Remove __ss_ prefix
+                            }
+                        });
+                    }
+                    
+                    log(`KEYS: Found ${keys.length} keys`, 'storage');
+                    return keys;
+                },
+
+                exists(key) {
+                    return this.get(key) !== null;
+                },
+
+                getExpiration(key) {
+                    const storageKey = `__ss_${key}`;
+                    let serializedData = null;
+
+                    if (isStorageAvailable('localStorage')) {
+                        serializedData = localStorage.getItem(storageKey);
+                    }
+
+                    if (!serializedData && config.fallbackToCookies) {
+                        serializedData = getCookie(storageKey);
+                    }
+
+                    if (!serializedData) return null;
+
+                    try {
+                        const data = JSON.parse(serializedData);
+                        return data.expires ? new Date(data.expires) : null;
+                    } catch (e) {
+                        return null;
+                    }
+                },
+
+                getStats() {
+                    const keys = this.keys();
+                    let encrypted = 0;
+                    let expired = 0;
+                    const now = Date.now();
+
+                    keys.forEach(key => {
+                        const storageKey = `__ss_${key}`;
+                        try {
+                            const serializedData = localStorage.getItem(storageKey);
+                            if (serializedData) {
+                                const data = JSON.parse(serializedData);
+                                if (data.encrypted) encrypted++;
+                                if (data.expires && now > data.expires) expired++;
+                            }
+                        } catch (e) {
+                            // Ignore parse errors
+                        }
+                    });
+
+                    return {
+                        total: keys.length,
+                        encrypted,
+                        expired
+                    };
+                },
+
+                clearDebugLog() {
+                    debugLog = [];
+                    updateDebugDisplay();
+                }
+            };
+        })();
+
+        // Demo UI Functions
+        function configureSmartStore() {
+            const secretKey = document.getElementById('secretKey').value;
+            const fallbackToCookies = document.getElementById('fallbackToCookies').checked;
+            const autoCleanup = document.getElementById('autoCleanup').checked;
+            
+            SmartStore.configure({
+                secretKey: secretKey || null,
+                fallbackToCookies,
+                autoCleanup
+            });
+            
+            showSuccess('SmartStore configured successfully!');
+            updateStats();
+        }
+
+        function toggleDebug() {
+            const debugButton = document.getElementById('debugToggle');
+            const isDebugOn = debugButton.textContent.includes('ON');
+            
+            SmartStore.configure({ debug: !isDebugOn });
+            debugButton.textContent = isDebugOn ? 'Debug: OFF' : 'Debug: ON';
+            debugButton.className = isDebugOn ? 'toggle-button' : 'toggle-button active';
+            
+            if (!isDebugOn) {
+                document.getElementById('debugLog').textContent = 'Debug mode enabled. Operations will be logged here...';
+            } else {
+                document.getElementById('debugLog').textContent = 'Debug mode is OFF. Enable it to see operation logs...';
+            }
+        }
+
+        function storeData() {
+            const key = document.getElementById('storeKey').value;
+            const value = document.getElementById('storeValue').value;
+            const expiresIn = parseInt(document.getElementById('expiresIn').value) || null;
+            const encrypt = document.getElementById('encryptData').checked;
+            
+            if (!key) {
+                showWarning('Please enter a key');
+                return;
+            }
+            
+            try {
+                // Try to parse as JSON, fallback to string
+                let parsedValue;
+                try {
+                    parsedValue = JSON.parse(value);
+                } catch (e) {
+                    parsedValue = value;
+                }
+                
+                const options = {};
+                if (expiresIn) options.expires = expiresIn;
+                if (encrypt) options.encrypt = true;
+                
+                SmartStore.set(key, parsedValue, options);
+                showSuccess(`Data stored successfully! Key: "${key}"`);
+                updateStats();
+            } catch (error) {
+                showWarning(`Error storing data: ${error.message}`);
+            }
+        }
+
+        function retrieveData() {
+            const key = document.getElementById('retrieveKey').value;
+            
+            if (!key) {
+                showWarning('Please enter a key');
+                return;
+            }
+            
+            try {
+                const data = SmartStore.get(key);
+                document.getElementById('retrieveResult').textContent = 
+                    data !== null ? JSON.stringify(data, null, 2) : 'Key not found or expired';
+            } catch (error) {
+                document.getElementById('retrieveResult').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function checkExpiration() {
+            const key = document.getElementById('retrieveKey').value;
+            
+            if (!key) {
+                showWarning('Please enter a key');
+                return;
+            }
+            
+            const expiration = SmartStore.getExpiration(key);
+            const result = expiration 
+                ? `Expires: ${expiration.toLocaleString()}` 
+                : 'No expiration or key not found';
+            
+            document.getElementById('retrieveResult').textContent = result;
+        }
+
+        function removeData() {
+            const key = document.getElementById('removeKey').value;
+            
+            if (!key) {
+                showWarning('Please enter a key');
+                return;
+            }
+            
+            SmartStore.remove(key);
+            showSuccess(`Key "${key}" removed successfully!`);
+            updateStats();
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all SmartStore data?')) {
+                SmartStore.clear();
+                showSuccess('All data cleared successfully!');
+                updateStats();
+            }
+        }
+
+        function showAllKeys() {
+            const keys = SmartStore.keys();
+            document.getElementById('retrieveResult').textContent = 
+                keys.length > 0 ? `Keys: ${keys.join(', ')}` : 'No keys found';
+        }
+
+        function updateStats() {
+            const stats = SmartStore.getStats();
+            document.getElementById('totalKeys').textContent = stats.total;
+            document.getElementById('encryptedKeys').textContent = stats.encrypted;
+            document.getElementById('expiredKeys').textContent = stats.expired;
+        }
+
+        function clearDebugLog() {
+            SmartStore.clearDebugLog();
+        }
+
+        function showSuccess(message) {
+            // Create and show success notification
+            const notification = document.createElement('div');
+            notification.className = 'success';
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.maxWidth = '300px';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }
+
+        function showWarning(message) {
+            // Create and show warning notification
+            const notification = document.createElement('div');
+            notification.className = 'warning';
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.maxWidth = '300px';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }
+
+        // Initialize with some demo data
+        window.addEventListener('load', function() {
+            // Configure SmartStore with debug mode initially off
+            SmartStore.configure({
+                secretKey: 'my-secret-key-123',
+                debug: false,
+                fallbackToCookies: true,
+                autoCleanup: true
+            });
+            
+            updateStats();
+            
+            // Add some sample data for demonstration
+            SmartStore.set('demoString', 'Hello, SmartStore!');
+            SmartStore.set('demoObject', { user: 'John', role: 'admin', permissions: ['read', 'write'] });
+            SmartStore.set('demoArray', [1, 2, 3, 4, 5]);
+            SmartStore.set('tempData', 'This will expire soon', { expires: 60 });
+            
+            updateStats();
+        });
+    </script>
+</body>
+</html>
