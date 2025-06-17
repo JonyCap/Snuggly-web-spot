@@ -13,67 +13,258 @@
             color: white;
             text-shadow: 2px 2px 5px black;
             background: black;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
+            min-height: 150vh; /* Increased height */
+            padding-bottom: 50px;
         }
         h1 {
-            font-size: 32px;
+            font-size: 40px; /* Enlarged */
             margin-top: 20px;
+            animation: titlePulse 3s ease-in-out infinite;
         }
         h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 28px; /* Enlarged */
+            margin-bottom: 30px;
+            animation: subtitleGlow 2s ease-in-out infinite alternate;
         }
+        
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        @keyframes subtitleGlow {
+            0% { text-shadow: 2px 2px 5px black; }
+            100% { text-shadow: 2px 2px 15px rgba(77, 148, 255, 0.8), 0 0 20px rgba(77, 148, 255, 0.4); }
+        }
+        
         .container {
-            max-width: 800px;
+            max-width: 1000px; /* Enlarged */
             margin: auto;
             position: relative;
             z-index: 10;
+            padding: 0 20px;
         }
+        
         .btn {
             display: block;
-            width: 80%;
-            padding: 15px;
-            margin: 10px auto;
+            width: 85%; /* Enlarged */
+            padding: 20px; /* Enlarged */
+            margin: 15px auto; /* Enlarged spacing */
             background: rgba(0, 0, 0, 0.7);
             color: white;
-            font-size: 20px;
+            font-size: 24px; /* Enlarged */
             text-decoration: none;
-            border-radius: 10px;
-            transition: 0.3s;
+            border-radius: 15px; /* Enlarged */
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
         .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(77, 148, 255, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            border: 2px solid rgba(77, 148, 255, 0.6);
+            box-shadow: 0 8px 25px rgba(77, 148, 255, 0.4);
+            animation: buttonPulse 0.6s ease;
         }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+            animation: clickRipple 0.3s ease;
+        }
+        
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 8px 25px rgba(77, 148, 255, 0.4); }
+            50% { box-shadow: 0 8px 35px rgba(77, 148, 255, 0.6); }
+            100% { box-shadow: 0 8px 25px rgba(77, 148, 255, 0.4); }
+        }
+        
+        @keyframes clickRipple {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        
         .assignments {
             display: none;
-            margin-top: 10px;
+            margin-top: 20px; /* Enlarged */
+            animation: slideDown 0.5s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
         }
+        
+        .assignments.show {
+            display: block;
+            max-height: 1000px; /* Enlarged to accommodate more content */
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .assignment {
-            margin: 5px;
-            padding: 10px;
+            margin: 8px; /* Enlarged */
+            padding: 15px; /* Enlarged */
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
+            border-radius: 8px; /* Enlarged */
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            animation: assignmentFadeIn 0.3s ease-out;
         }
+        
+        .assignment:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(10px);
+            border-left: 4px solid #4d94ff;
+            box-shadow: 0 4px 15px rgba(77, 148, 255, 0.3);
+        }
+        
+        .assignment:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+        
+        .assignment:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+        
+        @keyframes assignmentFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
         .assignment a {
             color: white;
             text-decoration: none;
+            font-size: 16px; /* Enlarged */
+            transition: color 0.3s ease;
         }
+        
         .assignment a:hover {
             text-decoration: underline;
+            color: #4d94ff;
         }
+        
         .comment-box {
-            margin-top: 20px;
+            margin-top: 40px; /* Enlarged */
+            padding: 25px; /* Added padding */
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
         }
+        
+        .comment-box h3 {
+            font-size: 22px; /* Enlarged */
+            margin-bottom: 15px;
+        }
+        
+        .comment-box textarea {
+            width: 80%;
+            padding: 12px; /* Enlarged */
+            font-size: 16px; /* Enlarged */
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-box textarea:focus {
+            border-color: #4d94ff;
+            box-shadow: 0 0 15px rgba(77, 148, 255, 0.5);
+            outline: none;
+        }
+        
+        .comment-box button {
+            margin-top: 15px;
+            padding: 12px 25px; /* Enlarged */
+            font-size: 16px; /* Enlarged */
+            background: #4d94ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-box button:hover {
+            background: #3d7acc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(77, 148, 255, 0.4);
+        }
+        
+        .comment-box button:active {
+            transform: translateY(0);
+            animation: clickRipple 0.3s ease;
+        }
+        
         .instagram {
             display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
+            margin-top: 30px; /* Enlarged */
+            padding: 15px 30px; /* Enlarged */
             background: #E4405F;
             color: white;
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 18px;
+            border-radius: 15px; /* Enlarged */
+            font-size: 20px; /* Enlarged */
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .instagram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .instagram:hover {
+            background: #d63384;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(228, 64, 95, 0.4);
+        }
+        
+        .instagram:hover::before {
+            left: 100%;
         }
         
         /* Creating multiple moving stars */
@@ -93,11 +284,12 @@
         
         /* Generate multiple stars */
         .star-container {
-            position: absolute;
+            position: fixed; /* Changed to fixed */
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
+            z-index: 1;
         }
         
         .star-container div {
@@ -107,9 +299,10 @@
             height: 3px;
             border-radius: 50%;
             animation: move-stars linear infinite;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
         }
         
-        /* Random placement for stars */
+        /* Random placement for stars with varied speeds */
         .star-container div:nth-child(1) { top: 10%; left: 20%; animation-duration: 5s; }
         .star-container div:nth-child(2) { top: 40%; left: 80%; animation-duration: 6s; }
         .star-container div:nth-child(3) { top: 70%; left: 30%; animation-duration: 4s; }
@@ -131,46 +324,72 @@
         
         .grade-section {
             background: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 15px; /* Enlarged */
+            padding: 20px; /* Enlarged */
             text-align: center;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             border-left: 4px solid #4d94ff;
-            width: 180px;
+            width: 200px; /* Enlarged */
+            animation: gradeFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradeFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
         
         .grade-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+            animation: gradeHover 0.6s ease;
+        }
+        
+        @keyframes gradeHover {
+            0% { box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4); }
+            50% { box-shadow: 0 12px 35px rgba(77, 148, 255, 0.6); }
+            100% { box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4); }
         }
         
         .grade-title {
-            font-size: 18px;
+            font-size: 20px; /* Enlarged */
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 12px; /* Enlarged */
             color: #4d94ff;
         }
         
         .grade-value {
-            font-size: 50px;
+            font-size: 55px; /* Enlarged */
             font-weight: bold;
-            margin: 15px 0;
+            margin: 18px 0; /* Enlarged */
             color: #4d94ff;
+            animation: gradeValuePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gradeValuePulse {
+            0%, 100% { text-shadow: 0 0 5px rgba(77, 148, 255, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(77, 148, 255, 0.8), 0 0 30px rgba(77, 148, 255, 0.6); }
         }
         
         .grade-date {
-            font-size: 12px;
+            font-size: 13px; /* Enlarged */
             color: #aaa;
-            margin-top: 5px;
+            margin-top: 8px; /* Enlarged */
         }
         
         .loading {
             font-style: italic;
             color: #aaa;
-            font-size: 14px;
+            font-size: 16px; /* Enlarged */
+            animation: loadingDots 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes loadingDots {
+            0%, 20% { opacity: 0.2; }
+            50% { opacity: 1; }
+            80%, 100% { opacity: 0.2; }
         }
         
         @media (max-width: 768px) {
@@ -178,9 +397,22 @@
                 position: relative;
                 top: auto;
                 right: auto;
-                margin: 20px auto;
+                margin: 30px auto; /* Enlarged */
                 width: 100%;
-                max-width: 250px;
+                max-width: 280px; /* Enlarged */
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                font-size: 20px;
+                padding: 18px;
             }
         }
     </style>
@@ -271,17 +503,40 @@
 
         function toggleAssignments(id) {
             var section = document.getElementById(id);
-            if (section.style.display === "block") {
-                section.style.display = "none";
-            } else {
-                section.style.display = "block";
+            var isCurrentlyVisible = section.classList.contains('show');
+            
+            // Close all other sections first
+            var allSections = document.querySelectorAll('.assignments');
+            allSections.forEach(function(sec) {
+                sec.classList.remove('show');
+                sec.style.display = 'none';
+            });
+            
+            // Toggle current section
+            if (!isCurrentlyVisible) {
+                section.style.display = 'block';
+                // Small delay to ensure display: block is applied before animation
+                setTimeout(function() {
+                    section.classList.add('show');
+                }, 10);
             }
         }
 
         function saveComment() {
             var comment = document.getElementById("comment").value;
             if (comment) {
+                // Add a success animation effect
+                var button = event.target;
+                button.style.background = '#28a745';
+                button.textContent = 'Saved!';
+                
+                setTimeout(function() {
+                    button.style.background = '#4d94ff';
+                    button.textContent = 'Submit';
+                }, 2000);
+                
                 alert("Your comment has been saved: " + comment);
+                document.getElementById("comment").value = ''; // Clear the textarea
             } else {
                 alert("Please write something before submitting!");
             }
