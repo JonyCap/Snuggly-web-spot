@@ -185,62 +185,92 @@
     </style>
 </head>
 <body>
+
+    <div id="summary-prd-wrapper" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; align-items:flex-start; margin-bottom:20px;">
+
+<details id="project-summary" style="margin-bottom: 20px; border: 1px solid #ccc; border-radius: 10px; background-color: #f0f4ff; padding: 15px;">
+        <summary style="font-size: 1.2em; font-weight: bold; cursor: pointer;">📘 Summary</summary>
+        <div style="margin-top: 10px;">
+            <h3>👨‍💻 How This Project Was Created</h3>
+            <p>This SmartStore encryption demo wasn't made all at once. It was built gradually, following a set of logical steps and design practices suggested during the development process.</p>
+            <ol>
+                <li>I began by defining our goal: a secure local storage interface using AES encryption.</li>
+                <li>Step-by-step, components were added: configuration, storing and retrieving data, statistics, and debug features.</li>
+                <li>I tested each feature as we went, adjusting and learning during the process.</li>
+                <li>It wasn’t just copied—it was developed thoughtfully, with guidance, feedback, and hands-on code.</li>
+            </ol>
+
+            <h3>📂 About This Project</h3>
+            <p>This project is a student demonstration of how secure web storage can be implemented using JavaScript and CryptoJS. It showcases encryption, data expiration, cookie fallback, and interactive debugging tools.</p>
+
+            <h3>🌐 About This Site</h3>
+            <p>The site simulates how developers might work with localStorage in a more advanced way, including visual feedback, interactive inputs, and clean UI design. It includes configuration settings, storage management tools, and real-time statistics.</p>
+
+            <h3>📌 Note</h3>
+            <p>This summary was written as part of my reflection and project documentation. It’s here to explain—not just what it does—but how it was built and why.</p>
+        </div>
+    </details>
+    <button onclick="togglePRD()">📄 Product Requirements (PRD)</button>
+</div>
+
+<div id="prdSection" class="demo-section" style="display: none; background: #fffefc; border: 2px solid #f0e3d6;">
+        <h3>📄 Product Requirements Document (PRD)</h3>
+        <pre style="white-space: pre-wrap; font-size: 14px; line-height: 1.6;">
+<b>1. Project Title</b>
+SmartStore: Secure Client-Side Data Storage with AES Encryption
+
+<b>2. Overview</b>
+SmartStore is a lightweight browser-based data storage utility using localStorage and cookie fallback with optional AES encryption and UI-based control.
+
+<b>3. Objectives</b>
+- Store data securely in the browser
+- Use AES encryption
+- Support data expiration
+- Provide a user-friendly interface
+- Fallback to cookies if needed
+
+<b>4. Target Users</b>
+- Frontend developers
+- Web learners
+- PWA/app builders
+
+<b>5. Core Features</b>
+✔ AES Encryption
+✔ Data Expiry and Auto Cleanup
+✔ Fallback to Cookies
+✔ Debug Logs
+✔ Statistics Tracking
+
+<b>6. Functional Requirements</b>
+- Store, retrieve, delete keys
+- Encrypt/decrypt data
+- Support JSON values
+- Toggle debug mode
+- Show usage stats
+- Live UI with notifications
+
+<b>7. Non-Functional Requirements</b>
+- Fully offline
+- Lightweight and responsive
+- Simple and modular
+
+<b>8. Tech Stack</b>
+- HTML, CSS, JS
+- CryptoJS 4.1.1
+
+<b>9. Future Improvements</b>
+- User auth for encryption access
+- Export/import data
+- Responsive UI enhancements
+- Multilingual support
+
+<b>10. Conclusion</b>
+SmartStore is a powerful demonstration of secure, local browser storage for educational or practical use in modern frontend projects.
+        </pre>
+    </div>
+
     <div class="container">
         <h1>🔐 SmartStore with AES Encryption</h1>
-
-<div style="text-align: right; margin-bottom: 20px;">
-    <button onclick="toggleSummary()" id="summaryBtn" style="
-        background: linear-gradient(135deg, #ff6f61, #de6262);
-        color: white;
-        font-size: 15px;
-        font-weight: 600;
-        border: none;
-        border-radius: 12px;
-        padding: 12px 25px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(222, 98, 98, 0.4);
-    ">
-        📘 Summary
-    </button>
-</div>
-
-
-<div id="summarySection" style="display:none; background:#fff8f8; border:2px solid #ff9999; border-radius:18px; padding:30px; margin-bottom:30px; animation: fadeIn 0.5s ease-in-out;">
-    <h2 style="color:#de6262; font-size: 24px; margin-top: 0;">📘 Project Summary</h2>
-<h3 style="color:#444; margin-top: 10px; font-weight: normal;">👨‍💻 Created by Jony</h3>
-    <p style="font-size: 16px; line-height: 1.6;">This project, titled <strong>SmartStore with AES Encryption</strong>, was developed as part of a hands-on academic project focused on modern encryption techniques and client-side data storage.</p>
-    <p style="font-size: 16px; line-height: 1.6;">Rather than copying content from the internet or AI, I followed a clear step-by-step development process with understanding and improvements throughout:</p>
-    <ul style="font-size: 16px; line-height: 1.8; padding-left: 20px;">
-        <li>✅ I began by understanding how <code>localStorage</code> and <code>cookies</code> work in browsers.</li>
-        <li>✅ Then added AES encryption using <code>CryptoJS</code> to protect stored data.</li>
-        <li>✅ I introduced optional expiration control for keys and automatic cleanup features.</li>
-        <li>✅ User interface was styled carefully to make it interactive and visually appealing.</li>
-        <li>✅ A real-time debug log and statistics panel were added for better understanding.</li>
-        <li>✅ I constantly tested, debugged, and improved the project through iteration, not just copying code.</li>
-    </ul>
-        <p style="color:#999; font-size: 14px; text-align:right;"><em>Last updated on 2025-06-17 06:53:32</em></p>
-</div>
-<style>
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>
-<script>
-    function toggleSummary() {
-        const section = document.getElementById("summarySection");
-        const button = document.getElementById("summaryBtn");
-        if (section.style.display === "none") {
-            section.style.display = "block";
-            button.textContent = "📘 Hide Summary";
-        } else {
-            section.style.display = "none";
-            button.textContent = "📘 Summary";
-        }
-    }
-</script>
-
         
         <div class="demo-section">
             <h3>⚙️ Configuration</h3>
@@ -870,6 +900,19 @@
             
             updateStats();
         });
-    </script>
+    
+
+// Toggle PRD section visibility
+function togglePRD() {
+    const prd = document.getElementById('prdSection');
+    if (!prd) return;
+    if (prd.style.display === 'none' || prd.style.display === '') {
+        prd.style.display = 'block';
+        prd.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        prd.style.display = 'none';
+    }
+}
+</script>
 </body>
 </html>
