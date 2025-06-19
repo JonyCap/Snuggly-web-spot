@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Slotting Optimizer - Week 12 Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #333;
+            min-width: 120px;
+        }
+
+        select, input, button {
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .warehouse-layout {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .warehouse-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 120px);
+            grid-template-rows: repeat(5, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .slot {
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .slot:hover::before {
+            left: 100%;
+        }
+
+        .slot.empty {
+            background: #f8f9fa;
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+
+        .slot.dock {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            font-weight: bold;
+            border-color: #0c5460;
+        }
+
+        .slot.obstacle {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            font-weight: bold;
+            border-color: #343a40;
+        }
+
+        .slot.class-a {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border-color: #bd2130;
+            animation: pulse-a 3s infinite;
+        }
+
+        .slot.class-b {
+            background: linear-gradient(135deg, #fd7e14, #e55a00);
+            color: white;
+            border-color: #dc5200;
+        }
+
+        .slot.class-c {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border-color: #1c7430;
+        }
+
+        .slot.optimizing {
+            animation: optimizeMove 1.2s ease-in-out;
+        }
+
+        @keyframes pulse-a {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+        }
+
+        @keyframes optimizeMove {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-15px) rotate(8deg) scale(1.1); }
+            75% { transform: translateY(15px) rotate(-8deg) scale(1.1); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .current-layout {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .layout-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .sku-frequency {
+            font-size: 9px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .warehouse-grid {
+                grid-template-columns: repeat(6, 80px);
+                grid-template-rows: repeat(5, 70px);
+                gap: 5px;
+            }
+            
+            .slot {
+                font-size: 9px;
+            }
+            
+            .control-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏭 Warehouse Slotting Optimizer</h1>
+            <p>Week 12 - Initial Layout Heatmap Analysis</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Optimization Strategy:</label>
+                <select id="strategy">
+                    <option value="abc" selected>ABC Classification</option>
+                    <option value="frequency">Pick Frequency</option>
+                    <option value="dock-proximity">Dock Proximity</option>
+                    <option value="hybrid">Hybrid (ABC + Distance)</option>
+                </select>
+                
+                <button onclick="optimizeLayout()">🚀 Optimize Layout</button>
+                <button onclick="showCurrentLayout()">📋 Show Current</button>
+                <button onclick="resetLayout()">🔄 Reset</button>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="current-layout">
+            <div class="layout-toggle">
+                <div class="toggle-btn active" onclick="toggleView('current')">Current Layout</div>
+                <div class="toggle-btn" onclick="toggleView('optimized')">Optimized Layout</div>
+            </div>
+        </div>
+
+        <div class="warehouse-layout">
+            <h2>📦 Warehouse Layout (5x6 Grid)</h2>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #dc3545, #c82333);"></div>
+                    <span>Class A (High Frequency)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #fd7e14, #e55a00);"></div>
+                    <span>Class B (Medium Frequency)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #28a745, #1e7e34);"></div>
+                    <span>Class C (Low Frequency)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #17a2b8, #138496);"></div>
+                    <span>Dock</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #6c757d, #495057);"></div>
+                    <span>Obstacle</span>
+                </div>
+            </div>
+            <div id="warehouseGrid" class="warehouse-grid"></div>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-value" id="totalSlots">30</div>
+                <div class="metric-label">Total Slots</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="occupiedSlots">28</div>
+                <div class="metric-label">Occupied Slots</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="totalPicks">753</div>
+                <div class="metric-label">Total Daily Picks</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="classAItems">11</div>
+                <div class="metric-label">Class A Items</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="avgDistance">2.4</div>
+                <div class="metric-label">Avg Pick Distance</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="efficiencyScore">78%</div>
+                <div class="metric-label">Layout Efficiency</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Actual SKU data from your spreadsheet
+        const skuData = [
+            { sku: 'SKU19', frequency: 44, classification: 'A', cumPercent: 5.84 },
+            { sku: 'SKU13', frequency: 44, classification: 'A', cumPercent: 11.64 },
+            { sku: 'SKU1', frequency: 43, classification: 'A', cumPercent: 17.35 },
+            { sku: 'SKU11', frequency: 40, classification: 'A', cumPercent: 22.84 },
+            { sku: 'SKU10', frequency: 38, classification: 'A', cumPercent: 27.89 },
+            { sku: 'SKU6', frequency: 39, classification: 'A', cumPercent: 33.07 },
+            { sku: 'SKU21', frequency: 38, classification: 'A', cumPercent: 38.11 },
+            { sku: 'SKU12', frequency: 36, classification: 'A', cumPercent: 42.89 },
+            { sku: 'SKU24', frequency: 33, classification: 'A', cumPercent: 47.28 },
+            { sku: 'SKU20', frequency: 30, classification: 'A', cumPercent: 51.26 },
+            { sku: 'SKU3', frequency: 29, classification: 'A', cumPercent: 55.11 },
+            { sku: 'SKU28', frequency: 25, classification: 'B', cumPercent: 58.43 },
+            { sku: 'SKU11', frequency: 24, classification: 'B', cumPercent: 61.62 },
+            { sku: 'SKU14', frequency: 24, classification: 'B', cumPercent: 64.81 },
+            { sku: 'SKU18', frequency: 24, classification: 'B', cumPercent: 68.00 },
+            { sku: 'SKU8', frequency: 23, classification: 'B', cumPercent: 71.05 },
+            { sku: 'SKU16', frequency: 22, classification: 'B', cumPercent: 73.97 },
+            { sku: 'SKU26', frequency: 22, classification: 'B', cumPercent: 76.89 },
+            { sku: 'SKU5', frequency: 21, classification: 'C', cumPercent: 79.68 },
+            { sku: 'SKU23', frequency: 21, classification: 'C', cumPercent: 82.47 },
+            { sku: 'SKU7', frequency: 19, classification: 'C', cumPercent: 84.99 },
+            { sku: 'SKU2', frequency: 15, classification: 'C', cumPercent: 86.99 },
+            { sku: 'SKU25', frequency: 12, classification: 'C', cumPercent: 88.58 },
+            { sku: 'SKU9', frequency: 11, classification: 'C', cumPercent: 90.04 },
+            { sku: 'SKU10', frequency: 11, classification: 'C', cumPercent: 91.50 },
+            { sku: 'SKU4', frequency: 8, classification: 'C', cumPercent: 92.56 },
+            { sku: 'SKU15', frequency: 3, classification: 'C', cumPercent: 92.96 },
+            { sku: 'SKU17', frequency: 2, classification: 'C', cumPercent: 93.23 },
+            { sku: 'SKU22', frequency: 2, classification: 'C', cumPercent: 93.50 }
+        ];
+
+        // Current layout from your spreadsheet
+        const currentLayout = [
+            ['SKU15', 'SKU9', 'SKU5', 'SKU11', 'SKU21', 'SKU10'],
+            ['SKU4', 'SKU7', 'SKU14', 'SKU12', 'SKU18', 'SKU2'],
+            ['SKU28', 'SKU8', 'SKU24', 'SKU3', 'OBSTACLE', 'SKU16'],
+            ['SKU26', 'SKU20', 'SKU17', 'SKU29', 'SKU6', 'SKU1'],
+            ['SKU23', 'SKU6', 'SKU19', 'DOCK', 'SKU27', 'SKU21']
+        ];
+
+        let warehouse = [];
+        let currentView = 'current';
+        const rows = 5, cols = 6;
+
+        function initializeWarehouse() {
+            warehouse = [];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const item = currentLayout[r][c];
+                    warehouse.push({
+                        id: r * cols + c,
+                        row: r,
+                        col: c,
+                        item: item,
+                        isEmpty: false,
+                        isDock: item === 'DOCK',
+                        isObstacle: item === 'OBSTACLE'
+                    });
+                }
+            }
+        }
+
+        function getSkuInfo(sku) {
+            return skuData.find(item => item.sku === sku) || { 
+                frequency: 0, 
+                classification: 'C', 
+                cumPercent: 100 
+            };
+        }
+
+        function renderWarehouse() {
+            const grid = document.getElementById('warehouseGrid');
+            grid.innerHTML = '';
+            
+            warehouse.forEach(slot => {
+                const slotElement = document.createElement('div');
+                slotElement.className = 'slot';
+                slotElement.id = `slot-${slot.id}`;
+                
+                if (slot.isDock) {
+                    slotElement.classList.add('dock');
+                    slotElement.innerHTML = '<div>DOCK</div>';
+                } else if (slot.isObstacle) {
+                    slotElement.classList.add('obstacle');
+                    slotElement.innerHTML = '<div>OBSTACLE</div>';
+                } else if (slot.isEmpty) {
+                    slotElement.classList.add('empty');
+                    slotElement.innerHTML = `<div>${getSlotLabel(slot.row, slot.col)}</div>`;
+                } else {
+                    const skuInfo = getSkuInfo(slot.item);
+                    slotElement.classList.add(`class-${skuInfo.classification.toLowerCase()}`);
+                    slotElement.innerHTML = `
+                        <div>${slot.item}</div>
+                        <div class="sku-frequency">${skuInfo.frequency}/day</div>
+                    `;
+                }
+                
+                slotElement.addEventListener('click', () => showSlotInfo(slot));
+                grid.appendChild(slotElement);
+            });
+        }
+
+        function getSlotLabel(row, col) {
+            return `${row}-${col}`;
+        }
+
+        function optimizeLayout() {
+            const strategy = document.getElementById('strategy').value;
+            const progressBar = document.getElementById('progressBar');
+            
+            // Animate progress bar
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 3;
+                progressBar.style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        progressBar.style.width = '0%';
+                    }, 1000);
+                }
+            }, 60);
+            
+            setTimeout(() => {
+                optimizeByStrategy(strategy);
+                currentView = 'optimized';
+                updateToggleButtons();
+            }, 1500);
+        }
+
+        function optimizeByStrategy(strategy) {
+            // Get available slots (not dock or obstacle)
+            const availableSlots = warehouse.filter(slot => !slot.isDock && !slot.isObstacle);
+            const dockPosition = warehouse.find(slot => slot.isDock);
+            
+            // Sort SKUs based on strategy
+            let sortedSkus = [];
+            switch(strategy) {
+                case 'abc':
+                    sortedSkus = [...skuData].sort((a, b) => {
+                        if (a.classification !== b.classification) {
+                            return a.classification.localeCompare(b.classification);
+                        }
+                        return b.frequency - a.frequency;
+                    });
+                    break;
+                case 'frequency':
+                    sortedSkus = [...skuData].sort((a, b) => b.frequency - a.frequency);
+                    break;
+                case 'dock-proximity':
+                case 'hybrid':
+                    sortedSkus = [...skuData].sort((a, b) => {
+                        const aScore = a.frequency * (a.classification === 'A' ? 3 : a.classification === 'B' ? 2 : 1);
+                        const bScore = b.frequency * (b.classification === 'A' ? 3 : b.classification === 'B' ? 2 : 1);
+                        return bScore - aScore;
+                    });
+                    break;
+            }
+            
+            // Calculate distances from dock for each available slot
+            const slotsWithDistance = availableSlots.map(slot => ({
+                ...slot,
+                distanceFromDock: Math.abs(slot.row - dockPosition.row) + Math.abs(slot.col - dockPosition.col)
+            }));
+            
+            // Sort slots by distance from dock (closest first)
+            slotsWithDistance.sort((a, b) => a.distanceFromDock - b.distanceFromDock);
+            
+            // Place SKUs with animation
+            sortedSkus.forEach((sku, index) => {
+                if (index < slotsWithDistance.length) {
+                    setTimeout(() => {
+                        const slot = warehouse.find(s => s.id === slotsWithDistance[index].id);
+                        slot.item = sku.sku;
+                        slot.isEmpty = false;
+                        
+                        const slotElement = document.getElementById(`slot-${slot.id}`);
+                        slotElement.classList.add('optimizing');
+                        
+                        setTimeout(() => {
+                            slotElement.classList.remove('optimizing');
+                            renderWarehouse();
+                            updateMetrics();
+                        }, 1200);
+                    }, index * 80);
+                }
+            });
+        }
+
+        function showCurrentLayout() {
+            initializeWarehouse();
+            renderWarehouse();
+            currentView = 'current';
+            updateToggleButtons();
+            updateMetrics();
+        }
+
+        function resetLayout() {
+            warehouse.forEach(slot => {
+                if (!slot.isDock && !slot.isObstacle) {
+                    slot.item = null;
+                    slot.isEmpty = true;
+                }
+            });
+            renderWarehouse();
+            updateMetrics();
+        }
+
+        function toggleView(view) {
+            currentView = view;
+            updateToggleButtons();
+            if (view === 'current') {
+                showCurrentLayout();
+            }
+        }
+
+        function updateToggleButtons() {
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[onclick="toggleView('${currentView}')"]`).classList.add('active');
+        }
+
+        function showSlotInfo(slot) {
+            if (slot.isDock) {
+                alert('DOCK - Loading/Unloading Area');
+            } else if (slot.isObstacle) {
+                alert('OBSTACLE - Blocked Area');
+            } else if (slot.isEmpty) {
+                alert(`Empty Slot ${getSlotLabel(slot.row, slot.col)}`);
+            } else {
+                const skuInfo = getSkuInfo(slot.item);
+                alert(`${slot.item}\n` +
+                      `Position: ${getSlotLabel(slot.row, slot.col)}\n` +
+                      `Pick Frequency: ${skuInfo.frequency}/day\n` +
+                      `Classification: ${skuInfo.classification}\n` +
+                      `Cumulative %: ${skuInfo.cumPercent}%`);
+            }
+        }
+
+        function updateMetrics() {
+            const totalSlots = warehouse.length;
+            const occupiedSlots = warehouse.filter(slot => !slot.isEmpty && !slot.isDock && !slot.isObstacle).length;
+            const totalPicks = skuData.reduce((sum, sku) => sum + sku.frequency, 0);
+            const classAItems = skuData.filter(sku => sku.classification === 'A').length;
+            
+            // Calculate average distance from dock
+            const dockPosition = warehouse.find(slot => slot.isDock);
+            let totalWeightedDistance = 0;
+            let totalFrequency = 0;
+            
+            warehouse.forEach(slot => {
+                if (!slot.isEmpty && !slot.isDock && !slot.isObstacle) {
+                    const skuInfo = getSkuInfo(slot.item);
+                    const distance = Math.abs(slot.row - dockPosition.row) + Math.abs(slot.col - dockPosition.col);
+                    totalWeightedDistance += distance * skuInfo.frequency;
+                    totalFrequency += skuInfo.frequency;
+                }
+            });
+            
+            const avgDistance = totalFrequency > 0 ? (totalWeightedDistance / totalFrequency).toFixed(1) : 0;
+            
+            // Calculate efficiency score (lower average distance = higher efficiency)
+            const maxDistance = 6; // Maximum possible distance in 5x6 grid
+            const efficiencyScore = Math.round((1 - (avgDistance / maxDistance)) * 100);
+            
+            document.getElementById('totalSlots').textContent = totalSlots;
+            document.getElementById('occupiedSlots').textContent = occupiedSlots;
+            document.getElementById('totalPicks').textContent = totalPicks;
+            document.getElementById('classAItems').textContent = classAItems;
+            document.getElementById('avgDistance').textContent = avgDistance;
+            document.getElementById('efficiencyScore').textContent = Math.max(0, efficiencyScore) + '%';
+        }
+
+        // Initialize
+        initializeWarehouse();
+        renderWarehouse();
+        updateMetrics();
+    </script>
+</body>
+</html>
