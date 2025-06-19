@@ -1,0 +1,485 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cosmic Courier: Strategy Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at center, #080820 0%, #000010 100%);
+      color: #e0e0ff;
+      margin: 0;
+      overflow: hidden;
+    }
+    h1 {
+      text-align: center;
+      color: #7d7dff;
+      text-shadow: 0 0 10px #5d5dff;
+      padding: 10px 0;
+      margin:0;
+    }
+    #gameArea {
+      width: 100vw;
+      height: 78vh;
+      position: relative;
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+      background-size: cover;
+    }
+    .star {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      position: absolute;
+      text-align: center;
+      line-height: 32px;
+      font-weight: bold;
+      color: #fff;
+      z-index: 2;
+      cursor: pointer;
+      user-select:none;
+    }
+    .hub {
+      background: #ff4444;
+      box-shadow: 0 0 15px #ff4444;
+      border: 2px solid #fff;
+    }
+    .system {
+      background: #5555ff;
+      box-shadow: 0 0 10px #8888ff;
+      border: 2px solid #ffffff33;
+    }
+    #stats, #route, #leaderboard {
+      position: absolute;
+      background: rgba(0,0,50,0.75);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      z-index: 5;
+      backdrop-filter: blur(4px);
+    }
+    #leaderboard { top: 20px; left: 20px;}
+    #stats       { top: 20px; right: 20px;}
+    #route       { bottom: 20px; right: 20px;}
+
+    button {
+      background-color: #5d5dff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Orbitron',sans-serif;
+    }
+    button:hover {
+      background-color: #7d7dff;
+      box-shadow: 0 0 10px #5d5dff;
+    }
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    line {
+      stroke: cyan;
+      stroke-width: 2;
+    }
+    text.segment-label{
+      fill:#e0e0ff;
+      font-size:12px;
+      text-shadow:0 0 3px #000;
+      pointer-events:none;
+    }
+
+    /* Control buttons */
+    .panel-button {
+      position: absolute;
+      z-index: 10;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #5d5dff;
+      color: white;
+      border: none;
+      font-family:'Orbitron',sans-serif;
+    }
+    #howToPlayBtn { top: 20px; left: 50%; transform: translateX(-50%);}
+    #reportBtn    { bottom: 20px; left: 20px;}
+    #distBtn      { top: 60px; left: 50%; transform: translateX(-50%);}
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      z-index: 100;
+      overflow: auto;
+    }
+    .modal-content {
+      background: rgba(20,20,60,0.9);
+      margin: 5% auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 900px;
+      border-radius: 15px;
+      border: 2px solid #5d5dff;
+      box-shadow: 0 0 20px #5d5dff;
+      color: #e0e0ff;
+    }
+    .close {
+      color: #7d7dff;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #e0e0ff;
+      text-shadow: 0 0 10px #5d5dff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #5d5dff;
+      padding: 6px 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background-color: rgba(93, 93, 255, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <h1>COSMIC COURIER: INTERSTELLAR STRATEGY CHALLENGE</h1>
+  <div id="gameArea">
+    <svg id="pathLines" width="100%" height="100%"></svg>
+  </div>
+
+  <div id="leaderboard">
+    <h3>Leaderboard (Lowest Energy)</h3>
+    <ul id="topScores"></ul>
+  </div>
+
+  <div id="stats">
+    <div><strong>Total Distance:</strong> <span id="totalDistance">0</span> km</div>
+    <div><strong>Total Energy:</strong> <span id="totalEnergy">0</span> units</div>
+    <div><strong>Systems in Route:</strong> <span id="systemsVisited">0</span></div>
+  </div>
+
+  <div id="route">
+    <div><strong>Current Route:</strong> <span id="routeDisplay">None</span></div>
+    <button onclick="clearRoute()">Clear Route</button>
+    <button onclick="startRoute()" id="startBtn" disabled>Execute Route</button>
+  </div>
+
+  <!-- Control buttons -->
+  <button id="howToPlayBtn" class="panel-button" onclick="openHowToPlay()">How to Play</button>
+  <button id="distBtn" class="panel-button" onclick="openDistance()">Distance Map</button>
+  <button id="reportBtn" class="panel-button" onclick="openReport()">Mission Report</button>
+
+  <!-- How to Play Modal -->
+  <div id="howToPlayModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeHowToPlay()">&times;</span>
+      <h2>HOW TO PLAY COSMIC COURIER</h2>
+      <p>Welcome, courier! Your objective is to create the most energy‑efficient round‑trip starting from the red <strong>Central Hub (H)</strong>.</p>
+      <ol>
+        <li><strong>Start at H:</strong> Every route must begin at the hub. Click H first.</li>
+        <li><strong>Add stops:</strong> Click blue systems (A–F) to add them in order. Segment distance & energy show up live on the map.</li>
+        <li><strong>Close the loop:</strong> Hit <em>Execute Route</em>. Your ship will auto‑return to H and record your score.</li>
+        <li><strong>Plan smarter:</strong> Use the <em>Distance Map</em> to see the full distance matrix before committing.</li>
+      </ol>
+      <p>Lowest <strong>Energy</strong> written in the leaderboard reigns supreme. Good luck!</p>
+    </div>
+  </div>
+
+  <!-- Distance Matrix Modal -->
+  <div id="distanceModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeDistance()">&times;</span>
+      <h2>FULL DISTANCE / ENERGY CHART</h2>
+      <p>Distances are Euclidean pixel‑scaled kilometres; Energy = 0.8 × Distance.</p>
+      <table id="distTable"></table>
+    </div>
+  </div>
+
+  <!-- Report Modal -->
+  <div id="reportModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeReport()">&times;</span>
+      <h2>MISSION REPORT</h2>
+      <div id="missionReport">
+        <div><strong>Route:</strong> <span id="reportRoute">None</span></div>
+        <div><strong>Total Distance:</strong> <span id="reportDistance">0</span> km</div>
+        <div><strong>Energy Consumed:</strong> <span id="reportEnergy">0</span> units</div>
+        <div><strong>Star Systems Visited:</strong> <span id="reportSystems">0</span></div>
+        <div><strong>Status:</strong> <span id="missionStatus">Not started</span></div>
+      </div>
+
+      <h3>Segment Breakdown</h3>
+      <table>
+        <thead><tr><th>Segment</th><th>Distance (km)</th><th>Energy</th></tr></thead>
+        <tbody id="routeTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+  const stars = [];
+  const route = [];
+  const gameArea = document.getElementById('gameArea');
+  const pathLines = document.getElementById('pathLines');
+  const routeDisplay = document.getElementById('routeDisplay');
+  const startBtn = document.getElementById('startBtn');
+  const totalDistanceDisplay = document.getElementById('totalDistance');
+  const totalEnergyDisplay = document.getElementById('totalEnergy');
+  const systemsVisitedDisplay = document.getElementById('systemsVisited');
+  const topScoresList = document.getElementById('topScores');
+
+  let ship;
+
+  function createStar(x, y, name, isHub = false) {
+    const star = document.createElement('div');
+    star.className = isHub ? 'star hub' : 'star system';
+    star.style.left = x + 'px';
+    star.style.top = y + 'px';
+    star.textContent = name;
+    gameArea.appendChild(star);
+
+    star.addEventListener('click', () => {
+      // --- VALIDATE FIRST CLICK MUST BE HUB ---
+      if (route.length === 0 && !isHub) {
+        alert('Each route must start at the Central Hub (H). Please click H first.');
+        return;
+      }
+      if (!route.includes(star)) {
+        route.push(star);
+        updateStats();
+        drawLines();
+      }
+      startBtn.disabled = route.length < 2;
+    });
+
+    stars.push({ name, x, y, isHub, element: star });
+  }
+
+  function distanceBetween(a, b){
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    return Math.round(Math.sqrt(dx * dx + dy * dy));
+  }
+
+  function updateStats() {
+    routeDisplay.textContent = route.map(s => s.textContent).join(' → ') || 'None';
+    systemsVisitedDisplay.textContent = route.length;
+
+    let total = 0;
+    if (route.length > 1) {
+      for (let i = 0; i < route.length - 1; i++) {
+        total += distanceBetween(route[i], route[i + 1]);
+      }
+    }
+    totalDistanceDisplay.textContent = total;
+    totalEnergyDisplay.textContent = Math.round(total * 0.8);
+
+    // Report values
+    document.getElementById('reportRoute').textContent = routeDisplay.textContent;
+    document.getElementById('reportDistance').textContent = total;
+    document.getElementById('reportEnergy').textContent = Math.round(total * 0.8);
+    document.getElementById('reportSystems').textContent = route.length;
+    updateRouteTable();
+  }
+
+  function drawLines() {
+    pathLines.innerHTML = '';
+    for (let i = 0; i < route.length - 1; i++) {
+      const a = route[i];
+      const b = route[i + 1];
+
+      const x1 = a.offsetLeft + 16;
+      const y1 = a.offsetTop + 16;
+      const x2 = b.offsetLeft + 16;
+      const y2 = b.offsetTop + 16;
+
+      const dist = distanceBetween(stars.find(s=>s.element===a), stars.find(s=>s.element===b));
+      const energy = Math.round(dist * 0.8);
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1', x1);
+      line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2);
+      line.setAttribute('y2', y2);
+      pathLines.appendChild(line);
+
+      // Add label
+      const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+      text.setAttribute('x', (x1+x2)/2);
+      text.setAttribute('y', (y1+y2)/2 - 6);
+      text.setAttribute('class','segment-label');
+      text.setAttribute('text-anchor','middle');
+      text.textContent = dist + ' / ' + energy;
+      pathLines.appendChild(text);
+    }
+  }
+
+  function clearRoute() {
+    route.length = 0;
+    pathLines.innerHTML='';
+    updateStats();
+    startBtn.disabled = true;
+    document.getElementById('missionStatus').textContent = 'Not started';
+    updateRouteTable();
+  }
+
+  function startRoute() {
+    if(route.length < 2){ return; }
+    if(route[0].textContent !== 'H'){
+      alert('Route must begin with H and return to H.');
+      return;
+    }
+    // Ensure route ends at hub
+    if(route[route.length-1].textContent !== 'H'){
+      route.push(route[0]);
+      updateStats();
+      drawLines();
+    }
+
+    document.getElementById('missionStatus').textContent = 'In progress';
+    animateShip(0);
+  }
+
+  function animateShip(index){
+    if(index >= route.length){ 
+      document.getElementById('missionStatus').textContent = 'Completed';
+      saveScore();
+      return;
+    }
+    if(!ship){
+      ship = document.createElement('div');
+      ship.style.cssText='width:22px;height:22px;background:gold;border-radius:50%;position:absolute;z-index:10;transform:translate(-50%,-50%)';
+      gameArea.appendChild(ship);
+    }
+    const from = index===0 ? route[0] : route[index-1];
+    const to   = route[index];
+    const sx = from.offsetLeft + 16;
+    const sy = from.offsetTop + 16;
+    const ex = to.offsetLeft + 16;
+    const ey = to.offsetTop + 16;
+    let p = 0;
+    function step(){
+      p += 0.012;
+      const nx = sx + (ex - sx) * p;
+      const ny = sy + (ey - sy) * p;
+      ship.style.left = nx + 'px';
+      ship.style.top  = ny + 'px';
+      if(p<1) requestAnimationFrame(step);
+      else animateShip(index+1);
+    }
+    step();
+  }
+
+  function saveScore(){
+    const energy = parseInt(totalEnergyDisplay.textContent);
+    const routeStr = route.map(s=>s.textContent).join(' → ');
+    const list = JSON.parse(localStorage.getItem('leaderboard')||'[]');
+    list.push({energy, routeStr});
+    list.sort((a,b)=>a.energy-b.energy);
+    localStorage.setItem('leaderboard', JSON.stringify(list.slice(0,5)));
+    loadLeaderboard();
+  }
+
+  function loadLeaderboard(){
+    const scores = JSON.parse(localStorage.getItem('leaderboard')||'[]');
+    topScoresList.innerHTML='';
+    scores.forEach(s=>{
+      const li=document.createElement('li');
+      li.textContent = s.energy + ' units - ' + s.routeStr;
+      topScoresList.appendChild(li);
+    });
+  }
+
+  // INITIAL STAR LAYOUT
+  createStar(350, 250, 'H', true);
+  createStar(500, 100, 'A');
+  createStar(650, 200, 'B');
+  createStar(600, 350, 'C');
+  createStar(300, 400, 'D');
+  createStar(150, 300, 'E');
+  createStar(200, 150, 'F');
+
+  loadLeaderboard();
+  updateDistanceMatrix();
+
+  /* ---------- REPORT TABLE ---------- */
+  function updateRouteTable(){
+    const body=document.getElementById('routeTableBody');
+    body.innerHTML='';
+    if(route.length<=1){
+      body.innerHTML='<tr><td colspan="3">No Route Yet</td></tr>';
+      return;
+    }
+    let total=0;
+    for(let i=0;i<route.length-1;i++){
+      const a= stars.find(s=>s.element===route[i]);
+      const b= stars.find(s=>s.element===route[i+1]);
+      const dist = distanceBetween(a,b);
+      const energy=Math.round(dist*0.8);
+      total += dist;
+      const row=document.createElement('tr');
+      row.innerHTML=`<td>${a.name} → ${b.name}</td><td>${dist}</td><td>${energy}</td>`;
+      body.appendChild(row);
+    }
+    const trow=document.createElement('tr');
+    trow.style.fontWeight='bold';
+    trow.innerHTML=`<td>TOTAL</td><td>${total}</td><td>${Math.round(total*0.8)}</td>`;
+    body.appendChild(trow);
+  }
+
+  /* ---------- DISTANCE MATRIX ---------- */
+  function updateDistanceMatrix(){
+    const tbl = document.getElementById('distTable');
+    tbl.innerHTML='';
+    // header
+    let headerRow = '<tr><th></th>';
+    stars.forEach(s=>{ headerRow += '<th>'+s.name+'</th>';});
+    headerRow += '</tr>';
+    tbl.insertAdjacentHTML('beforeend',headerRow);
+    // rows
+    stars.forEach(r=>{
+      let row = '<tr><th>'+r.name+'</th>';
+      stars.forEach(c=>{
+        const d = r.name === c.name ? '-' : distanceBetween(r,c);
+        const e = r.name === c.name ? '-' : Math.round(d*0.8);
+        row += '<td>'+ d + '<br><span style="font-size:11px">'+e+'</span></td>';
+      });
+      row += '</tr>';
+      tbl.insertAdjacentHTML('beforeend',row);
+    });
+  }
+
+  /* ---------- MODALS ---------- */
+  function openHowToPlay(){ document.getElementById('howToPlayModal').style.display='block'; }
+  function closeHowToPlay(){ document.getElementById('howToPlayModal').style.display='none'; }
+  function openReport(){ document.getElementById('reportModal').style.display='block'; }
+  function closeReport(){ document.getElementById('reportModal').style.display='none'; }
+  function openDistance(){ document.getElementById('distanceModal').style.display='block'; }
+  function closeDistance(){ document.getElementById('distanceModal').style.display='none'; }
+
+  window.onclick = function(e){
+    if(e.target===document.getElementById('howToPlayModal')) closeHowToPlay();
+    if(e.target===document.getElementById('reportModal')) closeReport();
+    if(e.target===document.getElementById('distanceModal')) closeDistance();
+  };
+</script>
+</body>
+</html>
