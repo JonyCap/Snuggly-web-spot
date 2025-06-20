@@ -482,27 +482,6 @@
         <a href="https://www.instagram.com/invites/contact/?igsh=1rxyb0zhkernz&utm_content=svhaxzx" class="instagram" target="_blank">📸 Contact me on Instagram</a>
     </div>
 
-   <section id="grades" style="padding: 20px; border: 1px solid #ccc; margin-top: 20px;">
-  <h2>📊 My Smart Grade Tracker</h2>
-  <p><strong>Current Grade:</strong> <span id="current-grade">Loading...</span>%</p>
-  <p><strong>Target Grade:</strong> <span id="target-grade">Loading...</span>%</p>
-  <p><strong>Needed on Next Assignment:</strong> <span id="needed-score">Loading...</span>%</p>
-</section>
-
-<script>
-  fetch('https://script.google.com/macros/s/AKfycbyRpKZWZngZSIBeIn3N0zEg4qCB6rbafMQ28A2aoMIPpYVxz1WC_hnWBQeLBSOOPtVt/exec')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("current-grade").textContent = data.currentGrade;
-      document.getElementById("target-grade").textContent = data.target;
-      document.getElementById("needed-score").textContent = data.neededScore;
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("grades").innerHTML += "<p style='color:red;'>Error loading grade data.</p>";
-    });
-</script>
-
         function toggleAssignments(id) {
             var section = document.getElementById(id);
             var isCurrentlyVisible = section.classList.contains('show');
