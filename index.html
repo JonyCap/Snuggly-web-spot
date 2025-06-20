@@ -268,7 +268,7 @@
         }
         
         /* Creating multiple moving stars */
-        @keyframes move-stars {
+        @keymarks move-stars {
             from { transform: translateY(0); }
             to { transform: translateY(-100vh); }
         }
@@ -481,6 +481,36 @@
 
         <a href="https://www.instagram.com/invites/contact/?igsh=1rxyb0zhkernz&utm_content=svhaxzx" class="instagram" target="_blank">📸 Contact me on Instagram</a>
     </div>
+
+    <section id="grades" style="padding: 20px; border: 1px solid #ccc; margin-top: 20px;">
+        <h2>📊 My Smart Grade Tracker</h2>
+        <p><strong>Current Grade:</strong> <span id="current-grade">Loading...</span>%</p>
+        <p><strong>Target Grade:</strong> <span id="target-grade">Loading...</span>%</p>
+        <p><strong>Needed on Next Assignment:</strong> <span id="needed-score">Loading...</span>%</p>
+    </section>
+
+    <script>
+        // Fetch grades from Google Apps Script
+        function fetchGrades() {
+            // Fetch DL CCG grades
+            fetch('https://script.google.com/macros/s/AKfycbyRpKZWZngZSIBeIn3N0zEg4qCB6rbafMQ28A2aoMIPpYVxz1WC_hnWBQeLBSOOPtVt/exec')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("current-grade").textContent = data.currentGrade;
+                    document.getElementById("target-grade").textContent = data.target;
+                    document.getElementById("needed-score").textContent = data.neededScore;
+                    
+                    // Update DL CCG display
+                    document.getElementById("dl-grade").innerHTML = data.currentGrade + "%";
+                    document.getElementById("dl-updated").textContent = "Last updated: " + new Date().toLocaleDateString();
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("grades").innerHTML += "<p style='color:red;'>Error loading grade data.</p>";
+                    document.getElementById("dl-grade").innerHTML = "Error";
+                    document.getElementById("dl-updated").textContent = "Error loading data";
+                });
+        }
 
         function toggleAssignments(id) {
             var section = document.getElementById(id);
