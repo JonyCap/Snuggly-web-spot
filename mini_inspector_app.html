@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Inspector - Learn Web Development</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main content container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Sample content styles */
+        .demo-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .demo-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .demo-section h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .demo-section p {
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+        }
+
+        /* Form styles */
+        .form-group {
+            margin: 1rem 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            max-width: 300px;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Image styles */
+        .demo-image {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        /* List styles */
+        .demo-list {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .demo-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .demo-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .demo-list li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+
+        /* Tooltip styles */
+        .inspector-tooltip {
+            position: absolute;
+            background: rgba(30, 30, 30, 0.95);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            max-width: 300px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .inspector-tooltip.show {
+            transform: scale(1);
+        }
+
+        .inspector-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid rgba(30, 30, 30, 0.95);
+        }
+
+        .tooltip-header {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .tooltip-property {
+            margin: 0.3rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .tooltip-label {
+            color: #FFD700;
+            font-weight: 600;
+            min-width: 60px;
+            margin-right: 0.5rem;
+        }
+
+        .tooltip-value {
+            color: #87CEEB;
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+
+        .tooltip-explanation {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: #E0E0E0;
+            line-height: 1.4;
+        }
+
+        /* Element highlighting */
+        .element-highlight {
+            outline: 2px solid #FF4081 !important;
+            outline-offset: 2px;
+            background: rgba(255, 64, 129, 0.1) !important;
+            transition: all 0.3s ease;
+        }
+
+        /* Assistant panel */
+        .assistant-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .assistant-panel.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .assistant-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 15px 15px 0 0;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .assistant-content {
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .assistant-question {
+            background: #f0f0f0;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .assistant-question:hover {
+            background: #e0e0e0;
+        }
+
+        .assistant-answer {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Toggle button */
+        .assistant-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1002;
+        }
+
+        .assistant-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .assistant-toggle.panel-open {
+            background: #ff4757;
+        }
+
+        /* Instructions panel */
+        .instructions {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .instructions h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .instructions p {
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .assistant-panel {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>🔍 Mini Inspector</h1>
+        <p>Click on any element below to inspect it and learn about HTML!</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>🎓 How to Use Mini Inspector</h3>
+            <p><strong>Step 1:</strong> Click on any element on this page (buttons, text, images, etc.)</p>
+            <p><strong>Step 2:</strong> A tooltip will appear showing the HTML tag information</p>
+            <p><strong>Step 3:</strong> Click the help button (?) for additional learning resources</p>
+            <p><strong>Step 4:</strong> Explore and learn how web pages are built!</p>
+        </div>
+
+        <!-- Demo Section 1: Text Elements -->
+        <section class="demo-section">
+            <h2>📝 Text Elements</h2>
+            <p>This is a paragraph element. Paragraphs are the most common way to display text content on web pages.</p>
+            <p id="special-paragraph" class="highlight-text">This paragraph has both an ID and a class. Try clicking on it!</p>
+            <h3>This is a heading level 3</h3>
+            <span class="inline-text">This is a span element - it's used for inline styling.</span>
+        </section>
+
+        <!-- Demo Section 2: Interactive Elements -->
+        <section class="demo-section">
+            <h2>🎯 Interactive Elements</h2>
+            <p>These are elements users can interact with:</p>
+            
+            <button class="btn">Primary Button</button>
+            <button class="btn btn-secondary" id="secondary-btn">Secondary Button</button>
+            
+            <div class="form-group">
+                <label for="demo-input">Sample Input Field:</label>
+                <input type="text" id="demo-input" class="form-input" placeholder="Type something here...">
+            </div>
+            
+            <div class="form-group">
+                <label for="demo-email">Email Input:</label>
+                <input type="email" id="demo-email" placeholder="your@email.com">
+            </div>
+        </section>
+
+        <!-- Demo Section 3: Media and Layout -->
+        <section class="demo-section">
+            <h2>🖼️ Media & Layout Elements</h2>
+            <p>These elements help structure and display content:</p>
+            
+            <div class="demo-image" id="sample-image">
+                Sample Image Placeholder
+            </div>
+            
+            <div class="demo-list">
+                <h4>Sample List</h4>
+                <ul class="feature-list">
+                    <li class="list-item">First list item</li>
+                    <li class="list-item">Second list item with more content</li>
+                    <li class="list-item" id="special-item">Special list item with ID</li>
+                    <li class="list-item">Final list item</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Demo Section 4: Complex Layout -->
+        <section class="demo-section">
+            <h2>🏗️ Layout Containers</h2>
+            <p>These elements help organize and structure page layout:</p>
+            
+            <div class="layout-demo" id="main-container">
+                <article class="content-article">
+                    <header class="article-header">
+                        <h3>Sample Article</h3>
+                    </header>
+                    <main class="article-content">
+                        <p>This is the main content of the article. Articles are semantic elements that represent standalone content.</p>
+                    </main>
+                    <footer class="article-footer">
+                        <small>Article footer with metadata</small>
+                    </footer>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <!-- Inspector Tooltip (hidden by default) -->
+    <div id="inspector-tooltip" class="inspector-tooltip"></div>
+
+    <!-- Assistant Panel -->
+    <div id="assistant-panel" class="assistant-panel">
+        <div class="assistant-header">
+            <span>🤖 Learning Assistant</span>
+            <button id="close-assistant" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">×</button>
+        </div>
+        <div class="assistant-content" id="assistant-content">
+            <div class="assistant-question" data-answer="html-basics">What is HTML?</div>
+            <div class="assistant-question" data-answer="tags-explanation">What are HTML tags?</div>
+            <div class="assistant-question" data-answer="attributes-explanation">What are attributes?</div>
+            <div class="assistant-question" data-answer="classes-ids">What's the difference between class and ID?</div>
+            <div class="assistant-question" data-answer="semantic-html">What is semantic HTML?</div>
+            <div class="assistant-question" data-answer="css-basics">How does CSS work?</div>
+        </div>
+    </div>
+
+    <!-- Assistant Toggle Button -->
+    <button id="assistant-toggle" class="assistant-toggle">?</button>
+
+    <script>
+        // HTML Tag Dictionary - Educational explanations for common HTML elements
+        const tagDictionary = {
+            'div': 'A generic container element used to group other elements together. Think of it as a box that holds other content.',
+            'p': 'A paragraph element that represents a block of text. Most text content on websites is wrapped in paragraph tags.',
+            'h1': 'The main heading of a page - the most important title. There should typically be only one H1 per page.',
+            'h2': 'A secondary heading, used for major section titles. It\'s less important than H1 but more important than H3.',
+            'h3': 'A third-level heading, used for subsection titles within H2 sections.',
+            'h4': 'A fourth-level heading, used for smaller subsections.',
+            'h5': 'A fifth-level heading, rarely used but available for very detailed content hierarchy.',
+            'h6': 'The smallest heading level, used for the least important headings.',
+            'span': 'An inline element used to apply styling to a small portion of text or other inline content.',
+            'button': 'An interactive element that users can click to perform an action, like submitting a form or triggering an event.',
+            'input': 'A form control that allows users to enter data. The type attribute determines what kind of input (text, email, password, etc.).',
+            'label': 'A caption for a form control. When clicked, it focuses on its associated input element.',
+            'img': 'An element that displays an image. The src attribute specifies the image file location.',
+            'a': 'An anchor element that creates hyperlinks to other pages, sections, or resources.',
+            'ul': 'An unordered list container that groups list items together, typically displayed with bullet points.',
+            'ol': 'An ordered list container that groups numbered list items together.',
+            'li': 'A list item that represents a single item within an ordered or unordered list.',
+            'section': 'A semantic element that represents a distinct section of content, typically with its own heading.',
+            'article': 'A semantic element that represents standalone content that could be distributed independently.',
+            'header': 'A semantic element that represents introductory content, typically containing headings and navigation.',
+            'footer': 'A semantic element that represents concluding content, often containing copyright and contact information.',
+            'main': 'A semantic element that represents the primary content of the page, excluding headers, footers, and sidebars.',
+            'nav': 'A semantic element that contains navigation links to other pages or sections.',
+            'aside': 'A semantic element for content that is tangentially related to the main content, like sidebars.',
+            'form': 'An element that contains interactive controls for submitting information to a web server.',
+            'table': 'An element for displaying tabular data in rows and columns.',
+            'tr': 'A table row that contains table cells (td or th elements).',
+            'td': 'A table data cell that contains the actual data in a table.',
+            'th': 'A table header cell that contains column or row labels.',
+            'strong': 'An element that indicates important text, typically displayed in bold.',
+            'em': 'An element that indicates emphasized text, typically displayed in italics.',
+            'small': 'An element for side comments and fine print, typically displayed in smaller text.',
+            'br': 'A line break element that creates a single line break in text content.',
+            'hr': 'A horizontal rule that creates a thematic break or divider between content sections.'
+        };
+
+        // Assistant answers dictionary
+        const assistantAnswers = {
+            'html-basics': 'HTML (HyperText Markup Language) is the standard language for creating web pages. It uses tags to structure content and tell the browser how to display text, images, links, and other elements.',
+            'tags-explanation': 'HTML tags are keywords enclosed in angle brackets (< >) that define elements. Most tags come in pairs: an opening tag <tag> and a closing tag </tag>. The content goes between these tags.',
+            'attributes-explanation': 'Attributes provide additional information about HTML elements. They appear inside the opening tag and consist of a name and value, like class="my-class" or id="unique-id".',
+            'classes-ids': 'Classes are used to style multiple elements that share common properties, while IDs are unique identifiers for single elements. Classes use class="name" and IDs use id="unique-name".',
+            'semantic-html': 'Semantic HTML uses tags that describe the meaning of content, not just appearance. Examples include <article>, <section>, <header>, and <nav>. This helps screen readers and search engines understand your content.',
+            'css-basics': 'CSS (Cascading Style Sheets) controls how HTML elements look. It uses selectors to target elements and properties to define their appearance, like color, size, position, and layout.'
+        };
+
+        // Global variables
+        let currentTooltip = null;
+        let currentHighlight = null;
+        let assistantOpen = false;
+
+        // Initialize the inspector when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeInspector();
+            initializeAssistant();
+        });
+
+        // Main inspector initialization
+        function initializeInspector() {
+            // Add click listeners to all elements
+            document.addEventListener('click', handleElementClick);
+            
+            // Add hover effects for better UX
+            document.addEventListener('mouseover', handleElementHover);
+            document.addEventListener('mouseout', handleElementMouseOut);
+        }
+
+        // Handle element clicks for inspection
+        function handleElementClick(event) {
+            // Don't inspect assistant elements or tooltip
+            if (isAssistantElement(event.target) || event.target.closest('.inspector-tooltip')) {
+                return;
+            }
+
+            // Prevent default behavior for links and buttons (but not form inputs)
+            if (event.target.tagName === 'A' || 
+                (event.target.tagName === 'BUTTON' && !event.target.id.includes('assistant'))) {
+                event.preventDefault();
+            }
+
+            // Stop event propagation to prevent multiple triggers
+            event.stopPropagation();
+
+            // Remove previous highlight
+            if (currentHighlight) {
+                currentHighlight.classList.remove('element-highlight');
+            }
+
+            // Hide any existing tooltip
+            hideTooltip();
+
+            // Highlight current element
+            event.target.classList.add('element-highlight');
+            currentHighlight = event.target;
+
+            // Show tooltip with element information
+            showInspectorTooltip(event.target, event);
+            
+            console.log('Inspecting element:', event.target.tagName, event.target);
+        }
+
+        // Handle element hover for preview
+        function handleElementHover(event) {
+            if (isAssistantElement(event.target) || event.target.closest('.inspector-tooltip')) {
+                return;
+            }
+            
+            // Add subtle hover effect
+            event.target.style.cursor = 'crosshair';
+        }
+
+        // Handle mouse out
+        function handleElementMouseOut(event) {
+            if (isAssistantElement(event.target)) {
+                return;
+            }
+            
+            event.target.style.cursor = '';
+        }
+
+        // Check if element is part of assistant UI
+        function isAssistantElement(element) {
+            return element.closest('.assistant-panel') || 
+                   element.closest('.assistant-toggle') || 
+                   element.id === 'assistant-toggle' || 
+                   element.id === 'close-assistant';
+        }
+
+        // Show inspector tooltip with element information
+        function showInspectorTooltip(element, event) {
+            const tooltip = document.getElementById('inspector-tooltip');
+            
+            // Get element information
+            const tagName = element.tagName.toLowerCase();
+            const elementId = element.id || 'none';
+            const elementClasses = element.className ? formatClasses(element.className) : 'none';
+            const explanation = tagDictionary[tagName] || 'This is a custom or less common HTML element. It might be used for specific styling or functionality.';
+
+            // Create tooltip content
+            const tooltipContent = `
+                <div class="tooltip-header">&lt;${tagName}&gt; Element</div>
+                <div class="tooltip-property">
+                    <span class="tooltip-label">Tag:</span>
+                    <span class="tooltip-value">${tagName}</span>
+                </div>
+                <div class="tooltip-property">
+                    <span class="tooltip-label">ID:</span>
+                    <span class="tooltip-value">${elementId}</span>
+                </div>
+                <div class="tooltip-property">
+                    <span class="tooltip-label">Classes:</span>
+                    <span class="tooltip-value">${elementClasses}</span>
+                </div>
+                <div class="tooltip-explanation">
+                    <strong>What it does:</strong><br>
+                    ${explanation}
+                </div>
+            `;
+
+            tooltip.innerHTML = tooltipContent;
+
+            // Position tooltip
+            positionTooltip(tooltip, event, element);
+
+            // Show tooltip with animation
+            setTimeout(() => {
+                tooltip.classList.add('show');
+            }, 50);
+
+            // Clear any existing timeout
+            if (currentTooltip) {
+                clearTimeout(currentTooltip);
+            }
+
+            // Auto-hide tooltip after 10 seconds
+            currentTooltip = setTimeout(() => {
+                hideTooltip();
+            }, 10000);
+            
+            console.log('Tooltip shown for:', tagName, {id: elementId, classes: elementClasses});
+        }
+
+        // Position tooltip near clicked element
+        function positionTooltip(tooltip, event, element) {
+            // Get current position
+            const x = event.pageX || event.clientX + window.scrollX;
+            const y = event.pageY || event.clientY + window.scrollY;
+            
+            // Get element bounds for fallback positioning
+            const rect = element.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            
+            // Calculate positions
+            let left = x + 15;
+            let top = y + 15;
+            
+            // Fallback to element position if event position not available
+            if (!event.pageX && !event.clientX) {
+                left = rect.left + scrollLeft + 15;
+                top = rect.top + scrollTop + 15;
+            }
+            
+            // Adjust for screen boundaries
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const tooltipWidth = 300; // Approximate tooltip width
+            const tooltipHeight = 200; // Approximate tooltip height
+            
+            // Check right boundary
+            if (left + tooltipWidth > windowWidth + window.scrollX) {
+                left = x - tooltipWidth - 15;
+                if (left < window.scrollX) {
+                    left = window.scrollX + 10;
+                }
+            }
+            
+            // Check bottom boundary
+            if (top + tooltipHeight > windowHeight + window.scrollY) {
+                top = y - tooltipHeight - 15;
+                if (top < window.scrollY) {
+                    top = window.scrollY + 10;
+                }
+            }
+            
+            // Apply position
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            tooltip.style.position = 'absolute';
+            
+            console.log('Tooltip positioned at:', { left, top, x, y });
+        }
+
+        // Hide tooltip
+        function hideTooltip() {
+            const tooltip = document.getElementById('inspector-tooltip');
+            tooltip.classList.remove('show');
+            
+            if (currentHighlight) {
+                currentHighlight.classList.remove('element-highlight');
+                currentHighlight = null;
+            }
+        }
+
+        // Initialize assistant functionality
+        function initializeAssistant() {
+            const toggleBtn = document.getElementById('assistant-toggle');
+            const panel = document.getElementById('assistant-panel');
+            const closeBtn = document.getElementById('close-assistant');
+            const questions = document.querySelectorAll('.assistant-question');
+
+            // Toggle assistant panel
+            toggleBtn.addEventListener('click', toggleAssistant);
+            closeBtn.addEventListener('click', closeAssistant);
+
+            // Handle question clicks
+            questions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answerKey = this.getAttribute('data-answer');
+                    showAssistantAnswer(answerKey, this);
+                });
+            });
+        }
+
+        // Toggle assistant panel
+        function toggleAssistant() {
+            const panel = document.getElementById('assistant-panel');
+            const toggleBtn = document.getElementById('assistant-toggle');
+            
+            if (assistantOpen) {
+                closeAssistant();
+            } else {
+                panel.classList.add('show');
+                toggleBtn.classList.add('panel-open');
+                toggleBtn.innerHTML = '×';
+                assistantOpen = true;
+            }
+        }
+
+        // Close assistant panel
+        function closeAssistant() {
+            const panel = document.getElementById('assistant-panel');
+            const toggleBtn = document.getElementById('assistant-toggle');
+            
+            panel.classList.remove('show');
+            toggleBtn.classList.remove('panel-open');
+            toggleBtn.innerHTML = '?';
+            assistantOpen = false;
+        }
+
+        // Show assistant answer
+        function showAssistantAnswer(answerKey, questionElement) {
+            const answer = assistantAnswers[answerKey];
+            const content = document.getElementById('assistant-content');
+            
+            // Remove existing answers
+            const existingAnswers = content.querySelectorAll('.assistant-answer');
+            existingAnswers.forEach(answer => answer.remove());
+            
+            // Create answer element
+            const answerDiv = document.createElement('div');
+            answerDiv.className = 'assistant-answer';
+            answerDiv.innerHTML = `<strong>Answer:</strong> ${answer}`;
+            
+            // Insert answer after the clicked question
+            questionElement.insertAdjacentElement('afterend', answerDiv);
+            
+            // Scroll to show the answer
+            answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Hide tooltip when clicking outside
+        document.addEventListener('click', function(event) {
+            // Don't hide if clicking on tooltip itself
+            if (event.target.closest('.inspector-tooltip')) {
+                event.stopPropagation();
+                return;
+            }
+            
+            // Don't interfere with assistant functionality
+            if (isAssistantElement(event.target)) {
+                return;
+            }
+            
+            // The handleElementClick will be called for valid elements
+            // This handler is mainly for cleanup when clicking invalid areas
+        });
+
+        // Add click handler to tooltip for closing
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltip = document.getElementById('inspector-tooltip');
+            if (tooltip) {
+                tooltip.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    hideTooltip();
+                });
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Press 'Escape' to hide tooltip and close assistant
+            if (event.key === 'Escape') {
+                hideTooltip();
+                if (assistantOpen) {
+                    closeAssistant();
+                }
+            }
+            
+            // Press 'H' to toggle help
+            if (event.key === 'h' || event.key === 'H') {
+                if (!event.target.matches('input, textarea')) {
+                    toggleAssistant();
+                }
+            }
+        });
+
+        // Add some interactive features for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add pulse animation to important elements periodically
+            setInterval(() => {
+                const elements = document.querySelectorAll('.btn, .demo-image');
+                const randomElement = elements[Math.floor(Math.random() * elements.length)];
+                if (randomElement && !randomElement.classList.contains('element-highlight')) {
+                    randomElement.classList.add('pulse');
+                    setTimeout(() => {
+                        randomElement.classList.remove('pulse');
+                    }, 1000);
+                }
+            }, 10000);
+        });
+
+        // Utility function to get readable class names
+        function formatClasses(classString) {
+            if (!classString || classString.trim() === '') return 'none';
+            // Remove extra spaces and format nicely
+            return classString.trim().split(/\s+/).join(', ');
+        }
+
+        // Enhanced tooltip positioning for mobile
+        function getOptimalTooltipPosition(element, event) {
+            const rect = element.getBoundingClientRect();
+            const tooltipWidth = 300;
+            const tooltipHeight = 200;
+            const margin = 10;
+            
+            let x = event.clientX || rect.left + rect.width / 2;
+            let y = event.clientY || rect.top;
+            
+            // Adjust for mobile screens
+            if (window.innerWidth < 768) {
+                x = window.innerWidth / 2 - tooltipWidth / 2;
+                y = rect.bottom + margin;
+                
+                if (y + tooltipHeight > window.innerHeight) {
+                    y = rect.top - tooltipHeight - margin;
+                }
+            }
+            
+            return { x, y };
+        }
+
+        // Console welcome message for developers
+        console.log(`
+    🔍 Mini Inspector Developer Console
+    ===================================
+    
+    Welcome to Mini Inspector! This tool helps people learn web development.
+    
+    Try these console commands:
+    - inspector.showStats() - Show page statistics
+    - inspector.highlightAllElements() - Highlight all elements
+    - inspector.getElementInfo(element) - Get detailed element info
+    
+        `);
+
+        // Developer API for advanced users
+        window.inspector = {
+            showStats: function() {
+                const allElements = document.querySelectorAll('*');
+                const elementTypes = {};
+                
+                allElements.forEach(el => {
+                    const tag = el.tagName.toLowerCase();
+                    elementTypes[tag] = (elementTypes[tag] || 0) + 1;
+                });
+                
+                console.table(elementTypes);
+                console.log(`Total elements: ${allElements.length}`);
+            },
+            
+            highlightAllElements: function() {
+                const elements = document.querySelectorAll('body *');
+                elements.forEach(el => {
+                    if (!isAssistantElement(el)) {
+                        el.style.outline = '1px solid rgba(255, 0, 0, 0.5)';
+                    }
+                });
+                
+                setTimeout(() => {
+                    elements.forEach(el => {
+                        el.style.outline = '';
+                    });
+                }, 3000);
+            },
+            
+            getElementInfo: function(element) {
+                if (!element) {
+                    console.log('Please provide an element: inspector.getElementInfo(document.querySelector("selector"))');
+                    return;
+                }
+                
+                const info = {
+                    tagName: element.tagName.toLowerCase(),
+                    id: element.id || null,
+                    classes: element.className || null,
+                    attributes: Array.from(element.attributes).map(attr => ({
+                        name: attr.name,
+                        value: attr.value
+                    })),
+                    textContent: element.textContent?.substring(0, 100) + '...',
+                    children: element.children.length,
+                    explanation: tagDictionary[element.tagName.toLowerCase()] || 'No explanation available'
+                };
+                
+                console.log('Element Information:', info);
+                return info;
+            }
+        };
+        
+    </script>
+</body>
+</html>
