@@ -28,6 +28,13 @@
             50% { background-position: 100% 50%; }
         }
         
+        @media (max-width: 768px) {
+            body {
+                animation: none;
+                background: linear-gradient(135deg, #1a0033, #330066, #660099);
+            }
+        }
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -69,7 +76,14 @@
         
         @keyframes textGlow {
             0%, 100% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
-            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5); }
+            50% { text-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5); }
+        }
+        
+        @media (max-width: 768px) {
+            .message-text {
+                animation: none;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            }
         }
         
         .signature {
@@ -93,11 +107,18 @@
         @keyframes floatHeart {
             0%, 100% {
                 transform: translateY(0) rotate(0deg);
-                opacity: 0.7;
+                opacity: 0.6;
             }
             50% {
-                transform: translateY(-20px) rotate(180deg);
-                opacity: 1;
+                transform: translateY(-10px) rotate(90deg);
+                opacity: 0.8;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .heart {
+                animation-duration: 8s;
+                font-size: 1.5rem;
             }
         }
         
@@ -112,12 +133,19 @@
         
         @keyframes twinkle {
             0%, 100% {
-                opacity: 0.3;
+                opacity: 0.4;
                 transform: scale(1);
             }
             50% {
-                opacity: 1;
-                transform: scale(1.2);
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .star {
+                animation-duration: 3s;
+                font-size: 1.2rem;
             }
         }
         
@@ -153,10 +181,18 @@
         
         @keyframes orbit {
             0% {
-                transform: rotate(0deg) translateX(100px) rotate(0deg);
+                transform: rotate(0deg) translateX(60px) rotate(0deg);
             }
             100% {
-                transform: rotate(360deg) translateX(100px) rotate(-360deg);
+                transform: rotate(360deg) translateX(60px) rotate(-360deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .planet {
+                width: 20px;
+                height: 20px;
+                animation-duration: 15s;
             }
         }
         
@@ -209,8 +245,15 @@
         }
         
         @keyframes argonPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.4; }
+        }
+        
+        @media (max-width: 768px) {
+            .argon-bg {
+                animation: none;
+                opacity: 0.2;
+            }
         }
         
         /* Particle effect */
@@ -302,7 +345,11 @@
         }
         
         // Create particles continuously
-        setInterval(createParticle, 300);
+        const isMobile = window.innerWidth <= 768;
+        const particleInterval = isMobile ? 800 : 300;
+        const heartInterval = isMobile ? 4000 : 2000;
+        
+        setInterval(createParticle, particleInterval);
         
         // Add dynamic heart creation
         function createFloatingHeart() {
@@ -319,7 +366,22 @@
             }, 6000);
         }
         
-        setInterval(createFloatingHeart, 2000);
+        setInterval(createFloatingHeart, heartInterval);
+        
+        // Reduce animations on mobile for better performance
+        if (isMobile) {
+            // Remove some hearts and stars on mobile
+            const hearts = document.querySelectorAll('.heart');
+            const stars = document.querySelectorAll('.star');
+            
+            hearts.forEach((heart, index) => {
+                if (index > 3) heart.remove();
+            });
+            
+            stars.forEach((star, index) => {
+                if (index > 2) star.remove();
+            });
+        }
     </script>
 </body>
 </html>
