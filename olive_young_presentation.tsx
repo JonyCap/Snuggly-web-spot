@@ -70,7 +70,7 @@ const OliveYoungPresentation = () => {
           Business Strategy
         </h1>
         <h2 className="text-4xl md:text-5xl font-semibold mb-8 text-neon-cyan">
-          Course Name
+          "team; old school boys"
         </h2>
         <p className="text-xl md:text-2xl italic text-gray-300 max-w-2xl mx-auto">
           "Strategy is about making choices, trade-offs; it's about deliberately choosing to be different."
