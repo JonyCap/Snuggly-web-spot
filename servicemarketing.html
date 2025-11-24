@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>OLIVE YOUNG — 7P Service Marketing Presentation</title>
+<meta name="description" content="Service Marketing presentation: OLIVE YOUNG - 7P Analysis. Old School Boys team project." />
+<link rel="icon" href="data:,">
+<style>
+/* ---------- VARIABLES ---------- */
+:root{
+  --bg-1: #071126;
+  --bg-2: #0b1b2e;
+  --accent: #7bf1ff;
+  --accent2: #ff7bff;
+  --neon: #a6fffa;
+  --glass: rgba(255,255,255,0.06);
+  --glass-2: rgba(255,255,255,0.04);
+  --text: #f7fbff;
+  --muted: rgba(247,251,255,0.75);
+  --watermark: rgba(255,255,255,0.12);
+  --max-width: 1200px;
+  --radius: 14px;
+  --ease: cubic-bezier(.2,.9,.25,1);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* ---------- RESET ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body,#app{height:100%}
+body{
+  background: linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow:hidden;
+}
+
+/* ---------- CANVAS & BACKDROP ---------- */
+#bgCanvas{
+  position:fixed;inset:0;width:100%;height:100%;z-index:0;
+}
+
+/* soft radial glow layers */
+.bg-layer{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(800px 400px at 10% 20%, rgba(123,0,255,0.06), transparent 10%),
+    radial-gradient(600px 350px at 85% 80%, rgba(0,255,220,0.04), transparent 10%);
+  mix-blend-mode:overlay;
+}
+
+/* ---------- CONTAINER ---------- */
+.container{
+  position:relative;
+  width:100%;
+  height:100%;
+  max-width:var(--max-width);
+  margin:0 auto;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ---------- TOP LEFT OPEN BUTTON ---------- */
+.open-btn{
+  position:fixed;
+  left:24px;
+  top:20px;
+  z-index:10;
+  background:linear-gradient(135deg, rgba(255,123,255,0.12), rgba(123,255,255,0.06));
+  color:var(--neon);
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 30px rgba(123,255,255,0.03), 0 0 18px rgba(123,255,255,0.06);
+  cursor:pointer;
+  font-weight:600;
+  letter-spacing:0.4px;
+  backdrop-filter: blur(6px);
+  transition:all .25s var(--ease);
+}
+.open-btn:hover{transform:translateY(-4px) scale(1.02); box-shadow:0 12px 40px rgba(123,255,255,0.06)}
+.open-btn .glow{
+  display:inline-block;margin-left:8px;padding:4px 8px;border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#031021;font-weight:700;
+  box-shadow:0 6px 24px rgba(123,255,255,0.2), 0 0 18px rgba(255,123,255,0.15);
+}
+
+/* ---------- WATERMARK ---------- */
+.watermark{
+  position:fixed;
+  left:24px;
+  bottom:24px;
+  z-index:9;
+  font-weight:700;
+  color:var(--watermark);
+  font-size:18px;
+  letter-spacing:1px;
+  transform:rotate(-6deg);
+  user-select:none;
+}
+
+/* ---------- MAIN LANDING CARD ---------- */
+.landing{
+  width:92%;
+  max-width:980px;
+  padding:36px;
+  border-radius:var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 20px 80px rgba(3,10,20,0.6);
+  backdrop-filter: blur(8px);
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  text-align:center;
+  z-index:3;
+}
+
+/* big titles */
+.title{
+  font-size:34px;
+  line-height:1.05;
+  font-weight:800;
+  color:var(--text);
+  text-shadow:
+    0 0 14px rgba(166,255,250,0.06),
+    0 6px 20px rgba(8,20,30,0.6);
+}
+.subtitle{
+  font-size:18px;color:var(--muted);
+  letter-spacing:0.6px;margin-top:6px;
+}
+
+/* neon topic */
+.topic{
+  font-size:28px;
+  font-weight:800;
+  color:var(--neon);
+  padding:10px 18px;
+  border-radius:12px;
+  display:inline-block;
+  background:linear-gradient(90deg, rgba(127,255,250,0.04), rgba(255,120,255,0.03));
+  box-shadow:0 8px 40px rgba(123,255,255,0.03), 0 0 40px rgba(127,255,250,0.04) inset;
+  letter-spacing:0.6px;
+}
+
+/* motivational quote */
+.quote{
+  font-style:italic;
+  color:rgba(255,255,255,0.85);
+  font-size:16px;
+  max-width:820px;margin:0 auto;
+  opacity:.95;
+}
+
+/* action row */
+.actions{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:8px}
+.btn{
+  border-radius:999px;padding:10px 14px;font-weight:700;border:1px solid rgba(255,255,255,0.06);
+  background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  color:var(--text);cursor:pointer;backdrop-filter: blur(6px);
+  transition:transform .22s var(--ease), box-shadow .22s var(--ease);
+}
+.btn:active{transform:translateY(2px)}
+.btn.primary{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#031021;
+  box-shadow:0 10px 40px rgba(255,123,255,0.12), 0 0 40px rgba(123,255,255,0.08);
+}
+
+/* ---------- SLIDES ---------- */
+.slides{
+  position:fixed;inset:0;z-index:5;display:none;
+  overflow:hidden;
+}
+.slide{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:48px;
+  transition:transform .6s var(--ease), opacity .45s var(--ease);
+  will-change:transform,opacity;
+}
+.slide-inner{
+  width:100%;
+  max-width:var(--max-width);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:18px;
+  padding:48px;
+  box-shadow:0 30px 80px rgba(3,10,20,0.7);
+  border:1px solid rgba(255,255,255,0.04);
+  color:var(--muted);
+  min-height:72vh;
+  overflow:auto;
+}
+
+/* slide headings */
+.slide h1{
+  font-size:34px;color:var(--neon);margin-bottom:6px;
+  text-shadow:0 6px 40px rgba(127,255,250,0.04);
+}
+.slide h2{font-size:20px;color:var(--text);margin-bottom:12px}
+.slide p{line-height:1.6;margin-bottom:12px;color:rgba(247,251,255,0.92)}
+
+/* content layout columns */
+.columns{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+@media (max-width:980px){.columns{grid-template-columns:1fr;}}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.03);
+}
+
+/* small neon badges */
+.badge{
+  display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#031021;margin-right:8px;
+  box-shadow:0 6px 30px rgba(123,255,255,0.06);
+}
+
+/* ---------- NAV CONTROLS ---------- */
+.controls{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:12;
+  display:flex;gap:12px;align-items:center;justify-content:center;
+}
+.arrow{
+  width:64px;height:64px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:800;cursor:pointer;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow:0 10px 40px rgba(3,10,20,0.6);
+  color:var(--neon);
+  transition:transform .18s var(--ease);
+}
+.arrow:hover{transform:translateY(-6px) scale(1.02)}
+.back-main{
+  position:fixed;right:22px;top:20px;z-index:11;padding:8px 12px;border-radius:10px;
+  background:rgba(0,0,0,0.16);border:1px solid rgba(255,255,255,0.04);
+  color:var(--muted);font-weight:700;cursor:pointer;
+}
+
+/* slide positions */
+.slide{opacity:0;transform:translateY(20px);pointer-events:none}
+.slide.active{opacity:1;transform:translateY(0);pointer-events:auto;}
+
+/* small index indicator */
+.index{
+  position:fixed;left:24px;top:86px;color:var(--muted);z-index:11;font-weight:700;
+  background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);
+}
+
+/* footer note in slide */
+.slide-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;color:rgba(255,255,255,0.65);font-size:13px}
+
+/* responsive tweaks */
+@media (max-width:760px){
+  .title{font-size:26px}
+  .topic{font-size:20px}
+  .open-btn{left:12px;top:12px;padding:8px 12px}
+  .watermark{left:12px;bottom:12px;font-size:14px}
+  .controls{bottom:14px}
+}
+
+/* subtle decorative neon lines */
+.neon-line{
+  position:absolute;left:0;right:0;height:2px;top:8%;opacity:0.06;background:linear-gradient(90deg,var(--accent),transparent,var(--accent2));
+  z-index:1;filter:blur(6px);
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<div class="bg-layer"></div>
+
+<!-- top-left open -->
+<button class="open-btn" id="openPresentationBtn"><span>Open Presentation</span> <span class="glow">▶</span></button>
+<!-- back to main shown inside slides -->
+<button class="back-main" id="backToMainBtn" style="display:none">Back to Main Page</button>
+
+<div class="watermark">Jonyliya.com</div>
+<div class="index" id="slideIndex" style="display:none">Slide 1 / 10</div>
+
+<!-- MAIN LANDING -->
+<div class="container" id="landingContainer">
+  <div class="landing" role="main" aria-labelledby="mainTitle">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div class="title" id="mainTitle">Service Marketing Presentation</div>
+        <div class="subtitle">OLIVE YOUNG — 7P Analysis</div>
+      </div>
+      <div style="text-align:right">
+        <div class="badge">Old School Boys</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:18px;margin-top:12px;flex-direction:column">
+      <div class="topic">OLIVE YOUNG: 7P Analysis</div>
+      <div class="quote">"Beauty is not found — it is curated. Understanding service delivers value where products alone cannot." — Old School Boys</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="openBtnLarge">Open Presentation</button>
+      <button class="btn" id="downloadBtn">Download HTML</button>
+    </div>
+
+    <p style="font-size:13px;color:var(--muted);margin-top:6px">Tip: Use the arrow keys ← and → to navigate slides. Touch / swipe supported on mobile.</p>
+  </div>
+</div>
+
+<!-- SLIDES -->
+<div class="slides" id="slides" aria-live="polite" style="display:none">
+  <div class="neon-line"></div>
+
+  <!-- Slide 1: INTRODUCTION -->
+  <section id="slide-1" class="slide active" data-index="1">
+    <div class="slide-inner">
+      <h1>Introduction</h1>
+      <h2>Service Marketing Presentation — OLIVE YOUNG</h2>
+      <div class="columns">
+        <div>
+          <p><strong>Course:</strong> Service Marketing</p>
+          <p><strong>Topic:</strong> OLIVE YOUNG – 7P Service Marketing Analysis</p>
+          <p><strong>Team:</strong> Old School Boys</p>
+          <p><strong>Members:</strong> Jony, Shoyadbek, Akash</p>
+
+          <p>This presentation delivers a rigorous, academic-grade analysis of OLIVE YOUNG using the 7 Ps framework of Service Marketing (Product, Price, Place, Promotion, Process, People, Physical Environment). Each section provides context-specific strategies, real-world observations about Olive Young’s omnichannel approach, and recommendations grounded in service marketing theory. Our aim is to connect scholarly service marketing concepts to operational practice within a leading K-beauty retail brand.</p>
+
+          <p>Design notes: visual style uses neon-glow elements to convey modernity and the energetic K-beauty aesthetic. Content emphasizes customer experience, digital transformation, and physical retail strategies that make Olive Young a benchmark in omni-channel beauty retail.</p>
+        </div>
+
+        <aside class="card">
+          <h3 style="color:var(--neon)">Presentation Roadmap</h3>
+          <ol style="padding-left:18px;margin-top:8px;color:var(--muted);line-height:1.6">
+            <li>Introduction</li>
+            <li>About Olive Young</li>
+            <li>Product</li>
+            <li>Price</li>
+            <li>Place</li>
+            <li>Promotion</li>
+            <li>Process</li>
+            <li>People</li>
+            <li>Physical Environment</li>
+            <li>Thank You & References</li>
+          </ol>
+          <div style="margin-top:10px;color:rgba(255,255,255,0.7)">Estimated presentation time: 12–18 minutes (editable)</div>
+        </aside>
+      </div>
+
+      <div class="slide-footer">
+        <div>Prepared for: Service Marketing — University Project</div>
+        <div style="font-weight:700;color:var(--muted)">Old School Boys</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 2: ABOUT OLIVE YOUNG -->
+  <section id="slide-2" class="slide" data-index="2">
+    <div class="slide-inner">
+      <h1>About Olive Young</h1>
+      <h2>Company profile, history, market influence, and digital transformation</h2>
+
+      <div class="columns">
+        <div>
+          <p><strong>What Olive Young is:</strong> Olive Young is South Korea’s leading health and beauty retailer, primarily focusing on cosmetics, personal care, health supplements, and lifestyle goods. It operates physical retail stores and an online platform, positioning itself at the intersection of convenience, trend-forward product selection (especially K-beauty), and experiential retail.</p>
+
+          <p><strong>History & Evolution:</strong> Founded as a retail arm focused on health and beauty, Olive Young expanded rapidly throughout the 2000s and 2010s. Its growth accelerated alongside the global rise of K-beauty, leveraging private-label products, strategic partnerships, and a networking of stores across urban centers. Over time Olive Young integrated digital channels (mobile app, e-commerce), loyalty systems, and in-store experiential services to strengthen customer lifetime value.</p>
+
+          <p><strong>Market size & influence in Korea:</strong> Olive Young occupies a dominant position in the Korean health & beauty retail market. It acts as a trend curator: products stocked in Olive Young often gain broader consumer attention due to the chain’s visibility and curated selections. The retailer’s scale allows it to negotiate favorable arrangements with suppliers, launch in-house brands, and execute nationwide promotions—impacting both domestic consumption patterns and global K-beauty diffusion.</p>
+
+          <p><strong>Target customers:</strong> Primary segments include younger women (late teens to early 30s), beauty early adopters, international tourists seeking K-beauty products, and omnichannel shoppers who expect digital conveniences. Psychographics: trend-conscious, value experiential testing and discovery, and appreciate curated selections and affordable premium brands.</p>
+
+          <p><strong>Digital transformation:</strong> Olive Young’s digital strategy centers on: a mobile app with personalized recommendations, loyalty & membership features with tiered rewards, app-exclusive promotions, and integration between online orders and in-store pickup. The company adopts analytics-driven merchandising, using sales and online browsing data to adapt assortments in real-time.</p>
+
+          <p><strong>Physical store expansion:</strong> Despite strong e-commerce traction, Olive Young has continued opening flagship and strategically placed urban stores—both to deliver experiential touchpoints (product testing, demos, events) and to support omnichannel logistics (click & collect, returns, localized promotions).</p>
+        </div>
+
+        <aside class="card">
+          <h3 style="color:var(--neon)">Strategic positioning</h3>
+          <p style="color:var(--muted)">Curator of trends • Bridge between global K-beauty producers and discerning consumers • Omnichannel operator balancing experience & convenience.</p>
+
+          <h4 style="margin-top:12px;color:var(--neon)">Key digital features</h4>
+          <ul style="color:var(--muted);padding-left:18px;line-height:1.6">
+            <li>Mobile app personalization</li>
+            <li>Integrated loyalty & coupons</li>
+            <li>In-app product discovery & reviews</li>
+            <li>Click & collect and same-day delivery in some areas</li>
+          </ul>
+        </aside>
+      </div>
+
+      <div class="slide-footer">
+        <div>Data-informed retail decisions & customer-centric design</div>
+        <div style="font-weight:700;color:var(--muted)">OLIVE YOUNG — contextual overview</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: PRODUCT -->
+  <section id="slide-3" class="slide" data-index="3">
+    <div class="slide-inner">
+      <h1>Product</h1>
+      <h2>Product strategy & service elements — K-beauty focus</h2>
+
+      <p><strong>Product assortment and K-beauty focus:</strong> Olive Young’s product strategy emphasizes a deep curation of K-beauty items—skin care, makeup, hair care, and beauty tools. The selection blends global brands with Korean innovators and indie labels, enabling the retailer to serve both mainstream shoppers and niche enthusiasts. Product assortment is frequently updated to stay ahead of trends and to reflect social media-driven demand.</p>
+
+      <p><strong>In-house and exclusive brands:</strong> Olive Young develops and markets private-label items and often secures exclusive releases or limited-edition collaborations. This vertical integration allows higher margins, exclusive product offerings, and brand differentiation. Private-label products are positioned to deliver accessible premium quality, complementing imported luxury and mass-market items.</p>
+
+      <p><strong>Variety and depth:</strong> Product depth across categories supports cross-selling and bundling (e.g., cleanser + toner + essence routines). Olive Young’s shelving and merchandising prioritize discovery—feature zones for trending items, testers, and category-focused islands (e.g., sun care, clean beauty).</p>
+
+      <p><strong>Service elements linked to product:</strong> Physical stores often include testing zones and sample displays. These experiential elements reduce perceived risk, improve purchase conversion, and encourage trial. Staff-led demonstrations and event days (product launches, influencer pop-ups) create product narratives that extend beyond static shelving.</p>
+
+      <p><strong>Value-added services:</strong> Product-related value-adds include sample distribution, travel-sized trial sets, curated gift sets, and subscription bundles. Olive Young also leverages product reviews and community feedback on its digital platforms, creating social proof and catalyzing demand.</p>
+
+      <h3 style="color:var(--neon);margin-top:12px">Recommendations (Product)</h3>
+      <ul style="padding-left:18px;color:var(--muted);line-height:1.6">
+        <li>Increase small-batch exclusive launches to strengthen brand affinity and urgency.</li>
+        <li>Integrate AR try-on features for makeup within the app to reduce friction for remote shoppers.</li>
+        <li>Formalize a "Discovery Lab" in flagship stores to incubate indie brands with pop-up rotations and customer feedback cycles.</li>
+      </ul>
+
+      <div class="slide-footer">
+        <div>Product = curated experience + discovery</div>
+        <div style="font-weight:700;color:var(--muted)">Supply assortment strategy</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 4: PRICE -->
+  <section id="slide-4" class="slide" data-index="4">
+    <div class="slide-inner">
+      <h1>Price</h1>
+      <h2>Pricing strategy, promotions, and perceived value</h2>
+
+      <p><strong>Value-based pricing:</strong> Olive Young prices to reflect perceived value rather than solely cost-plus calculations. Value comes from curation, trend authority, and convenience. Premium or exclusive items command higher margins; everyday essentials are priced competitively to maintain foot traffic.</p>
+
+      <p><strong>Promotional pricing and sales events:</strong> Regular promotions (seasonal sales, holiday campaigns, flash discounts) drive short-term traffic and lift basket sizes. Olive Young uses targeted discounting for loyalty members, timed coupons, and cross-category bundles to promote product discovery and higher average transaction values.</p>
+
+      <p><strong>Loyalty and rewards:</strong> The membership program ties pricing incentives to repeat behavior: points accumulation, member-only discounts, birthday coupons, and tiered benefits. These mechanics increase retention and allow segment-specific price discrimination without broad list-price erosion.</p>
+
+      <p><strong>Competitive positioning:</strong> Olive Young balances competitive price perception with brand positioning. It safeguards margins through exclusive SKUs and private-label offerings while matching market prices on commodity items. The retailer monitors competitor pricing and dynamically adjusts promotions via analytics.</p>
+
+      <h3 style="color:var(--neon);margin-top:12px">Recommendations (Price)</h3>
+      <ul style="padding-left:18px;color:var(--muted);line-height:1.6">
+        <li>Introduce dynamic micro-promotions: targeted, time-bound discounts triggered by behavioral signals in-app.</li>
+        <li>Test subscription-based bundles for repeat consumables to stabilize revenue and increase CLV.</li>
+        <li>Improve price transparency for cross-border shoppers and international shipping fees in the app.</li>
+      </ul>
+
+      <div class="slide-footer">
+        <div>Pricing aligned to perceived value and loyalty</div>
+        <div style="font-weight:700;color:var(--muted)">Revenue optimization tactics</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 5: PLACE -->
+  <section id="slide-5" class="slide" data-index="5">
+    <div class="slide-inner">
+      <h1>Place</h1>
+      <h2>Store network, flagship strategy, and omnichannel presence</h2>
+
+      <p><strong>Brick-and-mortar network:</strong> Olive Young's dense store footprint in urban and high-traffic locations ensures accessibility and brand visibility. Stores are often positioned near transit hubs and shopping districts to capture foot traffic and impulse purchases.</p>
+
+      <p><strong>Flagship stores and concept locations:</strong> Flagship stores serve as brand showcases—offering extended assortments, events, experiential displays, and higher-touch services. These venues create PR opportunities and act as testbeds for new formats.</p>
+
+      <p><strong>Online presence:</strong> The e-commerce site and mobile app support browsing, reviews, personalized recommendations, and online-only promotions. Integration with social commerce channels allows Olive Young to reach audiences where they engage with beauty trends.</p>
+
+      <p><strong>Omnichannel strategy:</strong> Olive Young leverages click-and-collect, ship-from-store, and in-store returns to blur the line between online and offline. This strategy reduces fulfillment costs, speeds delivery, and creates multiple touchpoints for up-sell opportunities.</p>
+
+      <h3 style="color:var(--neon);margin-top:12px">Operational considerations (Place)</h3>
+      <ul style="padding-left:18px;color:var(--muted);line-height:1.6">
+        <li>Optimize inventory visibility across channels to reduce out-of-stock costs.</li>
+        <li>Use stores as micro-fulfillment centers in dense urban markets to enable same-day delivery.</li>
+        <li>Localize assortments by store to reflect regional preferences and tourist demand.</li>
+      </ul>
+
+      <div class="slide-footer">
+        <div>Place = accessibility + strategic omnichannel integration</div>
+        <div style="font-weight:700;color:var(--muted)">Logistics & assortment</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 6: PROMOTION -->
+  <section id="slide-6" class="slide" data-index="6">
+    <div class="slide-inner">
+      <h1>Promotion</h1>
+      <h2>Marketing communications, social influence, and brand building</h2>
+
+      <p><strong>Social media marketing:</strong> Olive Young actively uses Instagram, YouTube, TikTok, and in-platform features to showcase product tutorials, seasonal looks, and user-generated content. Content marketing focuses on discovery and short-form education that drives trial and brand affinity.</p>
+
+      <p><strong>Influencer partnerships:</strong> Collaborations with K-beauty influencers and micro-influencers build authenticity and target specific consumer niches. Influencer product reviews, "haul" videos, and live shopping events are effective conversion channels.</p>
+
+      <p><strong>Global K-beauty branding:</strong> Olive Young participates in the export of K-beauty culture by curating products accessible to international consumers (both tourists and online buyers). Campaigns that highlight Korean beauty rituals, ingredients, and trends create cross-border appeal.</p>
+
+      <p><strong>Seasonal events and experiential promotion:</strong> In-store launch events, sample campaigns, themed displays (e.g., summer suncare, winter hydration), and loyalty-member exclusives stimulate both store footfall and online traffic.</p>
+
+      <h3 style="color:var(--neon);margin-top:12px">Recommendations (Promotion)</h3>
+      <ul style="padding-left:18px;color:var(--muted);line-height:1.6">
+        <li>Scale live shopping and integrate instant app discounts to capitalize on conversion during streams.</li>
+        <li>Expand micro-influencer programs for hyper-local authenticity across regions.</li>
+        <li>Design cross-border campaigns targeted to tourist windows (e.g., festivals, travel seasons) with multilingual landing pages.</li>
+      </ul>
+
+      <div class="slide-footer">
+        <div>Promotion = trend-making + community amplification</div>
+        <div style="font-weight:700;color:var(--muted)">Integrated comms strategy</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 7: PROCESS -->
+  <section id="slide-7" class="slide" data-index="7">
+    <div class="slide-inner">
+      <h1>Process</h1>
+      <h2>Operational processes that shape customer experience</h2>
+
+      <p><strong>Checkout & transaction flow:</strong> Olive Young emphasizes low-friction checkout both in-store and online. In-store POS systems are optimized for speed; mobile payments and loyalty points are seamlessly applied. Online checkout uses saved preferences and address autofill to reduce abandonment.</p>
+
+      <p><strong>Digital integration:</strong> Critical processes are integrated: inventory availability is surfaced online, order statuses are updated in real-time, and customer service communicates across chat, email, and phone channels. Automation handles routine queries while escalation paths route complex issues to trained staff.</p>
+
+      <p><strong>Customer flow & in-store experience:</strong> The physical layout guides customers through discovery zones, product testing, and rapid checkout. Processes around sampling, tester replenishment, and hygiene protocols are well-documented to maintain quality and safety.</p>
+
+      <p><strong>Self-service & O2O features:</strong> Self-service kiosks, QR-code product information, and app-driven in-store navigation empower customers to find and purchase products quickly while still enabling staff assistance when needed. Online-to-offline features (reservations, pre-selection, in-store pickup) reduce friction and increase conversion.</p>
+
+      <h3 style="color:var(--neon);margin-top:12px">Recommendations (Process)</h3>
+      <ul style="padding-left:18px;color:var(--muted);line-height:1.6">
+        <li>Implement predictive restocking alerts to staff based on sales velocity to avoid testing zone stockouts.</li>
+        <li>Expand intelligent chatbots that can escalate to human agents with conversation context.</li>
+        <li>Refine in-store appointment booking for high-touch services or product demonstrations.</li>
+      </ul>
+
+      <div class="slide-footer">
+        <div>Process = efficiency + thoughtful service design</div>
+        <div style="font-weight:700;color:var(--muted)">Operational excellence</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 8: PEOPLE -->
+  <section id="slide-8" class="slide" data-index="8">
+    <div class="slide-inner">
+      <h1>People</h1>
+      <h2>Staff, training, and the human element of service</h2>
+
+      <p><strong>Staff training:</strong> Olive Young invests in retail staff training that includes product knowledge, customer engagement protocols, hygiene practices, and soft skills for upselling. Training modules are updated frequently as product assortments change.</p>
+
+      <p><strong>Customer service standards:</strong> Staff are coached to provide friendly, informative, and efficient service. Mystery shopping audits and customer satisfaction metrics guide ongoing training and reward top performers.</p>
+
+      <p><strong>Beauty advisors & specialized roles:</strong> Flagship stores and larger formats employ beauty advisors trained to provide consultations, skin analysis, and product recommendations. Such roles convert browsing into purchasing and build trust in product recommendations.</p>
+
+      <p><strong>Employee appearance & brand alignment:</strong> Olive Young emphasizes consistent staff appearance to reflect the brand aesthetic—clean, approachable, and trend-aware. Uniform guidelines, name tags, and professional presentation contribute to perceived service quality.</p>
+
+      <h3 style="color:var(--neon);margin-top:12px">Recommendations (People)</h3>
+      <ul style="padding-left:18px;color:var(--muted);line-height:1.6">
+        <li>Create a continuous learning platform with micro-certifications for staff (e.g., "Sun-care Expert", "Clean Beauty Specialist").</li>
+        <li>Introduce a peer recognition program tied to customer satisfaction indices to boost morale and service standards.</li>
+        <li>Offer incentives for staff who successfully convert online leads into in-store purchases.</li>
+      </ul>
+
+      <div class="slide-footer">
+        <div>People = brand ambassadors & trust-builders</div>
+        <div style="font-weight:700;color:var(--muted)">Human capital strategy</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 9: PHYSICAL ENVIRONMENT -->
+  <section id="slide-9" class="slide" data-index="9">
+    <div class="slide-inner">
+      <h1>Physical Environment</h1>
+      <h2>Store design, ambience, and sensory experience</h2>
+
+      <p><strong>Store layout:</strong> Olive Young stores employ a modern and navigable layout—clear category zoning, prominent endcaps for promotions, and open spaces for product testing. Flow is designed to maximize discovery while minimizing congestion near checkout zones.</p>
+
+      <p><strong>Lighting & display:</strong> Lighting is purposeful—bright enough for color-accurate makeup testing while using accent lights for feature displays. Product displays are clean, labeled clearly, and arranged by routine or concern (e.g., hydration, anti-aging).</p>
+
+      <p><strong>Testing areas & hygiene:</strong> Testing counters are maintained with sanitary protocols and consumable testers replaced regularly. Staff supervise high-touch areas to ensure hygiene and restock testers to encourage sampling.</p>
+
+      <p><strong>Scent, music & ambience:</strong> Subtle scenting and music playlists aligned with the brand create an environment conducive to relaxed browsing. The sensory environment supports dwell time and encourages multi-item purchases.</p>
+
+      <h3 style="color:var(--neon);margin-top:12px">Recommendations (Physical Environment)</h3>
+      <ul style="padding-left:18px;color:var(--muted);line-height:1.6">
+        <li>Introduce modular pop-up pods for seasonal campaigns that can be rapidly deployed within store footprint.</li>
+        <li>Deploy smart lighting that adjusts intensity for product demonstration zones during evening hours.</li>
+        <li>Run periodic audits focusing on tester availability, signage clarity, and scent intensity to maintain consistent standards.</li>
+      </ul>
+
+      <div class="slide-footer">
+        <div>Environment = curated, hygienic, and comfortable discovery spaces</div>
+        <div style="font-weight:700;color:var(--muted)">Retail ambience & sensory management</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 10: THANK YOU -->
+  <section id="slide-10" class="slide" data-index="10">
+    <div class="slide-inner" style="text-align:center;">
+      <h1>Thank You</h1>
+      <h2 style="color:var(--muted)">We appreciate your time and attention</h2>
+
+      <p style="margin-top:18px;font-size:16px;color:rgba(255,255,255,0.92)">
+        Prepared by <strong style="color:var(--neon)">Old School Boys</strong><br>
+        Team members: Jony • Shoyadbek • Akash
+      </p>
+
+      <div style="margin-top:18px;color:var(--muted);max-width:720px;margin-left:auto;margin-right:auto;line-height:1.6">
+        <p>We designed this presentation to provide practical recommendations and academically sound analyses that can inform management decisions at Olive Young. If you'd like, we can expand this into an executive summary PDF, speaker notes for each slide, or a printable handout with references and data citations.</p>
+      </div>
+
+      <div style="margin-top:24px">
+        <button class="btn primary" id="downloadBtn2">Download This Presentation (HTML)</button>
+      </div>
+
+      <div class="slide-footer" style="margin-top:28px">
+        <div>Questions? Contact: Old School Boys</div>
+        <div style="font-weight:700;color:var(--muted)">Jonyliya.com</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAV CONTROLS -->
+  <div class="controls" aria-hidden="false" style="display:flex">
+    <div class="arrow" id="prevBtn" title="Previous (←)">‹</div>
+    <div class="arrow" id="nextBtn" title="Next (→)">›</div>
+  </div>
+</div>
+
+<script>
+/* ========== Canvas Particles (simple starfield + soft planets) ========== */
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let w = canvas.width = innerWidth;
+  let h = canvas.height = innerHeight;
+  let stars = [];
+  let planets = [];
+
+  function rand(min,max){ return Math.random()*(max-min)+min }
+
+  function create(){
+    stars = [];
+    for(let i=0;i<160;i++){
+      stars.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r: Math.random()*1.6,
+        alpha: Math.random()*0.9+0.1,
+        vy: rand(0.02,0.12)
+      });
+    }
+    planets = [
+      {x: w*0.15, y: h*0.25, r: Math.min(w,h)*0.14, sx:0.00012, hue: 260},
+      {x: w*0.82, y: h*0.78, r: Math.min(w,h)*0.08, sx:-0.00008, hue: 180}
+    ];
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    // radial smoky gradient
+    const g = ctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,"rgba(8,14,30,0.85)");
+    g.addColorStop(1,"rgba(6,9,20,0.92)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,w,h);
+
+    // planets
+    planets.forEach(p=>{
+      p.x += Math.sin(Date.now()*p.sx)*4;
+      ctx.beginPath();
+      const grad = ctx.createRadialGradient(p.x - p.r*0.2, p.y - p.r*0.2, p.r*0.05, p.x, p.y, p.r);
+      grad.addColorStop(0, `hsla(${p.hue},80%,70%,0.35)`);
+      grad.addColorStop(0.6, `hsla(${p.hue},60%,50%,0.08)`);
+      grad.addColorStop(1, `rgba(0,0,0,0)`);
+      ctx.fillStyle = grad;
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    });
+
+    // stars
+    for(let s of stars){
+      s.y -= s.vy;
+      if(s.y < -5) s.y = h + 5;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // subtle gradient overlay
+    ctx.fillStyle = 'rgba(255,255,255,0.006)';
+    ctx.fillRect(0,0,w,h);
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', ()=>{
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+    create();
+  });
+  create();
+  draw();
+})();
+
+/* ========== Slide Navigation Logic ========== */
+(function(){
+  const openPresentationBtn = document.getElementById('openPresentationBtn');
+  const openBtnLarge = document.getElementById('openBtnLarge');
+  const slidesEl = document.getElementById('slides');
+  const landing = document.getElementById('landingContainer');
+  const backToMainBtn = document.getElementById('backToMainBtn');
+  const slideIndex = document.getElementById('slideIndex');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const downloadBtn2 = document.getElementById('downloadBtn2');
+
+  const slideEls = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+
+  function showLanding(){
+    slidesEl.style.display = 'none';
+    landing.style.display = 'flex';
+    document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+    backToMainBtn.style.display = 'none';
+    slideIndex.style.display = 'none';
+  }
+
+  function openSlides(startIndex=0){
+    landing.style.display = 'none';
+    slidesEl.style.display = 'block';
+    backToMainBtn.style.display = 'block';
+    slideIndex.style.display = 'block';
+    goTo(startIndex);
+  }
+
+  function goTo(i){
+    if(i<0) i = 0;
+    if(i>=slideEls.length) i = slideEls.length-1;
+    current = i;
+    slideEls.forEach((s,idx)=>{
+      if(idx === i){
+        s.classList.add('active');
+        s.style.zIndex = 6;
+      } else {
+        s.classList.remove('active');
+        s.style.zIndex = 4;
+      }
+    });
+    slideIndex.textContent = `Slide ${current+1} / ${slideEls.length}`;
+  }
+
+  // Buttons
+  document.getElementById('nextBtn').addEventListener('click', ()=>goTo(current+1));
+  document.getElementById('prevBtn').addEventListener('click', ()=>goTo(current-1));
+  backToMainBtn.addEventListener('click', ()=>showLanding());
+
+  openPresentationBtn.addEventListener('click', ()=>openSlides(0));
+  openBtnLarge.addEventListener('click', ()=>openSlides(0));
+
+  // keyboard
+  window.addEventListener('keydown', (e)=>{
+    if(slidesEl.style.display === 'block'){
+      if(e.key === 'ArrowRight') goTo(current+1);
+      if(e.key === 'ArrowLeft') goTo(current-1);
+      if(e.key === 'Escape') showLanding();
+    }
+  });
+
+  // swipe support
+  (function(){
+    let startX=0,startY=0, down=false;
+    window.addEventListener('touchstart', (e)=>{ down=true; startX=e.touches[0].clientX; startY=e.touches[0].clientY});
+    window.addEventListener('touchend', (e)=>{
+      if(!down) return;
+      down=false;
+      const dx = (event.changedTouches[0].clientX - startX);
+      const dy = (event.changedTouches[0].clientY - startY);
+      if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)){
+        if(dx < 0) goTo(current+1); else goTo(current-1);
+      }
+    });
+  })();
+
+  // Make slide content scrollable but keep nav visible
+  slideEls.forEach(s=>{
+    const inner = s.querySelector('.slide-inner');
+    inner.addEventListener('scroll', ()=>{ /* placeholder if needed */ });
+  });
+
+  // Download current page as HTML: create blob of document outerHTML
+  function downloadHTML(filename='oliveyoung-presentation.html'){
+    const doctype = '<!doctype html>\n';
+    // Build a minimal copy: use current document's outerHTML but remove canvas animation for safety? We'll export the full current HTML source to be faithful.
+    const html = doctype + document.documentElement.outerHTML;
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1000);
+  }
+
+  downloadBtn.addEventListener('click', ()=>downloadHTML());
+  downloadBtn2.addEventListener('click', ()=>downloadHTML());
+
+  // start on landing
+  showLanding();
+})();
+
+/* ========== Accessibility helpers ========== */
+/* Focus outline when keyboard used */
+(function(){
+  function handleFirstTab(e){
+    if(e.key === 'Tab'){
+      document.body.classList.add('show-focus');
+      window.removeEventListener('keydown', handleFirstTab);
+    }
+  }
+  window.addEventListener('keydown', handleFirstTab);
+})();
+
+</script>
+</body>
+</html>
