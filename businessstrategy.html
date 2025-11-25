@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Olive Young — Business Strategy Presentation (Landing Page)</title>
+<meta name="description" content="Interactive landing-page presentation for Business Strategy course — Olive Young (CJ Olive Young)."/>
+<!--
+  index.html
+  Single-file landing-page presentation for Business Strategy class about OLIVE YOUNG.
+  - 12 full-screen sections
+  - Neon / space theme, high contrast text
+  - Top-left "Open Presentation", top-right page indicator
+  - Bottom-right < > navigation, Back to main page button
+  - Accessibility: ARIA labels, keyboard navigation, prefers-reduced-motion
+  - Replace placeholders (logo, course name, professor name) where noted
+-->
+
+<style>
+  :root{
+    --bg:#060814;
+    --card-bg: rgba(10,12,20,0.75);
+    --glass: rgba(255,255,255,0.04);
+    --neon1: #00e6ff;
+    --neon2: #ff3fcf;
+    --accent: #9b7cff;
+    --text:#f5f7fb;
+    --muted:#bfc6d6;
+    --watermark-opacity: 0.6; /* 60% as requested */
+    --max-width:1100px;
+    --section-padding: 32px;
+    --transition: 400ms cubic-bezier(.2,.8,.2,1);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+
+  /* Reset & layout */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background: radial-gradient(ellipse at 20% 10%, rgba(0,230,255,0.06), transparent 8%),
+                radial-gradient(ellipse at 80% 70%, rgba(255,63,207,0.05), transparent 8%),
+                var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow:hidden;
+  }
+
+  /* starfield background - lightweight */
+  .stars{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,0.03) 0 1px, transparent 1px),
+      radial-gradient(circle at 70% 40%, rgba(255,255,255,0.02) 0 1px, transparent 1px),
+      radial-gradient(circle at 40% 80%, rgba(255,255,255,0.02) 0 1px, transparent 1px);
+    background-size: 120px 120px, 180px 180px, 100px 100px;
+    animation: drift 40s linear infinite;
+    opacity:0.9;
+  }
+  @keyframes drift{ from{transform:translateY(0)} to{transform:translateY(-30px)} }
+
+  /* top controls */
+  .topbar{
+    position:fixed; z-index:40; top:18px; left:18px; right:18px;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:10px;
+  }
+  .left-controls, .right-controls{display:flex; gap:12px; align-items:center}
+  .btn {
+    background:linear-gradient(135deg,var(--neon1),var(--neon2));
+    border:none; color:#03060a; padding:10px 14px; border-radius:10px;
+    font-weight:600; cursor:pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .btn:active{transform:translateY(1px)}
+  .ghost {
+    background:transparent; color:var(--text);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:8px 12px; border-radius:8px; font-weight:600;
+    backdrop-filter: blur(6px);
+  }
+  .small {
+    font-size:0.85rem; padding:8px 10px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  }
+
+  /* watermark */
+  .watermark {
+    position:fixed; z-index:5; left:18px; bottom:12px; font-weight:800;
+    font-size:48px; color:var(--text); opacity:var(--watermark-opacity);
+    transform: translateZ(0);
+    pointer-events:none; user-select:none;
+    mix-blend-mode:screen;
+  }
+
+  /* container for sections */
+  .presentation {
+    position:relative; height:100vh; width:100vw; overflow:hidden; z-index:2;
+  }
+  .sections {
+    height:100%; width:100%; display:flex; transition: transform var(--transition);
+  }
+  .section {
+    min-width:100vw; height:100vh; padding:calc(var(--section-padding)*1.2);
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+
+  /* card content */
+  .card {
+    width:100%; max-width:var(--max-width); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:18px; padding:28px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); position:relative;
+    border:1px solid rgba(255,255,255,0.03);
+    backdrop-filter: blur(8px);
+  }
+  h1, h2, h3 { margin:0 0 12px 0; line-height:1.05; }
+  h1 { font-size:clamp(28px,4.2vw,44px); letter-spacing:-0.02em; color:var(--text)}
+  h2 { font-size:clamp(20px,3.2vw,32px); color:var(--neon1)}
+  p { color:var(--muted); margin:0 0 12px 0; line-height:1.45; font-size:clamp(14px,1.5vw,16px) }
+
+  /* big topic words */
+  .huge {
+    font-size:clamp(44px,8vw,96px); font-weight:900; color:transparent;
+    -webkit-text-stroke:1px rgba(255,255,255,0.06); text-transform:uppercase;
+    letter-spacing:4px; margin:0 0 10px 0;
+  }
+
+  /* navigation arrows */
+  .slide-nav {
+    position:fixed; z-index:50; bottom:24px; right:24px; display:flex; gap:12px; align-items:center;
+  }
+  .arrow {
+    width:84px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-size:20px; font-weight:700; cursor:pointer; background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.06);
+  }
+
+  .page-indicator {
+    font-weight:700; color:var(--muted); font-size:0.95rem; padding:6px 8px; border-radius:8px;
+    background:rgba(255,255,255,0.02);
+  }
+
+  /* grid lists */
+  .grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+  .tile {
+    background:var(--card-bg); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.03);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .tile:hover { transform:translateY(-6px); box-shadow:0 24px 40px rgba(0,0,0,0.6) }
+
+  /* accordions and expanders */
+  .accordion { margin:8px 0; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.04)}
+  .accordion button { width:100%; text-align:left; padding:12px 16px; background:transparent; color:var(--text); border:none; cursor:pointer; font-weight:700 }
+  .accordion .panel { max-height:0; overflow:hidden; transition:max-height 280ms ease; background:var(--glass); padding:0 16px; color:var(--muted) }
+
+  /* VRIO / SWOT cards flipping */
+  .flip-card { perspective:1000px }
+  .flip-inner { position:relative; width:100%; height:160px; transition: transform 450ms; transform-style:preserve-3d; }
+  .flip-card.is-flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:12px; padding:14px;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .flip-back { transform: rotateY(180deg); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)) }
+
+  /* responsive */
+  @media (max-width:720px){
+    .left-controls .btn { padding:8px 10px; font-size:0.9rem }
+    .watermark { font-size:28px; left:12px; bottom:8px }
+    .arrow { width:62px; height:44px; font-size:18px }
+  }
+
+  /* prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce){
+    .stars, .sections, .flip-inner { animation:none; transition:none }
+  }
+</style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+
+  <!-- Top Bar -->
+  <div class="topbar" role="banner">
+    <div class="left-controls">
+      <button id="openPresentation" class="btn" aria-label="Open presentation">Open Presentation</button>
+      <button id="backToMain" class="ghost small" aria-label="Back to main page">Back to main page</button>
+    </div>
+
+    <div class="right-controls">
+      <div id="pageIndicator" class="page-indicator" aria-live="polite">1 / 12</div>
+    </div>
+  </div>
+
+  <!-- Watermark bottom-left -->
+  <div class="watermark" aria-hidden="true">Jonyliya.com</div>
+
+  <!-- Presentation container: horizontal slider of 12 sections -->
+  <main class="presentation" role="main" aria-roledescription="presentation" aria-label="Olive Young business strategy presentation">
+    <div id="sections" class="sections" tabindex="0">
+      <!-- 1: Main Landing (ENTRY) -->
+      <section class="section" id="s-1" aria-labelledby="s1title" role="region">
+        <div class="card" style="text-align:center">
+          <h1 id="s1title">Business Strategy — Course Name</h1>
+          <p style="font-size:1.05rem; margin-bottom:22px; color:var(--text)">"Build strategies that let brands stay young — and customers stay loyal."</p>
+
+          <div style="display:flex; gap:18px; align-items:center; justify-content:center; margin:10px 0 4px 0">
+            <button class="ghost" id="enterBtn" aria-label="Open Presentation (enter)">Open Presentation</button>
+          </div>
+
+          <div style="margin-top:24px; display:flex; gap:16px; justify-content:center">
+            <div class="tile" style="max-width:720px; margin:0 auto; text-align:left">
+              <h2 style="color:var(--neon2)">Presentation Overview</h2>
+              <p>This interactive landing page covers: company introduction, history, product mix, vision & mission, sustainability, PESTEL, VRIO, market strategies, Porter's recommendation, vertical integration analysis, SWOT, and final recommendations.</p>
+              <p style="font-size:0.92rem; color:var(--muted)">Tip: Use the large &lt; &gt; buttons to move between sections. Keyboard: ← → to navigate. Press 'M' to return to main landing.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2: Introduction Page -->
+      <section class="section" id="s-2" aria-labelledby="s2title" role="region">
+        <div class="card">
+          <h2 id="s2title">Introduction</h2>
+          <h1 class="huge">INTRO</h1>
+          <p><strong>Course:</strong> Business Strategy — <em>placeholder</em></p>
+          <p><strong>Topic:</strong> Strategic analysis of <strong>OLIVE YOUNG (CJ Olive Young)</strong></p>
+
+          <div style="display:flex; gap:16px; margin-top:14px; align-items:center;">
+            <div style="flex:1">
+              <h3>Team Members</h3>
+              <ul style="color:var(--muted)">
+                <li>Jony (Presenter)</li>
+                <li>Shoyadbek</li>
+                <li>Akash</li>
+              </ul>
+            </div>
+            <div style="flex:2">
+              <h3>How to use this site</h3>
+              <p>Navigate with the large &lt; &gt; arrows bottom-right. Use the Open Presentation button to quickly enter. Each section has concise analysis + source links in the footer.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3: Company Overview -->
+      <section class="section" id="s-3" aria-labelledby="s3title" role="region">
+        <div class="card">
+          <h2 id="s3title">Company Overview</h2>
+          <h1 class="huge">OLIVE YOUNG</h1>
+          <p><strong>Headquarters:</strong> Seoul, South Korea (part of CJ Group). <strong>Industry:</strong> Health & Beauty retail — omnichannel leader.</p>
+
+          <div class="grid" style="margin-top:14px">
+            <div class="tile">
+              <h3>History Timeline (short)</h3>
+              <ol style="color:var(--muted); padding-left:18px;">
+                <li><strong>1999:</strong> First store opened in Sinsa-dong, Gangnam, Seoul (Dec 1999). [Source in footer]</li>
+                <li><strong>2000s–2010s:</strong> Rapid expansion in Korea; built strong private labels and partnerships.</li>
+                <li><strong>2020s:</strong> Omnichannel growth (stores + e-commerce + app); ESG/Impact reporting; international expansion plans.</li>
+              </ol>
+            </div>
+
+            <div class="tile">
+              <h3>Business Model</h3>
+              <p style="color:var(--muted)">Retail-focused with multi-channel presence. Main revenue from in-store sales, online marketplace (web & app), private-label products, and marketplace commissions for partner brands.</p>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:12px; align-items:center;">
+            <!-- Placeholder for logo -->
+            <div aria-hidden="true" style="width:88px; height:88px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,var(--neon1),var(--neon2)); color:#031018; font-weight:800">
+              LOGO
+            </div>
+            <div style="color:var(--muted)">Replace the logo placeholder above with the Olive Young SVG logo (copyright clearance required). <!-- PLACEHOLDER: Replace with official logo.svg --></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 4: Major Products & Business Model -->
+      <section class="section" id="s-4" aria-labelledby="s4title" role="region">
+        <div class="card">
+          <h2 id="s4title">Major Products & Business Model</h2>
+          <h1 class="huge">PRODUCTS</h1>
+
+          <div class="grid" style="margin-top:12px">
+            <div class="tile">
+              <h3>Skincare</h3>
+              <p style="color:var(--muted)">Top-selling segment: cleansers, serums, moisturizers. Olive Young carries Korean beauty (K-Beauty) favorites and emerging indie brands.</p>
+            </div>
+            <div class="tile">
+              <h3>Makeup</h3>
+              <p style="color:var(--muted)">Mass-market to premium makeup brands: foundations, cushions, lip tints, mascaras — strong digital promotion via creators.</p>
+            </div>
+            <div class="tile">
+              <h3>Haircare & Devices</h3>
+              <p style="color:var(--muted)">Shampoos, treatments, hair tools, beauty devices (LED masks, cleansing devices).</p>
+            </div>
+            <div class="tile">
+              <h3>Health & Supplements</h3>
+              <p style="color:var(--muted)">Vitamins, probiotics, wellness supplements — positioned as a health-and-beauty lifestyle store.</p>
+            </div>
+          </div>
+
+          <div style="margin-top:16px">
+            <h3>Omnichannel Strategy</h3>
+            <p style="color:var(--muted)">Strong physical footprint (large number of stores across Korea) combined with e-commerce & mobile app. The synergy drives impulse purchases in-store + repeat purchases via digital loyalty programs.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5: Vision, Mission & Core Values -->
+      <section class="section" id="s-5" aria-labelledby="s5title" role="region">
+        <div class="card">
+          <h2 id="s5title">Vision, Mission & Core Values</h2>
+          <h1 class="huge">VALUES</h1>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px">
+            <div class="tile">
+              <h3>Vision</h3>
+              <p style="color:var(--muted)"><strong>Healthy Beauty:</strong> "Enrich everyday life through accessible beauty & wellness." Olive Young's brand essence is to help people live young and healthy.</p>
+            </div>
+            <div class="tile">
+              <h3>Mission</h3>
+              <p style="color:var(--muted)">Provide curated, trend-forward beauty & health products with convenient access (stores + app), and foster a loyal customer community through content, discovery, and value.</p>
+            </div>
+
+            <div class="tile">
+              <h3>Core Values</h3>
+              <ul style="color:var(--muted); padding-left:18px">
+                <li>Customer-first discovery & convenience</li>
+                <li>Trend leadership & curated assortment</li>
+                <li>Sustainability & social responsibility</li>
+                <li>Innovation in retail & digital experiences</li>
+              </ul>
+            </div>
+
+            <div class="tile">
+              <h3>Brand Positioning</h3>
+              <p style="color:var(--muted)">Mass-market to trend-savvy customers; positioned between drugstore convenience and specialty beauty retailers, leveraging K-Beauty appeal.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6: Sustainability / Cause Marketing -->
+      <section class="section" id="s-6" aria-labelledby="s6title" role="region">
+        <div class="card">
+          <h2 id="s6title">Sustainability & Cause Marketing</h2>
+          <h1 class="huge">SUSTAINABILITY</h1>
+
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div style="flex:2">
+              <p style="color:var(--muted)">Olive Young publishes annual Impact Reports (2024/2025) highlighting sustainable packaging initiatives, waste reduction programs, and responsible sourcing. The retailer uses cause marketing by promoting eco-certified products, partnering with NGOs for campaigns, and offering recycling initiatives in stores.</p>
+
+              <div class="accordion" id="sustainabilityAccordion">
+                <button aria-expanded="false" aria-controls="panel1">Impact Report: Key Highlights</button>
+                <div id="panel1" class="panel">
+                  <ul style="padding:10px 0 16px 18px; color:var(--muted)">
+                    <li>Eco-packaging pilots and supplier guidelines for reduced plastic use.</li>
+                    <li>Energy-efficiency measures in flagship stores and distribution centers.</li>
+                    <li>Social programs supporting local suppliers & community wellness initiatives.</li>
+                  </ul>
+                </div>
+
+                <button aria-expanded="false" aria-controls="panel2">Cause Marketing Examples</button>
+                <div id="panel2" class="panel">
+                  <ul style="padding:10px 0 16px 18px; color:var(--muted)">
+                    <li>Limited-edition product bundles with a % donated to health charities.</li>
+                    <li>Awareness campaigns for mental health & self-care promoting product + expert content.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p style="color:var(--muted); margin-top:8px">Full reports & links in the <strong>Sources</strong> slide (end of presentation).</p>
+            </div>
+
+            <div style="flex:1">
+              <div class="tile">
+                <h3>Why sustainability matters</h3>
+                <p style="color:var(--muted)">Consumers (especially Gen Z & Millennials) increasingly choose brands with transparent ESG practices — this drives long-term loyalty and brand preference.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7: PESTEL Analysis -->
+      <section class="section" id="s-7" aria-labelledby="s7title" role="region">
+        <div class="card">
+          <h2 id="s7title">PESTEL Analysis</h2>
+          <h1 class="huge">PESTEL</h1>
+
+          <div class="grid" style="margin-top:14px">
+            <!-- Political -->
+            <div class="tile" role="button" tabindex="0" aria-expanded="false" data-panel="p-1">
+              <h3>Political</h3>
+              <p style="color:var(--muted)">Regulation of imports/exports, trade policies affecting foreign brands, and public health policy (cosmetics safety standards) can influence product sourcing and costs.</p>
+            </div>
+            <!-- Economic -->
+            <div class="tile" role="button" tabindex="0" aria-expanded="false" data-panel="p-2">
+              <h3>Economic</h3>
+              <p style="color:var(--muted)">Consumer spending patterns post-COVID, inflation, and exchange rates affect product pricing and margins. Korea's strong domestic market sustains retail growth.</p>
+            </div>
+            <!-- Social -->
+            <div class="tile" role="button" tabindex="0" aria-expanded="false" data-panel="p-3">
+              <h3>Social</h3>
+              <p style="color:var(--muted)">Beauty culture and social media drive demand for new trends. Aging population segments & rising wellness awareness create new product categories.</p>
+            </div>
+            <!-- Technological -->
+            <div class="tile" role="button" tabindex="0" aria-expanded="false" data-panel="p-4">
+              <h3>Technological</h3>
+              <p style="color:var(--muted)">Data analytics, personalized recommendations, AR try-on tech, and logistics automation improve customer experience and operational efficiency.</p>
+            </div>
+            <!-- Environmental -->
+            <div class="tile" role="button" tabindex="0" aria-expanded="false" data-panel="p-5">
+              <h3>Environmental</h3>
+              <p style="color:var(--muted)">Pressure to reduce single-use plastics, carbon footprint from distribution, and the need for sustainable packaging are key trends.</p>
+            </div>
+            <!-- Legal -->
+            <div class="tile" role="button" tabindex="0" aria-expanded="false" data-panel="p-6">
+              <h3>Legal</h3>
+              <p style="color:var(--muted)">Cosmetic safety regulations, labeling laws, and cross-border e-commerce rules determine how products are sold internationally.</p>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; color:var(--muted)">
+            <p><strong>How to use:</strong> Each tile summarizes impact + recommended management response (e.g., invest in compliance, localize product labeling, green logistics).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8: VRIO Analysis -->
+      <section class="section" id="s-8" aria-labelledby="s8title" role="region">
+        <div class="card">
+          <h2 id="s8title">VRIO Analysis</h2>
+          <h1 class="huge">VRIO</h1>
+
+          <div class="grid" style="margin-top:12px">
+            <div class="flip-card" tabindex="0" role="button" aria-pressed="false" data-flip>
+              <div class="tile flip-inner">
+                <div class="flip-front" style="background:linear-gradient(90deg, rgba(0,230,255,0.06), rgba(255,63,207,0.03))">
+                  <h3>Value</h3>
+                  <p style="color:var(--muted)">Strong value: curated assortment, brand partnerships, and scale deliver customer value and convenience.</p>
+                </div>
+                <div class="flip-back" style="background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.2))">
+                  <h3>Implication</h3>
+                  <p style="color:var(--muted)">Invest in personalized digital experiences to amplify perceived value and retention.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" tabindex="0" role="button" aria-pressed="false" data-flip>
+              <div class="tile flip-inner">
+                <div class="flip-front">
+                  <h3>Rarity</h3>
+                  <p style="color:var(--muted)">Moderate rarity: while retail model is replicable, Olive Young's K-Beauty curation and large store network are differentiators in Korea.</p>
+                </div>
+                <div class="flip-back">
+                  <h3>Implication</h3>
+                  <p style="color:var(--muted)">Strengthen private label & exclusive partnerships to increase rarity.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" tabindex="0" role="button" aria-pressed="false" data-flip>
+              <div class="tile flip-inner">
+                <div class="flip-front">
+                  <h3>Imitability</h3>
+                  <p style="color:var(--muted)">Moderate: rivals can copy assortments, but scale, supplier relationships, and data insights raise barriers.</p>
+                </div>
+                <div class="flip-back">
+                  <h3>Implication</h3>
+                  <p style="color:var(--muted)">Protect supplier exclusives & accelerate digital personalization.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flip-card" tabindex="0" role="button" aria-pressed="false" data-flip>
+              <div class="tile flip-inner">
+                <div class="flip-front">
+                  <h3>Organization</h3>
+                  <p style="color:var(--muted)">High: well-organized retail operations, logistics, and loyalty program support exploitation of resources.</p>
+                </div>
+                <div class="flip-back">
+                  <h3>Implication</h3>
+                  <p style="color:var(--muted)">Leverage organizational strengths for international scaling and omni-channel excellence.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p style="margin-top:12px; color:var(--muted)"><strong>Summary VRIO:</strong> Olive Young has valuable and organized resources; build on exclusivity and data to improve rarity and defensibility.</p>
+        </div>
+      </section>
+
+      <!-- 9: Market Development & Market Penetration -->
+      <section class="section" id="s-9" aria-labelledby="s9title" role="region">
+        <div class="card">
+          <h2 id="s9title">Market Development & Market Penetration</h2>
+          <h1 class="huge">MARKET</h1>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+            <div class="tile">
+              <h3>Market Penetration (Domestic)</h3>
+              <ul style="color:var(--muted); padding-left:18px">
+                <li>Increase frequency through loyalty promotions, subscription boxes, and targeted digital coupons.</li>
+                <li>Optimize store layouts for category adjacency and impulse cross-sell.</li>
+                <li>Use data to personalize offers — push repeat purchases for consumables (skincare, supplements).</li>
+              </ul>
+            </div>
+
+            <div class="tile">
+              <h3>Market Development (International)</h3>
+              <ul style="color:var(--muted); padding-left:18px">
+                <li>Entry via flagship stores + e-commerce localized for target markets (U.S. first), partner with local beauty retailers/pop-up collaborations.</li>
+                <li>Localize marketing (influencers, bilingual content), and manage tariff/compliance for cosmetics.</li>
+                <li>Use cross-border e-commerce and logistics partners to test demand before heavy capex.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="margin-top:14px; color:var(--muted)">
+            <p><strong>Performance metrics:</strong> same-store sales growth, digital conversion rates, retention (repeat purchase rate), average order value, and international market CAC/LTV.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10: Porter's Strategy Recommendation & Vertical Integration -->
+      <section class="section" id="s-10" aria-labelledby="s10title" role="region">
+        <div class="card">
+          <h2 id="s10title">Porter & Vertical Integration</h2>
+          <h1 class="huge">PORTER</h1>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px">
+            <div class="tile">
+              <h3>Recommended Porter Generic Strategy</h3>
+              <p style="color:var(--muted)"><strong>Hybrid: Differentiation Focus</strong> — Olive Young should lean toward <em>differentiation</em> via curated K-Beauty assortments, exclusive partnerships, and superior omnichannel experience, while focusing on trend-savvy customer segments.</p>
+              <ul style="color:var(--muted); padding-left:18px">
+                <li>Justification 1: Unique curation & exclusive SKUs increase perceived uniqueness.</li>
+                <li>Justification 2: Digital personalization and store experience differentiate from mass drugstores.</li>
+                <li>Justification 3: Focus on younger demographics and K-Beauty fans where brand power is strongest.</li>
+              </ul>
+            </div>
+
+            <div class="tile">
+              <h3>Vertical Integration Evaluation</h3>
+              <p style="color:var(--muted)"><strong>Upstream (backward):</strong> Consider selective private-label manufacturing to increase margins and exclusivity — requires supplier management & quality control.</p>
+              <p style="color:var(--muted)"><strong>Downstream (forward):</strong> Strengthen logistics & localized fulfillment (3PL or owned DCs) when entering new markets for better customer service and margin control.</p>
+              <ul style="color:var(--muted); padding-left:18px">
+                <li>Pros: Better margin control, improved speed-to-market, exclusive product control.</li>
+                <li>Cons: Capex, operational complexity, and regulatory overhead in new geographies.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11: SWOT Summary -->
+      <section class="section" id="s-11" aria-labelledby="s11title" role="region">
+        <div class="card">
+          <h2 id="s11title">SWOT Summary</h2>
+          <h1 class="huge">SWOT</h1>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
+            <div style="display:grid; gap:10px;">
+              <div class="tile">
+                <h3>Strengths</h3>
+                <ul style="color:var(--muted); padding-left:18px">
+                  <li>Large domestic footprint & brand recognition</li>
+                  <li>Omnichannel capability & strong loyalty program</li>
+                  <li>Curated K-Beauty assortment</li>
+                </ul>
+              </div>
+              <div class="tile">
+                <h3>Weaknesses</h3>
+                <ul style="color:var(--muted); padding-left:18px">
+                  <li>Competition from global retailers (Sephora, Ulta) and e-commerce platforms</li>
+                  <li>Dependency on domestic market for majority of revenue</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style="display:grid; gap:10px;">
+              <div class="tile">
+                <h3>Opportunities</h3>
+                <ul style="color:var(--muted); padding-left:18px">
+                  <li>International expansion (U.S. & Southeast Asia)</li>
+                  <li>Private-label & exclusive brand collaborations</li>
+                  <li>New health & wellness categories</li>
+                </ul>
+              </div>
+              <div class="tile">
+                <h3>Threats</h3>
+                <ul style="color:var(--muted); padding-left:18px">
+                  <li>Supply chain disruptions and foreign regulatory barriers</li>
+                  <li>Intense competition from online-only players and global chains</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; color:var(--muted)">
+            <h3>Strategic Implications (priority moves)</h3>
+            <ol style="padding-left:18px">
+              <li>Develop exclusive SKUs & strengthen private label to enhance differentiation.</li>
+              <li>Scale omnichannel personalization and loyalty to increase retention.</li>
+              <li>Test international markets with digital-first approach and localized partnerships.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12: Thank You / Contact / Sources -->
+      <section class="section" id="s-12" aria-labelledby="s12title" role="region">
+        <div class="card" style="text-align:center">
+          <h2 id="s12title">Thank You</h2>
+          <h1 class="huge">THANK YOU</h1>
+          <p style="color:var(--muted)">Presented by: <strong>Jony</strong>, <strong>Shoyadbek</strong>, <strong>Akash</strong></p>
+          <p style="color:var(--muted)">For: Business Strategy — <em>Professor name (replace placeholder)</em></p>
+
+          <div style="margin-top:18px;">
+            <button class="btn" id="exportPdf" aria-label="Export to PDF">Download / Print Presentation (Save as PDF)</button>
+          </div>
+
+          <div style="margin-top:18px; text-align:left; font-size:0.85rem; color:var(--muted)">
+            <h3>Sources & References</h3>
+            <ul>
+              <li><a href="https://corp.oliveyoung.com/en/company/history?utm_source=chatgpt.com" target="_blank" rel="noopener" style="color:var(--neon1)">Olive Young — Corporate history & About</a></li>
+              <li><a href="https://en.wikipedia.org/wiki/Olive_Young_%28company%29?utm_source=chatgpt.com" target="_blank" rel="noopener" style="color:var(--neon1)">Olive Young — Wikipedia</a></li>
+              <li><a href="https://corp.oliveyoung.com/en/sustainability/impact-report?utm_source=chatgpt.com" target="_blank" rel="noopener" style="color:var(--neon1)">Impact Report (2024/2025)</a></li>
+              <li><a href="https://www.businessinsider.com/korean-beauty-brands-exclusive-sephora-ulta-olive-young-2025-10?utm_source=chatgpt.com" target="_blank" rel="noopener" style="color:var(--neon1)">Business Insider — Expansion / Industry</a></li>
+              <li><a href="https://newsroom.cj.net/cj-olive-young-selected-by-harvard-business-school/?utm_source=chatgpt.com" target="_blank" rel="noopener" style="color:var(--neon1)">CJ Newsroom — HBS mention</a></li>
+            </ul>
+          </div>
+
+          <div style="margin-top:14px; color:var(--muted)">
+            <p><!-- GitHub Pages placeholder: https://<your-github-username>.github.io/<repo-name>/ -->
+              <!-- PLACEHOLDER: Replace with your GitHub Pages link after deploying. -->
+              To deploy: push this file (plus assets) to your repo and enable GitHub Pages (branch: main / folder: root). -->
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div> <!-- /sections -->
+  </main>
+
+  <!-- Bottom navigation -->
+  <div class="slide-nav" role="navigation" aria-label="Slide navigation">
+    <div class="arrow" id="prev" tabindex="0" role="button" aria-label="Previous slide" title="Previous (Left arrow)">
+      &lt;
+    </div>
+    <div class="arrow" id="next" tabindex="0" role="button" aria-label="Next slide" title="Next (Right arrow)">
+      &gt;
+    </div>
+  </div>
+
+<script>
+/* app inline script
+   - Handles slide navigation, keyboard shortcuts, accordions, flips, and export (print)
+   - Comments point to where to customize content
+*/
+
+/* Config */
+const TOTAL = 12;
+let index = 0; // 0-based slide index
+
+const sectionsEl = document.getElementById('sections');
+const pageIndicator = document.getElementById('pageIndicator');
+const nextBtn = document.getElementById('next');
+const prevBtn = document.getElementById('prev');
+const openPresentation = document.getElementById('openPresentation');
+const backToMain = document.getElementById('backToMain');
+const enterBtn = document.getElementById('enterBtn');
+const exportPdf = document.getElementById('exportPdf');
+
+/* Utilities */
+function updateView() {
+  // slide horizontally
+  sectionsEl.style.transform = `translateX(-${index * 100}vw)`;
+  pageIndicator.textContent = (index + 1) + ' / ' + TOTAL;
+  // focus the section
+  const current = document.querySelectorAll('.section')[index];
+  current && current.querySelector('.card')?.focus();
+}
+function next() { index = Math.min(TOTAL-1, index+1); updateView(); }
+function prev() { index = Math.max(0, index-1); updateView(); }
+
+/* Event listeners */
+nextBtn.addEventListener('click', next);
+prevBtn.addEventListener('click', prev);
+
+openPresentation.addEventListener('click', () => { index = 1; updateView(); });
+enterBtn?.addEventListener('click', () => { index = 1; updateView(); });
+backToMain.addEventListener('click', () => { index = 0; updateView(); });
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
+  if (e.key.toLowerCase() === 'm') { index = 0; updateView(); }
+});
+
+/* Keyboard accessibility for nav buttons */
+[nextBtn, prevBtn].forEach(btn => {
+  btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); } });
+});
+
+/* Accordions in Sustainability */
+document.querySelectorAll('.accordion button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const panel = btn.nextElementSibling;
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    if (!open) {
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+    } else {
+      panel.style.maxHeight = null;
+    }
+  });
+});
+
+/* PESTEL tiles (make them expand inline) */
+document.querySelectorAll('[data-panel]').forEach(tile => {
+  tile.addEventListener('click', () => togglePanel(tile));
+  tile.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePanel(tile); } });
+});
+function togglePanel(tile){
+  const expanded = tile.getAttribute('aria-expanded') === 'true';
+  tile.setAttribute('aria-expanded', String(!expanded));
+  if (!expanded) {
+    const p = document.createElement('div');
+    p.className = 'panel';
+    p.style.padding = '12px 8px';
+    p.innerHTML = `<p style="color:var(--muted); margin:0">Recommended response: <strong style="color:var(--text)">Invest in compliance & localize product info; monitor exchange rates; develop green logistics</strong>.</p>`;
+    tile.appendChild(p);
+    // animate open
+    requestAnimationFrame(()=>{ p.style.maxHeight = p.scrollHeight + 'px'; });
+  } else {
+    const p = tile.querySelector('.panel');
+    if (p) p.remove();
+  }
+}
+
+/* VRIO & flip cards */
+document.querySelectorAll('[data-flip]').forEach(card => {
+  card.addEventListener('click', () => card.classList.toggle('is-flipped'));
+  card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key===' ') { e.preventDefault(); card.classList.toggle('is-flipped'); }});
+});
+
+/* Export to PDF -> simple print page (works well; instruct students to Save as PDF) */
+exportPdf.addEventListener('click', () => {
+  // minimal print stylesheet applied
+  window.print();
+});
+
+/* Accessibility improvements: focus management */
+document.querySelectorAll('.card').forEach(c => { c.setAttribute('tabindex','-1') });
+
+/* Initialize */
+updateView();
+
+/* Performance & lazy image placeholder (if assets added) */
+/* Developer note: Move heavy images to /assets and lazy-load with intersection observer. */
+
+/* End of script */
+</script>
+
+<!-- Inline print styles for PDF-friendly output -->
+<style media="print">
+  body { background: #fff; color:#000 }
+  .stars, .slide-nav, .topbar, .watermark { display:none !important }
+  .card { box-shadow:none; border-radius:0; border:none; background:transparent }
+  .sections { transform:none !important; display:block !important }
+  .section { page-break-after:always; padding:20mm }
+</style>
+
+</body>
+</html>
