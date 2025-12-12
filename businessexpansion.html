@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>L&G AI Studio – AI DevLab Setup Service</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b1020, #191e36, #251b3f);
+      --card-bg: #14182b;
+      --accent: #6b7bff;
+      --accent-soft: rgba(107, 123, 255, 0.16);
+      --accent-strong: #9f7bff;
+      --text-main: #f5f6ff;
+      --text-muted: #c0c4dd;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --danger: #ffb86b;
+      --shadow-soft: 0 18px 45px rgba(2, 9, 36, 0.7);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --transition-fast: 0.22s ease-out;
+    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 96px 16px 72px;
+}
+
+section {
+  margin-bottom: 48px;
+}
+
+.card {
+  background: radial-gradient(circle at top left, rgba(159, 123, 255, 0.15), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(107, 123, 255, 0.18), transparent 60%),
+              var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  animation: fadeSlideUp 0.8s ease-out both;
+}
+
+.card-soft {
+  background: rgba(10, 15, 36, 0.8);
+  border-radius: var(--radius-md);
+  padding: 20px 18px;
+  border: 1px solid var(--border-subtle);
+}
+
+h1, h2, h3, h4 {
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+h2 {
+  font-size: 1.7rem;
+  margin-bottom: 16px;
+}
+
+p {
+  margin-bottom: 8px;
+  color: var(--text-muted);
+}
+
+/* Sticky navigation */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(to right, rgba(5, 7, 25, 0.96), rgba(11, 12, 32, 0.94));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 14px 30px rgba(3, 0, 20, 0.65);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.logo-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 20% 0, #ffcf71, #9f7bff 55%, #4d68ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  box-shadow: 0 0 18px rgba(159, 123, 255, 0.9);
+}
+
+.nav-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.88rem;
+}
+
+.nav-menu a {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+  white-space: nowrap;
+}
+
+.nav-menu a:hover {
+  background: rgba(107, 123, 255, 0.1);
+  border-color: rgba(107, 123, 255, 0.5);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Hero */
+#home .hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.hero-heading {
+  font-size: clamp(2.1rem, 3.1vw, 2.6rem);
+  margin-bottom: 12px;
+}
+
+.hero-sub {
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(159, 123, 255, 0.15);
+  border: 1px dashed rgba(159, 123, 255, 0.7);
+  color: #f3e9ff;
+  font-size: 0.78rem;
+  margin-bottom: 10px;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.btn {
+  border-radius: 999px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), border var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.7);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.45);
+  color: var(--text-main);
+}
+
+.btn-outline:hover {
+  background: rgba(17, 24, 64, 0.85);
+  border-color: rgba(159, 123, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.hero-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+
+.hero-visual {
+  position: relative;
+}
+
+.hero-orbit {
+  position: relative;
+  border-radius: 26px;
+  padding: 22px 20px;
+  background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.08), transparent 45%),
+              radial-gradient(circle at 100% 0, rgba(159, 123, 255, 0.25), transparent 65%),
+              rgba(5, 9, 32, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  animation: floatHero 4s ease-in-out infinite alternate;
+}
+
+.hero-orbit h3 {
+  font-size: 0.98rem;
+  margin-bottom: 6px;
+}
+
+.hero-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chip {
+  font-size: 0.72rem;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(15, 23, 55, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  font-size: 0.75rem;
+}
+
+.hero-grid-item {
+  padding: 8px 9px;
+  border-radius: 10px;
+  background: rgba(5, 10, 48, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--text-muted);
+}
+
+.hero-grid-item strong {
+  display: block;
+  color: #f5f6ff;
+  margin-bottom: 2px;
+}
+
+.hero-orbit-orbit {
+  position: absolute;
+  inset: -12px;
+  border-radius: 32px;
+  border: 1px dashed rgba(159, 123, 255, 0.45);
+  opacity: 0.45;
+  pointer-events: none;
+  animation: rotateOrbit 18s linear infinite;
+}
+
+/* Why section */
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
+  margin-top: 10px;
+}
+
+.col-heading {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style: none;
+}
+
+.bullet-list li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.bullet-list li::before {
+  content: "•";
+  position: absolute;
+  left: 3px;
+  top: 0;
+  color: var(--accent-strong);
+}
+
+.highlight-box {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(255, 255, 255, 0.32);
+  background: rgba(10, 16, 44, 0.9);
+  font-size: 0.86rem;
+}
+
+.highlight-box strong {
+  color: #ffffff;
+}
+
+/* What's Included */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.include-card {
+  background: rgba(9, 14, 40, 0.95);
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.include-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.7);
+  border-color: rgba(159, 123, 255, 0.8);
+  background: rgba(11, 18, 52, 1);
+}
+
+.include-icon {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.include-title {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.include-list li {
+  font-size: 0.82rem;
+}
+
+.note-line {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* How it works */
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.step {
+  background: rgba(8, 13, 36, 0.95);
+  border-radius: var(--radius-md);
+  padding: 14px 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.step::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(159, 123, 255, 0.22), transparent 55%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.step:hover::before {
+  opacity: 1;
+}
+
+.step:hover {
+  transform: translateY(-4px);
+  border-color: rgba(159, 123, 255, 0.9);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.7);
+}
+
+.step-content {
+  position: relative;
+  z-index: 1;
+}
+
+.step-number {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(159, 123, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+  color: #f5f6ff;
+  background: rgba(10, 12, 42, 0.9);
+}
+
+.step-title {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.step-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Pricing */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.pricing-card {
+  background: rgba(8, 13, 36, 0.96);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.pricing-card.highlight {
+  border-color: rgba(159, 123, 255, 0.9);
+  background: radial-gradient(circle at top, rgba(159, 123, 255, 0.3), transparent 55%), rgba(5, 9, 32, 0.96);
+  transform: translateY(-2px);
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(159, 123, 255, 0.9);
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.85);
+  background: rgba(7, 12, 40, 0.98);
+}
+
+.pricing-tag {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(159, 123, 255, 0.2);
+  border: 1px solid rgba(159, 123, 255, 0.8);
+  color: #f7f2ff;
+  letter-spacing: 0.08em;
+}
+
+.pricing-title {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.pricing-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.pricing-caption {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.pricing-list li {
+  font-size: 0.82rem;
+}
+
+.pricing-note {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Professor section */
+.prof-box {
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(159, 123, 255, 0.25), rgba(10, 14, 42, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 24px 22px;
+}
+
+.prof-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 10, 32, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 0.76rem;
+  margin-bottom: 10px;
+}
+
+.prof-box p {
+  font-size: 0.92rem;
+}
+
+details.prof-details {
+  margin-top: 14px;
+  border-radius: var(--radius-md);
+  background: rgba(8, 10, 32, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+details.prof-details summary {
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  list-style: none;
+}
+
+details.prof-details summary::-webkit-details-marker {
+  display: none;
+}
+
+details.prof-details summary::after {
+  content: "▼";
+  float: right;
+  font-size: 0.7rem;
+  transform: translateY(2px);
+  transition: transform var(--transition-fast);
+}
+
+details[open].prof-details summary::after {
+  transform: rotate(-180deg) translateY(-2px);
+}
+
+details.prof-details .prof-details-body {
+  padding: 10px 14px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.84rem;
+}
+
+details.prof-details ul {
+  padding-left: 18px;
+}
+
+details.prof-details li {
+  margin-bottom: 4px;
+  color: var(--text-muted);
+}
+
+/* FAQ */
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.faq-item {
+  background: rgba(8, 12, 36, 0.96);
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.faq-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.7);
+  border-color: rgba(159, 123, 255, 0.8);
+  background: rgba(10, 15, 42, 0.98);
+}
+
+.faq-q {
+  font-size: 0.92rem;
+  margin-bottom: 6px;
+}
+
+.faq-a {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+/* Contact */
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 26px;
+  align-items: flex-start;
+}
+
+form {
+  display: grid;
+  gap: 12px;
+}
+
+label {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+input, textarea, select {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(9, 12, 32, 0.95);
+  padding: 9px 12px;
+  color: var(--text-main);
+  font-size: 0.86rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+textarea {
+  border-radius: 14px;
+  min-height: 90px;
+  resize: vertical;
+  padding-top: 9px;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(159, 123, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(159, 123, 255, 0.8);
+  background: rgba(6, 10, 36, 0.98);
+  transform: translateY(-1px);
+}
+
+.contact-note {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* Footer */
+footer {
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  padding: 0 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 18px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Animations */
+@keyframes floatHero {
+  from {
+    transform: translateY(0px) translateZ(0);
+  }
+  to {
+    transform: translateY(-10px) translateZ(0);
+  }
+}
+
+@keyframes rotateOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Utilities */
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 6px;
+}
+
+.section-subtitle {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.separator {
+  margin: 30px 0 18px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.24), transparent);
+  opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  #home .hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pricing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .faq-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  main {
+    padding-top: 86px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-menu {
+    width: 100%;
+    justify-content: flex-start;
+    row-gap: 6px;
+  }
+
+  .cards-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .timeline {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pricing-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-orbit {
+    margin-top: 6px;
+  }
+}  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-badge">AI</div>
+        <div>
+          <div>L&amp;G AI Studio</div>
+          <div style="font-size:0.7rem; color:var(--text-muted);">AI DevLab Setup Service</div>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <a href="#home">Home</a>
+        <a href="#why">Why It’s Different</a>
+        <a href="#included">What’s Included</a>
+        <a href="#how">How It Works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#professor">For Our Professor</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <!-- Hero -->
+    <section id="home" class="card">
+      <div class="hero-inner">
+        <div>
+          <div class="badge">
+            <span>⚡ New complimentary service</span>
+            <span>AI DevLab in one week</span>
+          </div>
+          <h1 class="hero-heading">Launch your AI DevLab in just 7 days.</h1>
+          <p class="hero-sub">
+            AI DevLab Setup Service is a complete office and technology setup that gives small tech teams
+            a ready-to-use AI development studio – perfectly designed to get the most value from our
+            AI-powered SaaS platform.
+          </p>
+          <div class="cta-row">
+            <a href="#contact" class="btn btn-primary">
+              <span>Book a Free Planning Call</span> <span>→</span>
+            </a>
+            <a href="#pricing" class="btn btn-outline">
+              <span>See Pricing</span>
+            </a>
+          </div>
+          <p class="hero-note">
+            This product is a complimentary, but separate, expansion of our AI-powered SaaS platform (for course project).
+          </p>
+        </div>
+    <div class="hero-visual">
+      <div class="hero-orbit">
+        <h3>🧪 Your AI DevLab at a glance</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+          We combine furniture, equipment, software setup, and onboarding into one done-for-you package.
+        </p>
+        <div class="hero-chip-row">
+          <div class="chip">💻 5–20 developer seats</div>
+          <div class="chip">🪑 Ergonomic workspace layout</div>
+          <div class="chip">☁️ SaaS platform connected</div>
+        </div>
+        <div class="hero-grid">
+          <div class="hero-grid-item">
+            <strong>Studio Hardware</strong>
+            Pre-configured laptops, monitors, router, and NAS – ready on day one.
+          </div>
+          <div class="hero-grid-item">
+            <strong>Smart Office Flow</strong>
+            Conference zone, whiteboard wall, and focus desks for deep work.
+          </div>
+          <div class="hero-grid-item">
+            <strong>Tool Stack Setup</strong>
+            Cloud credits, GitHub Enterprise, PM tools, and design apps installed.
+          </div>
+          <div class="hero-grid-item">
+            <strong>Onboarding Day</strong>
+            Live workshop: how to build and deploy AI features using our SaaS.
+          </div>
+        </div>
+      </div>
+      <div class="hero-orbit-orbit"></div>
+    </div>
+  </div>
+</section>
+
+<div class="separator"></div>
+
+<!-- Why It’s Separate but Complimentary -->
+<section id="why" class="card">
+  <div class="section-header">
+    <h2>Why It’s a Separate but Complimentary Product</h2>
+    <p class="section-subtitle">
+      Two connected offers: one is pure software, the other is a physical + consulting service.
+    </p>
+  </div>
+
+  <div class="two-column">
+    <div>
+      <div class="pill">Original product</div>
+      <h3 class="col-heading">AI-powered SaaS Platform</h3>
+      <ul class="bullet-list">
+        <li>Cloud-based AI tools that help teams build, test, and deploy AI-powered features.</li>
+        <li>Subscription pricing per team or per seat, hosted and maintained by us.</li>
+        <li>Includes analytics, model management, and integrations with common developer tools.</li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="pill">New complimentary service</div>
+      <h3 class="col-heading">AI DevLab Setup Service</h3>
+      <ul class="bullet-list">
+        <li>Office design plan for an AI studio: desks, chairs, collaboration areas, and focus zones.</li>
+        <li>Hardware and software installation: laptops, monitors, network, and core tool stack.</li>
+        <li>Onboarding workshop day: we train the team to use the studio and connect to our SaaS.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>Not just an extension upgrade:</strong> The AI DevLab Setup Service has its own cost structure, separate contract, and project-style delivery. It involves furniture, physical equipment, and consulting work, not just enabling a new button inside the app.</p>
+    <p style="margin-top:6px;"><strong>Complimentary to the software:</strong> Both products serve the same target customers (small tech companies and startups). The DevLab increases the value of the SaaS by giving teams the best environment to experiment rapidly, onboard new hires, and make daily use of the AI platform.</p>
+  </div>
+</section>
+
+<div class="separator"></div>
+
+<!-- What's Included -->
+<section id="included" class="card">
+  <div class="section-header">
+    <h2>What’s Included in the AI DevLab Setup Service</h2>
+    <p class="section-subtitle">We turn a regular office into a ready-to-use AI development studio.</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="include-card">
+      <div class="include-icon">🪑</div>
+      <h3 class="include-title">Furniture</h3>
+      <ul class="bullet-list include-list">
+        <li>Ergonomic chairs for each developer seat.</li>
+        <li>Individual work desks and cable management.</li>
+        <li>Conference table with 4–6 collaboration chairs.</li>
+        <li>Storage shelves for hardware, cables, and equipment.</li>
+        <li>Brainstorming wall with whiteboard or smartboard.</li>
+      </ul>
+    </div>
+
+    <div class="include-card">
+      <div class="include-icon">💻</div>
+      <h3 class="include-title">Equipment</h3>
+      <ul class="bullet-list include-list">
+        <li>Developer-grade laptops with AI-friendly specs.</li>
+        <li>External monitors for dual-screen workflows.</li>
+        <li>Office Wi-Fi router and secure network settings.</li>
+        <li>Projector or large screen for demos and standups.</li>
+        <li>NAS backup server, printer, and scanner setup.</li>
+      </ul>
+    </div>
+
+    <div class="include-card">
+      <div class="include-icon">☕</div>
+      <h3 class="include-title">Other Essentials</h3>
+      <ul class="bullet-list include-list">
+        <li>Mini kitchen corner with kettle and water cooler.</li>
+        <li>Coffee machine for “late-night model training”.</li>
+        <li>Basic snacks layout and storage suggestions.</li>
+        <li>Smart power strips and safe cable routing.</li>
+        <li>Optional acoustic panels for quieter focus work.</li>
+      </ul>
+    </div>
+
+    <div class="include-card">
+      <div class="include-icon">🧩</div>
+      <h3 class="include-title">Software Bundle</h3>
+      <ul class="bullet-list include-list">
+        <li>Cloud credits (e.g., AWS/GCP) configured for the team.</li>
+        <li>Project management tools (Slack, Notion, Jira or similar).</li>
+        <li>GitHub Enterprise or private repo structure for AI work.</li>
+        <li>Design tools (Figma, Canva, Adobe CC or equivalent).</li>
+        <li>Connection and onboarding to our AI-powered SaaS platform.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="note-line">
+    Example based on our accounting spreadsheet: total initial setup cost ≈ <strong>$5,789</strong> (students can adjust values for the project).
+  </p>
+</section>
+
+<div class="separator"></div>
+
+<!-- How It Works -->
+<section id="how" class="card">
+  <div class="section-header">
+    <h2>How It Works – From Empty Room to AI DevLab</h2>
+    <p class="section-subtitle">A simple, four-step process that fits into one week.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="step">
+      <div class="step-content">
+        <div class="step-number">1</div>
+        <div class="step-title">Discovery Call</div>
+        <p class="step-text">
+          We meet the team, understand their goals, current tools, and available office space. Together we confirm rough budget and timeline.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-content">
+        <div class="step-number">2</div>
+        <div class="step-title">Custom DevLab Design &amp; Budget</div>
+        <p class="step-text">
+          We design the layout, seating plan, equipment list, and software stack. You receive a clear budget based on furniture, equipment, and software.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-content">
+        <div class="step-number">3</div>
+        <div class="step-title">Delivery &amp; Installation Day</div>
+        <p class="step-text">
+          Our team arranges furniture, installs hardware, sets up Wi-Fi, connects displays, and prepares all user accounts and licenses.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-content">
+        <div class="step-number">4</div>
+        <div class="step-title">Onboarding Workshop</div>
+        <p class="step-text">
+          We run a live workshop to show how to use the DevLab, collaborate in the tools, and connect daily work to our AI-powered SaaS platform.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="separator"></div>
+
+<!-- Pricing -->
+<section id="pricing" class="card">
+  <div class="section-header">
+    <h2>Pricing Examples</h2>
+    <p class="section-subtitle">Three sample packages for the course project (not real offers).</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <h3 class="pricing-title">Starter Lab</h3>
+      <div class="pricing-price">$9,500</div>
+      <div class="pricing-caption">For small teams launching their first AI corner (up to 5 seats).</div>
+      <ul class="bullet-list pricing-list">
+        <li>Furniture layout for 5 developers and 1 mini meeting area.</li>
+        <li>5 developer laptops and 5 external monitors.</li>
+        <li>Office Wi-Fi router and basic NAS backup setup.</li>
+        <li>Starter software bundle and tool configuration.</li>
+        <li>Half-day onboarding workshop with core team.</li>
+      </ul>
+    </div>
+
+    <div class="pricing-card highlight">
+      <div class="pricing-tag">Most popular for class</div>
+      <h3 class="pricing-title">Growth Lab</h3>
+      <div class="pricing-price">$14,500</div>
+      <div class="pricing-caption">For growing startups building a dedicated AI DevLab (8–12 seats).</div>
+      <ul class="bullet-list pricing-list">
+        <li>Full studio layout with conference table and whiteboard zone.</li>
+        <li>Up to 12 developer laptops and dual-monitor setup.</li>
+        <li>Projector or large display for demos and standups.</li>
+        <li>Extended software bundle including GitHub Enterprise.</li>
+        <li>One full onboarding day plus Q&amp;A support session.</li>
+      </ul>
+    </div>
+
+    <div class="pricing-card">
+      <h3 class="pricing-title">Enterprise Lab</h3>
+      <div class="pricing-price">$22,000</div>
+      <div class="pricing-caption">For larger teams with higher security and collaboration needs.</div>
+      <ul class="bullet-list pricing-list">
+        <li>Custom zoning for collaboration, focus rooms, and meeting pods.</li>
+        <li>Advanced network configuration and backup policies.</li>
+        <li>Mix of workstations, laptops, and shared testing devices.</li>
+        <li>Deeper integration work with the AI SaaS platform.</li>
+        <li>Multi-day onboarding, internal champions training, and reporting.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="pricing-note">
+    Numbers used for class project only – not real quotes. Students may adjust values to match their accounting model.
+  </p>
+</section>
+
+<div class="separator"></div>
+
+<!-- Professor section -->
+<section id="professor" class="card">
+  <h2>For Our Accounting Professor</h2>
+  <div class="prof-box">
+    <div class="prof-tag">
+      <span>📚 Business Expansion / P||P Assignment</span>
+    </div>
+    <p>
+      This landing page was created as part of our Business Expansion (P||P) project in accounting.
+      Our original product is an AI-powered SaaS platform used by small tech companies and startups.
+    </p>
+    <p>
+      The AI DevLab Setup Service is designed as a <strong>complimentary but separate</strong> business line.
+      It focuses on physical office setup and consulting, while the SaaS platform remains a digital subscription product.
+    </p>
+    <p>
+      In this expansion, we used the same cost categories from our original spreadsheet – Furniture, Equipment,
+      Other, and Software – but we reorganised them into a project-style service package with its own pricing tiers.
+    </p>
+    <p>
+      From an accounting perspective, the DevLab involves an initial investment in materials and labour,
+      followed by project fees that can recover costs and generate margin. After a successful setup,
+      we can also upsell or extend the recurring SaaS subscription, increasing total lifetime revenue per client.
+    </p>
+    <p>
+      This structure shows how one core product (software) can be combined with a related service (DevLab setup)
+      to diversify revenue streams while serving the same customer segment.
+    </p>
+
+    <details class="prof-details">
+      <summary>Click to see our reasoning</summary>
+      <div class="prof-details-body">
+        <ul>
+          <li>We keep the software subscription and the DevLab setup on separate invoices and revenue accounts.</li>
+          <li>Furniture and equipment costs are based on our original spreadsheet totals (≈ $5,789 as a sample case).</li>
+          <li>Service revenue for the DevLab includes planning, installation, and onboarding labour.</li>
+          <li>Some equipment could be capitalised by the client, while our service fee is recognised when the project is delivered.</li>
+          <li>The DevLab increases the perceived value of the SaaS platform, improving renewal rates and upsell opportunities.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<div class="separator"></div>
+
+<!-- FAQ -->
+<section id="faq" class="card">
+  <div class="section-header">
+    <h2>FAQ</h2>
+    <p class="section-subtitle">Common questions about the AI DevLab Setup Service.</p>
+  </div>
+
+  <div class="faq-grid">
+    <div class="faq-item">
+      <div class="faq-q">Is this just a feature of your SaaS product?</div>
+      <div class="faq-a">
+        No. The AI DevLab Setup Service is a separate service line. It involves physical furniture, hardware,
+        and consulting work. The SaaS product is still our original cloud platform, sold on its own subscription.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can clients use the DevLab Setup Service without your software?</div>
+      <div class="faq-a">
+        Yes. A client could ask for an AI DevLab setup even if they currently use other AI tools.
+        However, our recommended bundle always includes a connection to our SaaS, and we see it as the
+        best way to get full value from the studio.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How long does the setup take?</div>
+      <div class="faq-a">
+        For the Starter and Growth Lab packages, we design and deliver the DevLab within roughly 7 days
+        (depending on delivery times). Enterprise setups may take longer because of custom requirements.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Do you handle licenses for the software tools?</div>
+      <div class="faq-a">
+        We help clients choose tools, estimate license costs, and configure accounts.
+        Final license ownership stays with the client, but we make sure everything is ready to use
+        on the onboarding day.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Who is this service designed for?</div>
+      <div class="faq-a">
+        Small tech companies, product teams, and startups that want a focused AI lab environment
+        without spending weeks planning hardware, furniture, and software on their own.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What happens after the DevLab is installed?</div>
+      <div class="faq-a">
+        After the onboarding workshop, teams can keep using the DevLab every day.
+        We stay available through our SaaS support channels for questions related to the platform
+        and the connected tool stack.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="separator"></div>
+
+<!-- Contact / CTA -->
+<section id="contact" class="card">
+  <div class="section-header">
+    <h2>Let’s Design Your AI DevLab</h2>
+    <p class="section-subtitle">Share a few details and we’ll plan a studio that fits your team.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div>
+      <p class="contact-note">
+        This form is part of a student project and does not send real messages, but it shows what a simple
+        call-to-action flow could look like for potential clients.
+      </p>
+      <form>
+        <div>
+          <label for="name">Name</label>
+          <input id="name" type="text" placeholder="Your full name">
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="name@example.com">
+        </div>
+        <div>
+          <label for="company-size">Company size</label>
+          <select id="company-size">
+            <option>1–5 people</option>
+            <option>6–15 people</option>
+            <option>16–30 people</option>
+            <option>31+ people</option>
+          </select>
+        </div>
+        <div>
+          <label for="message">Message / current office situation</label>
+          <textarea id="message" placeholder="Tell us where you are now and what kind of AI DevLab you imagine."></textarea>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary">
+            <span>Let’s design your AI DevLab</span> <span>🚀</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="card-soft">
+      <h3 style="margin-bottom:8px;">What happens on the planning call?</h3>
+      <ul class="bullet-list">
+        <li>We look at your current office, team size, and hardware situation.</li>
+        <li>We map your existing tools and where our AI SaaS fits in.</li>
+        <li>We suggest a Starter, Growth, or Enterprise Lab structure.</li>
+        <li>You receive a summary with a draft budget and timeline.</li>
+      </ul>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-top:10px;">
+        Even though this is a course project, the structure follows real-world thinking:
+        clear scope, clear budget, and a simple path from idea to fully working AI studio.
+      </p>
+    </div>
+  </div>
+</section>  </main>
+  <footer>
+    <div>© 2025 L&amp;G AI Studio – AI DevLab Setup Service.</div>
+    <div>Student project – not an actual commercial offer.</div>
+  </footer>
+</body>
+</html>
