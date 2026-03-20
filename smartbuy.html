@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartBuy AI</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      margin: 0;
+    }
+
+    header {
+      background: white;
+      padding: 15px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: #4a6cf7;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 400px;
+      margin: auto;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #4a6cf7;
+    }
+
+    .suggestions {
+      background: white;
+      border-radius: 10px;
+      margin-top: 5px;
+      text-align: left;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: none;
+      position: absolute;
+      width: 100%;
+      z-index: 10;
+    }
+
+    .suggestions div {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .suggestions div:hover {
+      background: #f0f2ff;
+    }
+
+    .results {
+      margin-top: 40px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .best {
+      border: 2px solid #4a6cf7;
+    }
+
+    .status-open {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-closed {
+      color: red;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>SmartBuy AI</h1>
+  <p>Find the best place to shop smarter</p>
+</header>
+
+<div class="container">
+
+  <h2>Search your product</h2>
+
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Type something like coffee, shampoo...">
+    <div id="suggestions" class="suggestions"></div>
+  </div>
+
+  <div id="results" class="results"></div>
+
+</div>
+
+<script>
+
+const products = [
+  "coffee","shampoo","toothbrush","sim card","transportation card",
+  "instant noodles","water","rice cooker","detergent","bedding",
+  "power bank","notebook","umbrella","clothes","snacks"
+];
+
+const data = []; // we connect real data later
+
+const searchInput = document.getElementById("search");
+const suggestionsBox = document.getElementById("suggestions");
+
+searchInput.addEventListener("input", function() {
+  let value = this.value.toLowerCase();
+  suggestionsBox.innerHTML = "";
+
+  if (value === "") {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+
+  let filtered = products.filter(p => p.includes(value));
+
+  filtered.forEach(item => {
+    let div = document.createElement("div");
+    div.textContent = item;
+    div.onclick = () => {
+      searchInput.value = item;
+      suggestionsBox.style.display = "none";
+      showResults(item);
+    };
+    suggestionsBox.appendChild(div);
+  });
+
+  suggestionsBox.style.display = "block";
+});
+
+function showResults(product) {
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML = `<h3>Showing results for "${product}"</h3>`;
+
+  // temporary demo
+  resultsDiv.innerHTML += "<p>Results will appear here soon...</p>";
+}
+
+</script>
+
+</body>
+</html>
