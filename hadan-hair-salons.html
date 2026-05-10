@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hair Salons Near Dong-A University (Hadan)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --cream: #fdf6ee;
+      --warm-white: #fffcf8;
+      --blush: #f7c5b0;
+      --terracotta: #c96a4a;
+      --deep: #2a1f1a;
+      --muted: #7a6258;
+      --gold: #d4a853;
+      --gold-light: #f0d99a;
+      --best: #c96a4a;
+      --card-bg: #ffffff;
+      --shadow-soft: 0 4px 32px rgba(42,31,26,0.08);
+      --shadow-hover: 0 12px 48px rgba(42,31,26,0.14);
+      --radius: 20px;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--deep);
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== BACKGROUND TEXTURE ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(247,197,176,0.22) 0%, transparent 50%),
+        radial-gradient(circle at 85% 70%, rgba(212,168,83,0.12) 0%, transparent 50%),
+        radial-gradient(circle at 50% 100%, rgba(201,106,74,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      text-align: center;
+      padding: 64px 24px 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-tag {
+      display: inline-block;
+      background: var(--blush);
+      color: var(--terracotta);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--deep);
+      line-height: 1.18;
+      max-width: 680px;
+      margin: 0 auto 20px;
+      animation: fadeDown 0.7s 0.1s ease both;
+    }
+
+    h1 span {
+      color: var(--terracotta);
+      font-style: italic;
+    }
+
+    .header-sub {
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 400;
+      max-width: 440px;
+      margin: 0 auto;
+      animation: fadeDown 0.7s 0.2s ease both;
+    }
+
+    /* ===== SECTION LABEL ===== */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .section-label span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--terracotta);
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--blush), transparent);
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--deep);
+      margin-bottom: 8px;
+    }
+
+    /* ===== SALON CARDS ===== */
+    .salons-section {
+      padding: 16px 0 48px;
+    }
+
+    .salon-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .salon-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 36px 36px 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid rgba(42,31,26,0.06);
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .salon-card:nth-child(1) { animation-delay: 0.1s; }
+    .salon-card:nth-child(2) { animation-delay: 0.2s; }
+    .salon-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .salon-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .salon-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blush), var(--terracotta));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .salon-card:hover::before { opacity: 1; }
+
+    /* BEST CARD */
+    .salon-card.best {
+      border: 2px solid var(--gold);
+      background: linear-gradient(145deg, #fffcf8, #fff8ee);
+      box-shadow: 0 4px 32px rgba(212,168,83,0.18), var(--shadow-soft);
+    }
+    .salon-card.best::before {
+      background: linear-gradient(90deg, var(--gold-light), var(--gold), var(--terracotta));
+      opacity: 1;
+    }
+    .salon-card.best:hover {
+      box-shadow: 0 16px 56px rgba(212,168,83,0.26), var(--shadow-hover);
+    }
+
+    /* Decorative circle on cards */
+    .salon-card::after {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247,197,176,0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .salon-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--deep);
+    }
+
+    .badge-best {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, var(--gold), #e8b84b);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(212,168,83,0.4);
+      flex-shrink: 0;
+    }
+
+    .badge-good {
+      display: inline-flex;
+      align-items: center;
+      background: var(--cream);
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid rgba(122,98,88,0.18);
+      flex-shrink: 0;
+    }
+
+    .salon-address {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13.5px;
+      margin-bottom: 18px;
+    }
+    .salon-address svg { flex-shrink: 0; }
+
+    .salon-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .salon-features li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 14.5px;
+      color: var(--deep);
+    }
+    .salon-features li::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blush);
+      border: 1.5px solid var(--terracotta);
+      flex-shrink: 0;
+    }
+    .best .salon-features li::before {
+      background: var(--gold-light);
+      border-color: var(--gold);
+    }
+
+    .best-note {
+      background: linear-gradient(135deg, rgba(212,168,83,0.12), rgba(201,106,74,0.08));
+      border-left: 3px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin-bottom: 22px;
+      font-size: 14px;
+      color: var(--deep);
+      font-style: italic;
+    }
+
+    .price-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--cream);
+      border: 1px solid rgba(201,106,74,0.22);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--terracotta);
+      margin-bottom: 24px;
+    }
+    .best .price-tag {
+      background: rgba(212,168,83,0.08);
+      border-color: rgba(212,168,83,0.35);
+      color: #9a6f1a;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-kakao {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fee500;
+      color: #3c1e1e;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-kakao:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(254,229,0,0.5);
+      filter: brightness(1.04);
+    }
+    .btn-kakao svg { width: 18px; height: 18px; }
+
+    /* ===== PRICING SECTION ===== */
+    .pricing-section {
+      padding: 16px 0 48px;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .pricing-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid rgba(42,31,26,0.06);
+      animation: fadeUp 0.5s ease both;
+    }
+    .pricing-card:nth-child(1) { animation-delay: 0.1s; }
+    .pricing-card:nth-child(2) { animation-delay: 0.2s; }
+    .pricing-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .pricing-icon { font-size: 26px; margin-bottom: 10px; }
+    .pricing-range {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--terracotta);
+      margin-bottom: 4px;
+    }
+    .pricing-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .pricing-note {
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: rgba(201,106,74,0.06);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+      border: 1px dashed rgba(201,106,74,0.22);
+    }
+
+    /* ===== MAP SECTION ===== */
+    .map-section {
+      padding: 16px 0 48px;
+    }
+    .map-visual {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid rgba(42,31,26,0.06);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .route-diagram {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding: 10px 0;
+    }
+    .route-stop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+      flex: 1;
+    }
+    .route-dot {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .route-dot.dorm { background: linear-gradient(135deg, #a8d8ea, #7bb8cc); }
+    .route-dot.station { background: linear-gradient(135deg, #95c8a2, #6aaa7a); }
+    .route-dot.salon { background: linear-gradient(135deg, var(--blush), var(--terracotta)); }
+    .route-dot.best-salon { background: linear-gradient(135deg, var(--gold-light), var(--gold)); }
+
+    .route-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--deep);
+      text-align: center;
+      line-height: 1.35;
+    }
+    .route-sublabel {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .route-arrow {
+      font-size: 18px;
+      color: var(--blush);
+      padding: 0 4px;
+      flex-shrink: 0;
+      align-self: flex-start;
+      margin-top: 14px;
+    }
+
+    .map-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-route {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--terracotta);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 13px 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .btn-route:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(201,106,74,0.38);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--terracotta);
+      border: 2px solid var(--terracotta);
+    }
+    .btn-outline:hover { background: rgba(201,106,74,0.06); }
+
+    /* ===== TIPS SECTION ===== */
+    .tips-section {
+      padding: 16px 0 48px;
+    }
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .tip-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 26px 22px;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid rgba(42,31,26,0.06);
+      animation: fadeUp 0.5s ease both;
+    }
+    .tip-card:nth-child(1) { animation-delay: 0.1s; }
+    .tip-card:nth-child(2) { animation-delay: 0.2s; }
+    .tip-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .tip-icon { font-size: 28px; margin-bottom: 12px; }
+    .tip-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--deep);
+      margin-bottom: 10px;
+    }
+
+    /* Korean Phrases */
+    .phrase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .phrase-item {
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--terracotta);
+    }
+    .phrase-korean {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--terracotta);
+      margin-bottom: 2px;
+    }
+    .phrase-english {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Payment list */
+    .tip-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tip-list li {
+      font-size: 14px;
+      color: var(--deep);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .tip-list li::before {
+      content: '✓';
+      color: var(--terracotta);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Photo tip */
+    .photo-tip {
+      background: linear-gradient(135deg, rgba(201,106,74,0.08), rgba(212,168,83,0.08));
+      border: 1.5px solid rgba(212,168,83,0.3);
+      border-radius: 14px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+      animation: fadeUp 0.5s 0.35s ease both;
+    }
+    .photo-tip-icon { font-size: 32px; flex-shrink: 0; }
+    .photo-tip-text strong { font-size: 15px; color: var(--deep); display: block; margin-bottom: 4px; }
+    .photo-tip-text span { font-size: 13.5px; color: var(--muted); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 40px 24px 56px;
+      color: var(--muted);
+      font-size: 13px;
+      position: relative;
+      z-index: 1;
+    }
+    footer::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 1px;
+      background: var(--blush);
+      margin: 0 auto 20px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .salon-card { padding: 26px 22px 22px; }
+      .card-header { flex-direction: column; gap: 10px; }
+      .map-visual { padding: 22px 16px; }
+      .route-stop { min-width: 90px; }
+      .route-label { font-size: 11px; }
+      .photo-tip { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-tag">✂️ Exchange Student Guide · Busan</div>
+    <h1>Best Hair Salons Near<br><span>Dong-A University</span><br>for Exchange Students</h1>
+    <p class="header-sub">Trusted picks near Hadan-dong dormitory — with prices, tips, and easy navigation</p>
+  </header>
+
+  <!-- ===== SALONS ===== -->
+  <section class="salons-section">
+    <div class="container">
+      <div class="section-label"><span>Recommended Salons</span></div>
+      <h2 class="section-title">Where to Get Your Hair Done</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:32px;">All three salons are within walking distance from the dormitory.</p>
+
+      <div class="salon-grid">
+
+        <!-- CARD 1: Harry Hair -->
+        <div class="salon-card">
+          <div class="card-header">
+            <div class="salon-name">Harry Hair</div>
+            <span class="badge-good">Everyday Pick</span>
+          </div>
+          <div class="salon-address">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            7, Nakdong-daero 550beon-gil, Saha-gu, Busan
+          </div>
+          <ul class="salon-features">
+            <li>Good everyday option — reliable and consistent</li>
+            <li>Friendly, welcoming service</li>
+            <li>Convenient location near the dormitory</li>
+          </ul>
+          <div class="price-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            From ₩15,000
+          </div>
+          <a href="#" class="btn-kakao">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.8 1.6 5.26 4 6.74-.15.57-.57 2.1-.65 2.44-.1.42.15.42.32.3.13-.09 2.05-1.38 2.88-1.94.46.06.93.1 1.45.1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
+            Open in Kakao Map
+          </a>
+        </div>
+
+        <!-- CARD 2: Beauty Me (BEST) -->
+        <div class="salon-card best">
+          <div class="card-header">
+            <div class="salon-name">Beauty Me ⭐</div>
+            <span class="badge-best">★ Best Pick</span>
+          </div>
+          <div class="salon-address">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            553-2, Nakdong-daero, Saha-gu, Busan
+          </div>
+          <div class="best-note">
+            💬 This is the best option for exchange students. Staff are extremely friendly and make you feel comfortable even if you don't speak Korean well.
+          </div>
+          <ul class="salon-features">
+            <li>⭐ Highly recommended by exchange students</li>
+            <li>Very kind staff — warm welcome, comfortable atmosphere</li>
+            <li>Great for international students with language barriers</li>
+            <li>Clean, professional environment</li>
+          </ul>
+          <div class="price-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            ₩18,000 – ₩25,000
+          </div>
+          <a href="#" class="btn-kakao">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.8 1.6 5.26 4 6.74-.15.57-.57 2.1-.65 2.44-.1.42.15.42.32.3.13-.09 2.05-1.38 2.88-1.94.46.06.93.1 1.45.1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
+            Open in Kakao Map
+          </a>
+        </div>
+
+        <!-- CARD 3: Siempre -->
+        <div class="salon-card">
+          <div class="card-header">
+            <div class="salon-name">Siempre</div>
+            <span class="badge-good">Alternative</span>
+          </div>
+          <div class="salon-address">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            536, Nakdong-daero, Saha-gu, Busan
+          </div>
+          <ul class="salon-features">
+            <li>Good alternative option with quality service</li>
+            <li>Slightly higher pricing for premium care</li>
+            <li>Well-reviewed local salon</li>
+          </ul>
+          <div class="price-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            ₩20,000 – ₩30,000
+          </div>
+          <a href="#" class="btn-kakao">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.8 1.6 5.26 4 6.74-.15.57-.57 2.1-.65 2.44-.1.42.15.42.32.3.13-.09 2.05-1.38 2.88-1.94.46.06.93.1 1.45.1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
+            Open in Kakao Map
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="pricing-section">
+    <div class="container">
+      <div class="section-label"><span>Pricing Guide</span></div>
+      <h2 class="section-title">How Much Does It Cost?</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:28px;">All prices are approximate and may vary slightly by salon.</p>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-icon">✂️</div>
+          <div class="pricing-range">From ₩15,000</div>
+          <div class="pricing-label">Simple Haircut</div>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-icon">💇</div>
+          <div class="pricing-range">₩15,000–₩30,000</div>
+          <div class="pricing-label">Average Range</div>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-icon">🎨</div>
+          <div class="pricing-range">₩30,000+</div>
+          <div class="pricing-label">Styling / Dye / Perm</div>
+        </div>
+      </div>
+
+      <div class="pricing-note">
+        💡 Prices may vary for styling, coloring, or perming services. Always ask for a price before starting.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAP / HOW TO GET THERE ===== -->
+  <section class="map-section">
+    <div class="container">
+      <div class="section-label"><span>Navigation</span></div>
+      <h2 class="section-title">How to Get There</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:28px;">All salons are on Nakdong-daero and easily reachable on foot from the dormitory.</p>
+
+      <div class="map-visual">
+        <div class="route-diagram">
+          <div class="route-stop">
+            <div class="route-dot dorm">🏠</div>
+            <div class="route-label">Dormitory</div>
+            <div class="route-sublabel">37, Nakdong-daero<br>550beon-gil</div>
+          </div>
+          <div class="route-arrow">→</div>
+          <div class="route-stop">
+            <div class="route-dot station">🚇</div>
+            <div class="route-label">Hadan Station</div>
+            <div class="route-sublabel">Nearby reference<br>point</div>
+          </div>
+          <div class="route-arrow">→</div>
+          <div class="route-stop">
+            <div class="route-dot salon">✂️</div>
+            <div class="route-label">Harry Hair</div>
+            <div class="route-sublabel">~550beon-gil</div>
+          </div>
+          <div class="route-arrow">→</div>
+          <div class="route-stop">
+            <div class="route-dot best-salon">⭐</div>
+            <div class="route-label">Beauty Me</div>
+            <div class="route-sublabel">553-2, Nakdong-daero</div>
+          </div>
+          <div class="route-arrow">→</div>
+          <div class="route-stop">
+            <div class="route-dot salon">✂️</div>
+            <div class="route-label">Siempre</div>
+            <div class="route-sublabel">536, Nakdong-daero</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-buttons">
+        <a href="#" class="btn-route">
+          🗺️ View Route from Dorm
+        </a>
+        <a href="#" class="btn-route btn-outline">
+          📍 Open in Kakao Map
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TIPS ===== -->
+  <section class="tips-section">
+    <div class="container">
+      <div class="section-label"><span>Helpful Tips</span></div>
+      <h2 class="section-title">Tips for Foreign Students</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:28px;">Everything you need to know before walking into a salon.</p>
+
+      <div class="tips-grid">
+
+        <!-- Korean Phrases -->
+        <div class="tip-card">
+          <div class="tip-icon">🇰🇷</div>
+          <div class="tip-title">Useful Korean Phrases</div>
+          <div class="phrase-list">
+            <div class="phrase-item">
+              <div class="phrase-korean">머리 자르고 싶어요</div>
+              <div class="phrase-english">I want a haircut</div>
+            </div>
+            <div class="phrase-item">
+              <div class="phrase-korean">짧게 해주세요</div>
+              <div class="phrase-english">Please cut it short</div>
+            </div>
+            <div class="phrase-item">
+              <div class="phrase-korean">조금만 잘라주세요</div>
+              <div class="phrase-english">Just a little trim, please</div>
+            </div>
+            <div class="phrase-item">
+              <div class="phrase-korean">얼마예요?</div>
+              <div class="phrase-english">How much is it?</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment & Practical -->
+        <div class="tip-card">
+          <div class="tip-icon">💳</div>
+          <div class="tip-title">Practical Info</div>
+          <ul class="tip-list">
+            <li>Most salons accept both cash and card (debit/credit)</li>
+            <li>Reservations are usually not needed — walk-ins welcome</li>
+            <li>Weekday mornings are the least busy</li>
+            <li>Best to avoid peak hours (evenings and weekends)</li>
+            <li>Staff at Beauty Me are especially comfortable with non-Korean speakers</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Photo Tip -->
+      <div class="photo-tip">
+        <div class="photo-tip-icon">📸</div>
+        <div class="photo-tip-text">
+          <strong>Pro Tip: Bring a Reference Photo!</strong>
+          <span>Show a picture of the hairstyle you want — this is the most effective way to communicate your desired style, even without speaking Korean. Save a photo from Pinterest, Instagram, or Google beforehand.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>Made for exchange students at Dong-A University · Hadan-dong, Busan 🇰🇷</p>
+    <p style="margin-top:6px;font-size:12px;opacity:0.6;">Prices and details are approximate — always confirm directly with the salon.</p>
+  </footer>
+
+  <!-- ===== JS: Scroll Reveal ===== -->
+  <script>
+    // Lightweight scroll-triggered animation for cards
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.12 });
+
+    // Apply to all animated elements
+    document.querySelectorAll('.salon-card, .pricing-card, .tip-card, .map-visual, .photo-tip').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(22px)';
+      el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>
