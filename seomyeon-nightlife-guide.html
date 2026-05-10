@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seomyeon Nightlife Guide — Exchange Students Busan</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────────
+       CSS VARIABLES & RESET
+    ───────────────────────────────────────────── */
+    :root {
+      --neon-pink:    #ff2d78;
+      --neon-purple:  #b700ff;
+      --neon-blue:    #00c3ff;
+      --neon-cyan:    #0ff4c6;
+      --dark-base:    #050510;
+      --dark-card:    rgba(12, 8, 30, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-glow:   rgba(183, 0, 255, 0.18);
+      --text-main:    #f0eeff;
+      --text-muted:   #9b8fc2;
+      --gold:         #ffd166;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'Space Mono', monospace;
+      --radius-lg:    20px;
+      --radius-sm:    10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark-base);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ─────────────────────────────────────────────
+       ANIMATED CANVAS BACKGROUND
+    ───────────────────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─────────────────────────────────────────────
+       LAYOUT WRAPPER
+    ───────────────────────────────────────────── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ─────────────────────────────────────────────
+       GLASSMORPHISM CARD
+    ───────────────────────────────────────────── */
+    .glass {
+      background: var(--dark-card);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 0 40px var(--glass-glow), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
+    /* ─────────────────────────────────────────────
+       HEADER
+    ───────────────────────────────────────────── */
+    header {
+      text-align: center;
+      padding: 90px 20px 60px;
+      position: relative;
+    }
+
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .header-title {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 9vw, 88px);
+      line-height: 0.95;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #fff 0%, var(--neon-blue) 40%, var(--neon-pink) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.35s forwards;
+      text-shadow: none;
+    }
+
+    .header-subtitle {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.5s forwards;
+    }
+
+    .header-divider {
+      width: 60px;
+      height: 3px;
+      margin: 30px auto 0;
+      background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+      border-radius: 2px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.65s forwards;
+    }
+
+    /* ─────────────────────────────────────────────
+       SECTION LABELS
+    ───────────────────────────────────────────── */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--neon-purple);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 5vw, 42px);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    /* ─────────────────────────────────────────────
+       WARNING BOX
+    ───────────────────────────────────────────── */
+    .warning-box {
+      padding: 30px 32px;
+      margin-bottom: 32px;
+      border-left: 4px solid var(--neon-pink);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .warning-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,45,120,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .warning-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .warning-box h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--neon-pink);
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+
+    .warning-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .warning-box ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .warning-box ul li::before {
+      content: '▸';
+      color: var(--neon-pink);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ─────────────────────────────────────────────
+       SUBWAY SECTION
+    ───────────────────────────────────────────── */
+    .subway-section {
+      padding: 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subway-section::after {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(0,195,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .route-visual {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 28px 0;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .route-stop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .route-dot {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      border: 2px solid;
+    }
+
+    .route-dot.start {
+      background: rgba(0,195,255,0.15);
+      border-color: var(--neon-blue);
+      color: var(--neon-blue);
+    }
+
+    .route-dot.end {
+      background: rgba(255,45,120,0.15);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+    }
+
+    .route-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 80px;
+      line-height: 1.3;
+    }
+
+    .route-line {
+      flex: 1;
+      min-width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .route-line::after {
+      content: 'Line 1 — No Transfer';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .subway-info {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .subway-info strong {
+      color: var(--neon-cyan);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ─────────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 1px;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(183,0,255,0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--neon-blue);
+      border: 2px solid var(--neon-blue);
+      box-shadow: 0 0 12px rgba(0,195,255,0.15);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0,195,255,0.08);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #ffb700, var(--gold));
+      color: #1a0a00;
+      box-shadow: 0 4px 20px rgba(255,209,102,0.35);
+    }
+
+    /* ─────────────────────────────────────────────
+       VENUE CARDS — BENTO GRID
+    ───────────────────────────────────────────── */
+    .venues-section {
+      margin-bottom: 32px;
+    }
+
+    .venues-header {
+      margin-bottom: 24px;
+    }
+
+    .venues-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    /* Card base */
+    .venue-card {
+      padding: 30px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .venue-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 60px rgba(183,0,255,0.22), 0 0 40px var(--glass-glow);
+    }
+
+    /* Glow accent per card */
+    .venue-card::before {
+      content: '';
+      position: absolute;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      opacity: 0.12;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .venue-card:hover::before { opacity: 0.22; }
+
+    .venue-card.card-hollywood::before {
+      background: radial-gradient(circle, var(--neon-blue), transparent);
+      top: -80px; right: -80px;
+    }
+
+    .venue-card.card-jeje::before {
+      background: radial-gradient(circle, var(--neon-purple), transparent);
+      top: -80px; right: -80px;
+    }
+
+    .venue-card.card-pnd::before {
+      background: radial-gradient(circle, var(--neon-pink), transparent);
+      top: -80px; right: -80px;
+    }
+
+    /* TOP PICK badge + golden glow for PND */
+    .venue-card.card-pnd {
+      border-color: rgba(255, 209, 102, 0.28);
+      box-shadow: 0 0 50px rgba(255,100,120,0.18), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
+    .venue-card.card-pnd:hover {
+      box-shadow: 0 12px 60px rgba(255, 80, 120, 0.3), 0 0 60px rgba(255,209,102,0.1);
+    }
+
+    .top-pick-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #ff2d78, #ff8c00);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(255,45,120,0.5);
+      animation: pulse-badge 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 0 20px rgba(255,45,120,0.5); }
+      50%       { box-shadow: 0 0 35px rgba(255,45,120,0.8), 0 0 60px rgba(255,100,0,0.3); }
+    }
+
+    .venue-number {
+      font-family: var(--font-display);
+      font-size: 64px;
+      line-height: 1;
+      opacity: 0.06;
+      position: absolute;
+      top: 16px; right: 24px;
+      pointer-events: none;
+    }
+
+    .venue-type {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      margin-bottom: 8px;
+    }
+
+    .venue-name {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 5vw, 42px);
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+      line-height: 1;
+    }
+
+    .venue-name.hollywood { color: var(--neon-blue); }
+    .venue-name.jeje       { color: var(--neon-purple); }
+    .venue-name.pnd        {
+      background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .venue-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 20px;
+    }
+
+    .venue-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .venue-features li .icon {
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+
+    /* sub-zones for JEJE */
+    .zone-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .zone-pill {
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      border: 1px solid;
+    }
+
+    .zone-pill.lounge {
+      border-color: var(--neon-purple);
+      color: var(--neon-purple);
+      background: rgba(183,0,255,0.07);
+    }
+
+    .zone-pill.floor {
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      background: rgba(255,45,120,0.07);
+    }
+
+    .venue-quote {
+      font-style: italic;
+      font-size: 13.5px;
+      color: rgba(240,238,255,0.55);
+      border-left: 2px solid var(--neon-purple);
+      padding-left: 14px;
+      margin: 14px 0 20px;
+      line-height: 1.6;
+    }
+
+    .pnd-quote {
+      border-left-color: var(--gold);
+      color: rgba(255,220,100,0.7);
+    }
+
+    .venue-address {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .venue-address span { opacity: 0.6; flex-shrink: 0; }
+
+    /* ─────────────────────────────────────────────
+       WHY NIGHTLIFE MATTERS
+    ───────────────────────────────────────────── */
+    .why-section {
+      padding: 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .why-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,195,255,0.05) 0%, rgba(183,0,255,0.07) 100%);
+      pointer-events: none;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .why-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .why-item:hover {
+      border-color: rgba(183,0,255,0.3);
+      background: rgba(183,0,255,0.06);
+    }
+
+    .why-item .wi-icon { font-size: 26px; margin-bottom: 10px; }
+    .why-item .wi-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .why-item .wi-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .why-text {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 680px;
+    }
+
+    /* ─────────────────────────────────────────────
+       TIPS SECTION
+    ───────────────────────────────────────────── */
+    .tips-section {
+      margin-bottom: 32px;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .tip-card {
+      padding: 22px 20px;
+      text-align: center;
+      border-radius: var(--radius-lg);
+    }
+
+    .tip-card .tip-icon { font-size: 30px; margin-bottom: 10px; }
+    .tip-card .tip-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      color: var(--neon-cyan);
+    }
+
+    .tip-card .tip-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ─────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    footer .footer-text {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(155,143,194,0.4);
+    }
+
+    /* ─────────────────────────────────────────────
+       ANIMATIONS
+    ───────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────── */
+    @media (min-width: 640px) {
+      .venues-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      /* PND gets full-width spotlight */
+      .venue-card.card-pnd {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .route-line::after { display: none; }
+      .route-line { min-width: 24px; }
+      .btn-row { flex-direction: column; }
+      .btn { justify-content: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Animated Background Canvas ── -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="page-wrap">
+
+    <!-- ════════════════ HEADER ════════════════ -->
+    <header>
+      <p class="header-eyebrow">🌃 Busan · Busanjin-gu · Exchange Student Edition</p>
+      <h1 class="header-title">Seomyeon<br>Nightlife Guide</h1>
+      <p class="header-subtitle">Find the best foreigner-friendly clubs & bars in Busan — curated for exchange students</p>
+      <div class="header-divider"></div>
+    </header>
+
+    <!-- ════════════════ WARNING BOX ════════════════ -->
+    <div class="glass warning-box reveal">
+      <span class="warning-icon">⚠️</span>
+      <h3>Know Before You Go</h3>
+      <ul>
+        <li>Many nightclubs in Seomyeon <strong>do NOT allow foreigners</strong> — this is a known reality and can feel uncomfortable if you're not prepared.</li>
+        <li>Every place listed on this page has been <strong>verified as foreigner-friendly</strong> — you are welcome there.</li>
+        <li>This guide exists to help you skip the awkward rejections and go straight to places where you can relax and enjoy the night.</li>
+      </ul>
+    </div>
+
+    <!-- ════════════════ SUBWAY NAVIGATION ════════════════ -->
+    <div class="glass subway-section reveal">
+      <p class="section-label">🚇 Getting There</p>
+      <h2 class="section-title">Hadan → Seomyeon</h2>
+
+      <!-- Route visual -->
+      <div class="route-visual">
+        <div class="route-stop">
+          <div class="route-dot start">H</div>
+          <div class="route-label">Hadan Station<br><span style="opacity:.5;font-size:10px">하단역</span></div>
+        </div>
+        <div class="route-line"></div>
+        <div class="route-stop">
+          <div class="route-dot end">S</div>
+          <div class="route-label">Seomyeon Station<br><span style="opacity:.5;font-size:10px">서면역</span></div>
+        </div>
+      </div>
+
+      <p class="subway-info">
+        Board at <strong>Hadan Station</strong> (부산광역시 사하구 낙동남로 지하 1415) and take
+        <strong>Busan Metro Line 1</strong> directly toward Nopo (노포). No transfers needed —
+        ride straight to <strong>Seomyeon Station</strong>. Journey takes roughly
+        <strong>20–25 minutes</strong>. Exit and the nightlife area is a short walk away.
+      </p>
+
+      <div class="btn-row">
+        <!--
+          KAKAO MAP LINKS — Replace the # in href with the actual Kakao Map URLs below:
+
+          Hadan Station route to Seomyeon:
+          https://map.kakao.com/link/to/서면역,35.157617,129.059367
+
+          Seomyeon area view:
+          https://map.kakao.com/link/map/서면,35.157617,129.059367
+        -->
+        <a class="btn btn-primary"
+           href="https://map.kakao.com/link/to/%EC%84%9C%EB%A9%B4%EC%97%AD,35.157617,129.059367"
+           target="_blank" rel="noopener">
+          🗺️ Open Route in Kakao Map
+        </a>
+        <a class="btn btn-outline"
+           href="https://map.kakao.com/link/map/%EC%84%9C%EB%A9%B4,35.157617,129.059367"
+           target="_blank" rel="noopener">
+          📍 View Seomyeon Area
+        </a>
+      </div>
+    </div>
+
+    <!-- ════════════════ VENUES ════════════════ -->
+    <section class="venues-section reveal">
+      <div class="venues-header">
+        <p class="section-label">🍸 Featured Spots</p>
+        <h2 class="section-title">Foreigner-Friendly Venues</h2>
+      </div>
+
+      <div class="venues-grid">
+
+        <!-- ── 1. Hollywood Star ── -->
+        <div class="glass venue-card card-hollywood">
+          <div class="venue-number">01</div>
+          <p class="venue-type">Hof Bar / Pub</p>
+          <h3 class="venue-name hollywood">Hollywood Star</h3>
+
+          <ul class="venue-features">
+            <li><span class="icon">🍺</span> High-quality drinks with unique, memorable flavours</li>
+            <li><span class="icon">🌙</span> Perfect starting point for the night — chill but stylish</li>
+            <li><span class="icon">👥</span> Great for small groups or a casual evening out</li>
+            <li><span class="icon">✅</span> Foreigner-friendly atmosphere</li>
+          </ul>
+
+          <div class="venue-address">
+            <span>📍</span>
+            10, Dongcheon-ro 95beon-gil, Busanjin-gu, Busan
+          </div>
+
+          <!--
+            Kakao Map — Hollywood Star
+            Address: 부산 부산진구 동천로95번길 10
+            Link: https://map.kakao.com/link/search/부산+부산진구+동천로95번길+10
+          -->
+          <a class="btn btn-outline"
+             href="https://map.kakao.com/link/search/%EB%B6%80%EC%82%B0+%EB%B6%80%EC%82%B0%EC%A7%84%EA%B5%AC+%EB%8F%99%EC%B2%9C%EB%A1%9095%EB%B2%88%EA%B8%B8+10"
+             target="_blank" rel="noopener">
+            📍 Open in Kakao Map
+          </a>
+        </div>
+
+        <!-- ── 2. JEJE ── -->
+        <div class="glass venue-card card-jeje">
+          <div class="venue-number">02</div>
+          <p class="venue-type">Nightclub</p>
+          <h3 class="venue-name jeje">JEJE</h3>
+
+          <ul class="venue-features">
+            <li><span class="icon">🎵</span> Energetic music and strong party atmosphere</li>
+            <li><span class="icon">🏟️</span> Large capacity — packed on weekends</li>
+            <li><span class="icon">🌍</span> Foreigners are welcome</li>
+          </ul>
+
+          <div class="zone-pills">
+            <span class="zone-pill lounge">🛋️ Lounge / Relax Zone</span>
+            <span class="zone-pill floor">🕺 Main Dance Floor</span>
+          </div>
+
+          <p class="venue-quote">"Once you enter, you immediately feel the energy of Busan nightlife."</p>
+
+          <div class="venue-address">
+            <span>📍</span>
+            33, Jungang-daero 702beon-gil, Busanjin-gu, Busan
+          </div>
+
+          <!--
+            Kakao Map — JEJE
+            Address: 부산 부산진구 중앙대로702번길 33
+            Link: https://map.kakao.com/link/search/부산+부산진구+중앙대로702번길+33
+          -->
+          <a class="btn btn-primary"
+             href="https://map.kakao.com/link/search/%EB%B6%80%EC%82%B0+%EB%B6%80%EC%82%B0%EC%A7%84%EA%B5%AC+%EC%A4%91%EC%95%99%EB%8C%80%EB%A1%9C702%EB%B2%88%EA%B8%B8+33"
+             target="_blank" rel="noopener">
+            📍 Open in Kakao Map
+          </a>
+        </div>
+
+        <!-- ── 3. Party Next Door (TOP PICK — full width) ── -->
+        <div class="glass venue-card card-pnd">
+          <div class="venue-number">03</div>
+
+          <div class="top-pick-badge">⭐ Top Recommended for Exchange Students</div>
+
+          <p class="venue-type">Nightclub</p>
+          <h3 class="venue-name pnd">Party Next Door</h3>
+
+          <ul class="venue-features">
+            <li><span class="icon">🤝</span> Best place for meeting people and socialising</li>
+            <li><span class="icon">🌍</span> Foreigner-friendly with many English speakers</li>
+            <li><span class="icon">🎶</span> Mix of modern & old-school music — something for everyone</li>
+            <li><span class="icon">😊</span> Friendly, open, welcoming atmosphere</li>
+            <li><span class="icon">🎤</span> Easy to request songs</li>
+            <li><span class="icon">🗺️</span> Small and hidden gem — only ~40m from JEJE</li>
+          </ul>
+
+          <p class="venue-quote pnd-quote">
+            "This is the BEST choice for exchange students who want to make friends and enjoy a truly welcoming environment in Busan."
+          </p>
+
+          <div class="venue-address">
+            <span>📍</span>
+            34, Jungang-daero 680beonga-gil, Busanjin-gu, Busan
+          </div>
+
+          <!--
+            Kakao Map — Party Next Door
+            Address: 부산 부산진구 중앙대로680번가길 34
+            Link: https://map.kakao.com/link/search/부산+부산진구+중앙대로680번가길+34
+          -->
+          <a class="btn btn-gold"
+             href="https://map.kakao.com/link/search/%EB%B6%80%EC%82%B0+%EB%B6%80%EC%82%B0%EC%A7%84%EA%B5%AC+%EC%A4%91%EC%95%99%EB%8C%80%EB%A1%9C680%EB%B2%88%EA%B0%80%EA%B8%B8+34"
+             target="_blank" rel="noopener">
+            ⭐ Open in Kakao Map
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════ WHY NIGHTLIFE MATTERS ════════════════ -->
+    <div class="glass why-section reveal">
+      <p class="section-label">💡 For Your Wellbeing</p>
+      <h2 class="section-title">Why Nightlife Matters</h2>
+      <p class="why-text">
+        Studying abroad is exciting — but it can also bring stress, loneliness, or homesickness.
+        Socialising helps you recharge, build friendships, and make the most of your time in Korea.
+        These spaces are a safe, fun way to connect with people from all over the world.
+      </p>
+
+      <div class="why-grid">
+        <div class="why-item">
+          <div class="wi-icon">🫂</div>
+          <div class="wi-title">Make Friends</div>
+          <div class="wi-desc">Meet fellow international students and locals who speak English.</div>
+        </div>
+        <div class="why-item">
+          <div class="wi-icon">🧘</div>
+          <div class="wi-title">Decompress</div>
+          <div class="wi-desc">Dance, laugh, and let go of the week's academic pressure.</div>
+        </div>
+        <div class="why-item">
+          <div class="wi-icon">🌏</div>
+          <div class="wi-title">Experience Busan</div>
+          <div class="wi-desc">Seomyeon nightlife is a core part of local culture — dive in.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ QUICK TIPS ════════════════ -->
+    <section class="tips-section reveal">
+      <p class="section-label">🎧 Quick Tips</p>
+      <h2 class="section-title">Before You Head Out</h2>
+
+      <div class="tips-grid">
+        <div class="glass tip-card">
+          <div class="tip-icon">📅</div>
+          <div class="tip-title">Best Nights</div>
+          <div class="tip-desc">Friday & Saturday — peak energy, biggest crowds, best music.</div>
+        </div>
+        <div class="glass tip-card">
+          <div class="tip-icon">🪪</div>
+          <div class="tip-title">Bring ID</div>
+          <div class="tip-desc">Your passport may be required. Alien registration card (ARC) also accepted.</div>
+        </div>
+        <div class="glass tip-card">
+          <div class="tip-icon">👯</div>
+          <div class="tip-title">Go With Friends</div>
+          <div class="tip-desc">Groups have a better time — and it's safer and more fun to explore together.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ FOOTER ════════════════ -->
+    <footer>
+      <p class="footer-text">SEOMYEON NIGHTLIFE GUIDE · BUSAN · FOR EXCHANGE STUDENTS · HAVE FUN & STAY SAFE ✨</p>
+    </footer>
+
+  </div><!-- /page-wrap -->
+
+  <!-- ─────────────────────────────────────────────
+       JAVASCRIPT — Canvas Background + Scroll Reveal
+  ───────────────────────────────────────────── -->
+  <script>
+    /* ── Animated Background ── */
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = document.body.scrollHeight;
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      /* Slow background gradient shift */
+      let hue = 0;
+
+      /* Particles */
+      const PARTICLE_COUNT = 90;
+      const particles = Array.from({ length: PARTICLE_COUNT }, () => createParticle());
+
+      function createParticle() {
+        return {
+          x:     Math.random() * canvas.width,
+          y:     Math.random() * canvas.height,
+          r:     Math.random() * 2.5 + 0.5,
+          vx:    (Math.random() - 0.5) * 0.35,
+          vy:    (Math.random() - 0.5) * 0.35,
+          alpha: Math.random() * 0.6 + 0.1,
+          color: ['#ff2d78', '#b700ff', '#00c3ff', '#0ff4c6', '#ffd166'][Math.floor(Math.random() * 5)],
+        };
+      }
+
+      /* Sweeping club lights */
+      const LIGHT_COUNT = 5;
+      const lights = Array.from({ length: LIGHT_COUNT }, (_, i) => ({
+        angle:  (i / LIGHT_COUNT) * Math.PI * 2,
+        speed:  (Math.random() * 0.004 + 0.002) * (Math.random() > 0.5 ? 1 : -1),
+        color:  ['rgba(183,0,255,', 'rgba(255,45,120,', 'rgba(0,195,255,', 'rgba(15,244,198,'][i % 4],
+        cx:     Math.random() * 0.6 + 0.2,  // relative x
+        cy:     Math.random() * 0.4,         // relative y (top portion)
+        reach:  Math.random() * 0.55 + 0.4,
+      }));
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        /* Deep background gradient */
+        const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        bg.addColorStop(0, '#050510');
+        bg.addColorStop(0.5, '#0a0520');
+        bg.addColorStop(1, '#050510');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        /* Club sweep lights */
+        lights.forEach(l => {
+          l.angle += l.speed;
+          const cx = l.cx * canvas.width;
+          const cy = l.cy * canvas.height;
+          const ex = cx + Math.cos(l.angle) * l.reach * Math.max(canvas.width, canvas.height);
+          const ey = cy + Math.sin(l.angle) * l.reach * Math.max(canvas.width, canvas.height);
+          const grad = ctx.createLinearGradient(cx, cy, ex, ey);
+          grad.addColorStop(0,   l.color + '0.08)');
+          grad.addColorStop(0.4, l.color + '0.04)');
+          grad.addColorStop(1,   l.color + '0)');
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, Math.max(canvas.width, canvas.height) * l.reach, l.angle - 0.18, l.angle + 0.18);
+          ctx.closePath();
+          ctx.fillStyle = grad;
+          ctx.fill();
+        });
+
+        /* Particles */
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          /* Wrap */
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+
+        hue += 0.3;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+
+      /* Re-size canvas on layout changes */
+      const obs = new MutationObserver(resize);
+      obs.observe(document.body, { childList: true, subtree: true });
+    })();
+
+    /* ── Scroll Reveal ── */
+    (function () {
+      const els = document.querySelectorAll('.reveal');
+      const io  = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      els.forEach(el => io.observe(el));
+    })();
+  </script>
+
+</body>
+</html>
