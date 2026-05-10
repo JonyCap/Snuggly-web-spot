@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>House of Assistant Websites for Exchange Students</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  /* =============================================
+     ROOT VARIABLES & RESET
+  ============================================= */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #f0c040;
+    --gold-dim: #a07d20;
+    --cyan: #00e5ff;
+    --cyan-dim: #007a8a;
+    --bg-deep: #020610;
+    --bg-panel: rgba(5, 15, 40, 0.85);
+    --border-glow: rgba(0, 229, 255, 0.25);
+    --text-primary: #e8f4ff;
+    --text-muted: rgba(180, 210, 240, 0.6);
+    --btn-bg: rgba(0, 30, 60, 0.7);
+    --btn-hover: rgba(0, 229, 255, 0.12);
+  }
+
+  html, body {
+    width: 100%; min-height: 100vh;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* =============================================
+     ANIMATED STARFIELD CANVAS
+  ============================================= */
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* =============================================
+     NEBULA GLOW BLOBS (CSS-only background)
+  ============================================= */
+  .nebula {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+    animation: nebula-drift 18s ease-in-out infinite alternate;
+  }
+  .nebula-a { width: 500px; height: 500px; background: #1a00ff; top: -100px; left: -150px; animation-delay: 0s; }
+  .nebula-b { width: 400px; height: 400px; background: #00aaff; bottom: -80px; right: -80px; animation-delay: -6s; }
+  .nebula-c { width: 300px; height: 300px; background: #00e5ff; top: 40%; left: 50%; transform: translate(-50%, -50%); animation-delay: -12s; }
+
+  @keyframes nebula-drift {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(30px) scale(1.08); }
+  }
+
+  /* =============================================
+     PAGE LAYOUT
+  ============================================= */
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem 2rem;
+  }
+
+  /* =============================================
+     HEADER
+  ============================================= */
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .header-eyebrow {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    opacity: 0.7;
+    margin-bottom: 0.6rem;
+  }
+
+  header h1 {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: clamp(1.1rem, 3.5vw, 2rem);
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    /* gold-to-cyan gradient text */
+    background: linear-gradient(135deg, #f0c040 0%, #ffeaa0 40%, #00e5ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .header-rule {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    margin: 1rem auto 0;
+  }
+
+  /* =============================================
+     KEYPAD CONTAINER
+  ============================================= */
+  .keypad-shell {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-glow);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow:
+      0 0 40px rgba(0, 229, 255, 0.08),
+      0 0 80px rgba(0, 50, 120, 0.3),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative;
+  }
+
+  .keypad-shell::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 21px;
+    background: linear-gradient(135deg, rgba(0,229,255,0.15), transparent 50%, rgba(240,192,64,0.1));
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* =============================================
+     GRID
+  ============================================= */
+  .keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  /* =============================================
+     BUTTONS
+  ============================================= */
+  .key-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    background: var(--btn-bg);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    border-radius: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    overflow: visible;
+  }
+
+  /* Hover state */
+  .key-btn:hover {
+    background: var(--btn-hover);
+    border-color: var(--cyan);
+    transform: translateY(-4px) scale(1.06);
+    box-shadow:
+      0 0 20px rgba(0, 229, 255, 0.35),
+      0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Active / click state */
+  .key-btn:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+  }
+
+  /* The big key symbol (digit / * / 0 / #) */
+  .key-symbol {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1;
+    background: linear-gradient(160deg, #ffffff 30%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: filter 0.18s ease;
+  }
+  .key-btn:hover .key-symbol {
+    filter: drop-shadow(0 0 6px var(--cyan));
+  }
+
+  /* Special keys get a gold tint */
+  .key-btn.key-special .key-symbol {
+    background: linear-gradient(160deg, #ffffff 30%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .key-btn.key-special:hover .key-symbol {
+    filter: drop-shadow(0 0 6px var(--gold));
+  }
+  .key-btn.key-special:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(240,192,64,0.35), 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  /* Sub-label below symbol (tiny hint) */
+  .key-sublabel {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  /* =============================================
+     TOOLTIP
+  ============================================= */
+  .key-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: rgba(0, 10, 30, 0.95);
+    border: 1px solid var(--cyan);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.06em;
+    color: var(--cyan);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+    box-shadow: 0 0 12px rgba(0,229,255,0.2);
+  }
+
+  /* Arrow on tooltip */
+  .key-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--cyan);
+  }
+
+  /* Special key tooltip uses gold */
+  .key-btn.key-special .key-tooltip {
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 12px rgba(240,192,64,0.2);
+  }
+  .key-btn.key-special .key-tooltip::after {
+    border-top-color: var(--gold);
+  }
+
+  /* Show tooltip on hover */
+  .key-btn:hover .key-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* =============================================
+     SCAN LINE EFFECT (decorative)
+  ============================================= */
+  .scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.4), transparent);
+    top: 0;
+    left: 0;
+    border-radius: 20px 20px 0 0;
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan {
+    0%   { top: 0; opacity: 0.6; }
+    50%  { opacity: 1; }
+    100% { top: 100%; opacity: 0.2; }
+  }
+
+  /* =============================================
+     FOOTER
+  ============================================= */
+  footer {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+
+  /* =============================================
+     INSTAGRAM LINK
+     👉 Replace href="#" below with your Instagram URL
+  ============================================= */
+  .footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    font-family: 'Rajdhani', sans-serif;
+    transition: color 0.2s ease;
+  }
+  .footer-link:hover { color: var(--gold); }
+
+  .footer-link .ig-icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* =============================================
+     RESPONSIVE
+  ============================================= */
+  @media (max-width: 400px) {
+    .key-btn { width: 80px; height: 80px; }
+    .key-symbol { font-size: 1.6rem; }
+    .keypad-grid { gap: 10px; }
+    .keypad-shell { padding: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Starfield canvas -->
+<canvas id="starfield"></canvas>
+
+<!-- Nebula blobs -->
+<div class="nebula nebula-a"></div>
+<div class="nebula nebula-b"></div>
+<div class="nebula nebula-c"></div>
+
+<div class="page-wrapper">
+
+  <!-- =============================================
+       HEADER
+  ============================================= -->
+  <header>
+    <p class="header-eyebrow">Navigation Hub</p>
+    <h1>House of Assistant Websites<br>for Exchange Students</h1>
+    <div class="header-rule"></div>
+  </header>
+
+  <!-- =============================================
+       KEYPAD
+  ============================================= -->
+  <div class="keypad-shell">
+    <div class="scan-line"></div>
+    <div class="keypad-grid">
+
+      <!-- ===== ROW 1 ===== -->
+
+      <!-- Button 1 → Replace href="#" with your Page 1 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number One</div>
+        <span class="key-symbol">1</span>
+        <span class="key-sublabel">Page 01</span>
+      </a>
+
+      <!-- Button 2 → Replace href="#" with your Page 2 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Two</div>
+        <span class="key-symbol">2</span>
+        <span class="key-sublabel">Page 02</span>
+      </a>
+
+      <!-- Button 3 → Replace href="#" with your Page 3 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Three</div>
+        <span class="key-symbol">3</span>
+        <span class="key-sublabel">Page 03</span>
+      </a>
+
+      <!-- ===== ROW 2 ===== -->
+
+      <!-- Button 4 → Replace href="#" with your Page 4 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Four</div>
+        <span class="key-symbol">4</span>
+        <span class="key-sublabel">Page 04</span>
+      </a>
+
+      <!-- Button 5 → Replace href="#" with your Page 5 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Five</div>
+        <span class="key-symbol">5</span>
+        <span class="key-sublabel">Page 05</span>
+      </a>
+
+      <!-- Button 6 → Replace href="#" with your Page 6 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Six</div>
+        <span class="key-symbol">6</span>
+        <span class="key-sublabel">Page 06</span>
+      </a>
+
+      <!-- ===== ROW 3 ===== -->
+
+      <!-- Button 7 → Replace href="#" with your Page 7 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Seven</div>
+        <span class="key-symbol">7</span>
+        <span class="key-sublabel">Page 07</span>
+      </a>
+
+      <!-- Button 8 → Replace href="#" with your Page 8 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Eight</div>
+        <span class="key-symbol">8</span>
+        <span class="key-sublabel">Page 08</span>
+      </a>
+
+      <!-- Button 9 → Replace href="#" with your Page 9 URL -->
+      <a class="key-btn" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Page Number Nine</div>
+        <span class="key-symbol">9</span>
+        <span class="key-sublabel">Page 09</span>
+      </a>
+
+      <!-- ===== ROW 4 — SPECIAL KEYS (gold accent) ===== -->
+
+      <!-- Button * → Replace href="#" with your "How this idea came from" URL -->
+      <a class="key-btn key-special" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">How this idea came from</div>
+        <span class="key-symbol">✦</span>
+        <span class="key-sublabel">Origin</span>
+      </a>
+
+      <!-- Button 0 → Replace href="#" with your "Is that useful?" URL -->
+      <a class="key-btn key-special" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Is that useful?</div>
+        <span class="key-symbol">0</span>
+        <span class="key-sublabel">Utility</span>
+      </a>
+
+      <!-- Button # → Replace href="#" with your "Where are the 5 Cs?" URL -->
+      <a class="key-btn key-special" href="#" target="_blank" rel="noopener">
+        <div class="key-tooltip">Where are the 5 Cs?</div>
+        <span class="key-symbol">#</span>
+        <span class="key-sublabel">5 Cs</span>
+      </a>
+
+    </div><!-- end .keypad-grid -->
+  </div><!-- end .keypad-shell -->
+
+  <!-- =============================================
+       FOOTER
+       👉 Replace href="#" with your actual Instagram URL
+       e.g. href="https://instagram.com/yourusername"
+  ============================================= -->
+  <footer>
+    <a class="footer-link" href="#" target="_blank" rel="noopener">
+      <svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+      Any questions? Contact me on Instagram
+    </a>
+  </footer>
+
+</div><!-- end .page-wrapper -->
+
+<!-- =============================================
+     STARFIELD ANIMATION
+============================================= -->
+<script>
+(function() {
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.3 + 0.2,
+        alpha: Math.random() * 0.7 + 0.2,
+        speed: Math.random() * 0.18 + 0.03,
+        twinkle: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw(ts) {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.twinkle += 0.012;
+      const a = s.alpha * (0.6 + 0.4 * Math.sin(s.twinkle));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 230, 255, ${a})`;
+      ctx.fill();
+      // slow drift downward, wrap
+      s.y += s.speed;
+      if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  createStars(220);
+  requestAnimationFrame(draw);
+  window.addEventListener('resize', () => { resize(); createStars(220); });
+})();
+</script>
+
+</body>
+</html>
