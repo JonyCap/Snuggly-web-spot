@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Exchange Student Simulator 🌌</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#000;--white:#fff;
+  --neon-blue:#00c8ff;--neon-purple:#b56fff;--neon-pink:#ff5fa0;--neon-gold:#ffd97d;
+  --glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);
+  --text-muted:rgba(255,255,255,0.45);--text-dim:rgba(255,255,255,0.25);
+  --font-serif:'Cormorant Garamond',serif;
+  --font-mono:'Space Mono',monospace;
+  --font-korean:'Noto Sans KR',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:#000;color:#fff;font-family:var(--font-serif);
+  overflow-x:hidden;cursor:default;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar{
+  position:fixed;top:0;left:0;height:2px;width:0%;
+  background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple),var(--neon-pink));
+  z-index:1000;transition:width 0.6s ease;box-shadow:0 0 8px var(--neon-blue);
+}
+
+/* ── AUDIO CONTROLS ── */
+#audio-controls{
+  position:fixed;top:20px;right:20px;z-index:999;
+  display:flex;gap:10px;
+}
+.audio-btn{
+  background:var(--glass);border:1px solid var(--glass-border);
+  color:var(--text-muted);padding:8px 14px;border-radius:30px;
+  font-family:var(--font-mono);font-size:10px;cursor:pointer;
+  transition:all 0.3s;backdrop-filter:blur(10px);letter-spacing:0.05em;
+}
+.audio-btn:hover,.audio-btn.active{
+  border-color:var(--neon-blue);color:var(--neon-blue);
+  box-shadow:0 0 12px rgba(0,200,255,0.3);
+}
+
+/* ── SCENE BASE ── */
+.scene{
+  position:relative;min-height:100vh;width:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;padding:60px 20px;
+}
+
+/* ── PARTICLES CANVAS ── */
+#particles-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
+}
+
+/* ── RAIN CANVAS ── */
+#rain-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;opacity:0;
+  transition:opacity 1s;
+}
+#rain-canvas.active{opacity:1}
+
+/* ── FLOATING KOREAN ── */
+#korean-layer{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:2;overflow:hidden;
+}
+.korean-word{
+  position:absolute;font-family:var(--font-korean);
+  color:rgba(255,255,255,0.06);font-weight:300;
+  animation:floatKorean linear infinite;
+  white-space:nowrap;
+}
+@keyframes floatKorean{
+  0%{transform:translateY(100vh) rotate(-3deg);opacity:0}
+  10%{opacity:1}
+  90%{opacity:0.06}
+  100%{transform:translateY(-20vh) rotate(3deg);opacity:0}
+}
+
+/* ── SCENE 0: INTRO ── */
+#scene-intro{
+  background:#000;z-index:10;
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 1.5s ease;
+}
+#scene-intro.hidden{opacity:0;pointer-events:none}
+.intro-title{
+  font-family:var(--font-mono);font-size:clamp(11px,1.5vw,14px);
+  letter-spacing:0.3em;color:var(--text-muted);text-transform:uppercase;
+  margin-bottom:32px;animation:fadeInUp 1.5s ease 0.5s both;
+}
+.intro-main{
+  font-size:clamp(32px,6vw,72px);font-weight:300;font-style:italic;
+  text-align:center;line-height:1.2;letter-spacing:-0.01em;
+  animation:fadeInUp 1.5s ease 1s both;
+}
+.intro-main span{color:var(--neon-blue);}
+.intro-sub{
+  font-family:var(--font-korean);font-size:clamp(12px,1.8vw,16px);
+  color:var(--text-muted);margin-top:16px;letter-spacing:0.1em;
+  animation:fadeInUp 1.5s ease 1.5s both;
+}
+.enter-btn{
+  margin-top:56px;
+  background:transparent;border:1px solid rgba(255,255,255,0.2);
+  color:var(--text-muted);padding:14px 40px;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;
+  text-transform:uppercase;cursor:pointer;
+  transition:all 0.4s;
+  animation:fadeInUp 1.5s ease 2s both;
+}
+.enter-btn:hover{
+  border-color:var(--neon-blue);color:var(--neon-blue);
+  box-shadow:0 0 30px rgba(0,200,255,0.2),inset 0 0 30px rgba(0,200,255,0.05);
+}
+
+/* ── SCENE 1: ARRIVAL ── */
+#scene-arrival{background:linear-gradient(180deg,#000 0%,#05080f 50%,#000 100%)}
+.city-lights{
+  position:absolute;bottom:0;left:0;width:100%;height:60%;
+  background:linear-gradient(0deg,transparent,transparent);
+  pointer-events:none;
+}
+.arrival-text{
+  position:relative;z-index:5;text-align:center;max-width:600px;
+}
+.typewriter-line{
+  display:block;font-size:clamp(20px,3.5vw,42px);font-weight:300;
+  font-style:italic;line-height:1.6;opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.8s ease,transform 0.8s ease;
+}
+.typewriter-line.visible{opacity:1;transform:translateY(0)}
+.typewriter-line.accent{color:var(--neon-blue);}
+.scene-divider{
+  width:40px;height:1px;background:var(--neon-blue);
+  margin:24px auto;opacity:0;box-shadow:0 0 10px var(--neon-blue);
+  transition:opacity 0.8s ease 0.5s;
+}
+.scene-divider.visible{opacity:1}
+
+/* ── CTA BUTTON ── */
+.cta-btn{
+  margin-top:48px;background:transparent;
+  border:1px solid var(--glass-border);color:rgba(255,255,255,0.6);
+  padding:14px 48px;font-family:var(--font-mono);font-size:11px;
+  letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;
+  transition:all 0.5s;opacity:0;transform:translateY(20px);
+  backdrop-filter:blur(4px);
+}
+.cta-btn.visible{opacity:1;transform:translateY(0)}
+.cta-btn:hover{
+  border-color:var(--neon-purple);color:var(--neon-purple);
+  box-shadow:0 0 40px rgba(181,111,255,0.2);
+}
+
+/* ── SCENE 2: CULTURE SHOCK ── */
+#scene-shock{background:linear-gradient(160deg,#050010 0%,#000 50%,#100500 100%)}
+.question-container{
+  position:relative;z-index:5;max-width:680px;width:100%;text-align:center;
+}
+.shock-question{
+  font-size:clamp(18px,2.5vw,28px);font-weight:300;font-style:italic;
+  line-height:1.5;margin-bottom:36px;opacity:0;
+  transform:translateY(30px) scale(0.97);
+  transition:all 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.shock-question.active{opacity:1;transform:translateY(0) scale(1)}
+.shock-question.past{opacity:0.15;transform:translateY(-20px) scale(0.95)}
+.answer-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:480px;margin:0 auto;
+}
+.answer-btn{
+  background:var(--glass);border:1px solid var(--glass-border);
+  color:rgba(255,255,255,0.7);padding:16px 20px;
+  font-family:var(--font-serif);font-size:clamp(14px,1.5vw,17px);
+  font-style:italic;cursor:pointer;transition:all 0.4s;
+  backdrop-filter:blur(10px);
+}
+.answer-btn:hover{
+  background:rgba(181,111,255,0.1);border-color:var(--neon-purple);
+  color:#fff;box-shadow:0 0 20px rgba(181,111,255,0.15);
+  transform:translateY(-2px);
+}
+.answer-btn.selected{
+  background:rgba(181,111,255,0.15);border-color:var(--neon-purple);
+  color:var(--neon-purple);
+}
+.shock-progress{
+  font-family:var(--font-mono);font-size:10px;color:var(--text-dim);
+  letter-spacing:0.2em;margin-top:40px;
+}
+
+/* ── SCENE 3: SMALL MOMENTS ── */
+#scene-moments{background:linear-gradient(180deg,#000 0%,#050a0f 60%,#000 100%)}
+.moments-header{
+  text-align:center;margin-bottom:64px;
+  font-size:clamp(13px,1.5vw,15px);letter-spacing:0.3em;
+  color:var(--text-muted);font-family:var(--font-mono);text-transform:uppercase;
+}
+.moments-quote{
+  font-size:clamp(22px,3vw,34px);font-weight:300;font-style:italic;
+  margin-bottom:16px;text-align:center;
+}
+.moments-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;max-width:900px;width:100%;position:relative;z-index:5;
+}
+.moment-card{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:2px;padding:32px 28px;
+  backdrop-filter:blur(12px);
+  transition:all 0.5s cubic-bezier(0.16,1,0.3,1);
+  opacity:0;transform:translateY(40px);
+}
+.moment-card.visible{opacity:1;transform:translateY(0)}
+.moment-card:hover{
+  background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.15);
+  transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.moment-icon{
+  font-size:24px;margin-bottom:16px;display:block;
+  filter:drop-shadow(0 0 8px currentColor);
+}
+.moment-title{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;
+  color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;
+}
+.moment-text{
+  font-size:clamp(15px,1.5vw,18px);font-style:italic;font-weight:300;
+  line-height:1.7;color:rgba(255,255,255,0.85);
+}
+.moment-korean{
+  font-family:var(--font-korean);font-size:12px;color:var(--text-dim);
+  margin-top:12px;
+}
+
+/* ── MEMORY SCENE ── */
+#scene-memory{background:linear-gradient(160deg,#000 0%,#040010 50%,#000 100%)}
+.memory-container{
+  position:relative;z-index:5;max-width:560px;width:100%;text-align:center;
+}
+.memory-label{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.3em;
+  color:var(--neon-purple);text-transform:uppercase;margin-bottom:24px;
+}
+.memory-title{
+  font-size:clamp(24px,3.5vw,40px);font-weight:300;font-style:italic;
+  line-height:1.4;margin-bottom:40px;
+}
+.memory-textarea{
+  width:100%;background:rgba(255,255,255,0.03);
+  border:1px solid var(--glass-border);color:#fff;
+  padding:24px;font-family:var(--font-serif);font-size:17px;
+  font-style:italic;line-height:1.8;resize:none;height:160px;
+  outline:none;transition:border-color 0.3s;
+}
+.memory-textarea::placeholder{color:var(--text-dim)}
+.memory-textarea:focus{border-color:rgba(181,111,255,0.4)}
+.save-btn{
+  margin-top:20px;background:transparent;border:1px solid var(--neon-purple);
+  color:var(--neon-purple);padding:12px 36px;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:0.2em;
+  text-transform:uppercase;cursor:pointer;transition:all 0.4s;
+  display:block;margin-left:auto;
+}
+.save-btn:hover{
+  background:rgba(181,111,255,0.1);
+  box-shadow:0 0 30px rgba(181,111,255,0.2);
+}
+.save-confirm{
+  font-family:var(--font-mono);font-size:10px;color:var(--neon-purple);
+  margin-top:12px;opacity:0;transition:opacity 0.5s;letter-spacing:0.1em;
+}
+.save-confirm.show{opacity:1}
+
+/* ── SCENE 4: TRANSFORMATION ── */
+#scene-transform{
+  background:linear-gradient(180deg,#000 0%,#040810 30%,#080c04 70%,#000 100%);
+}
+.transform-content{
+  position:relative;z-index:5;text-align:center;max-width:640px;
+}
+.sunrise{
+  width:200px;height:100px;margin:0 auto 48px;
+  position:relative;overflow:hidden;
+}
+.sunrise-glow{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,180,50,0.25) 0%,rgba(255,100,50,0.1) 50%,transparent 70%);
+  animation:pulseGlow 3s ease-in-out infinite;
+}
+@keyframes pulseGlow{
+  0%,100%{transform:translateX(-50%) scale(1);opacity:0.7}
+  50%{transform:translateX(-50%) scale(1.15);opacity:1}
+}
+.transform-q{
+  font-size:clamp(20px,3vw,34px);font-weight:300;font-style:italic;
+  line-height:1.6;opacity:0;transform:translateY(24px);
+  transition:all 0.9s cubic-bezier(0.16,1,0.3,1);margin-bottom:16px;
+}
+.transform-q.visible{opacity:1;transform:translateY(0)}
+.transform-q.warm{color:var(--neon-gold);}
+
+/* ── FINAL SCENE ── */
+#scene-final{
+  background:#000;min-height:100vh;
+}
+.final-content{
+  position:relative;z-index:5;text-align:center;max-width:700px;
+}
+.final-line{
+  display:block;font-size:clamp(18px,2.5vw,30px);font-weight:300;font-style:italic;
+  line-height:1.7;opacity:0;transform:translateY(24px);
+  transition:all 1s cubic-bezier(0.16,1,0.3,1);
+}
+.final-line.visible{opacity:1;transform:translateY(0)}
+.memory-reveal{
+  margin-top:56px;padding:32px;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(181,111,255,0.2);
+  opacity:0;transform:scale(0.96);
+  transition:all 1.2s cubic-bezier(0.16,1,0.3,1);
+}
+.memory-reveal.visible{opacity:1;transform:scale(1)}
+.memory-reveal-label{
+  font-family:var(--font-mono);font-size:9px;color:var(--neon-purple);
+  letter-spacing:0.3em;text-transform:uppercase;margin-bottom:16px;
+}
+.memory-reveal-text{
+  font-size:clamp(16px,2vw,22px);font-style:italic;font-weight:300;
+  color:rgba(255,255,255,0.85);line-height:1.8;
+}
+.final-thanks{
+  margin-top:56px;font-family:var(--font-mono);font-size:10px;
+  color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;
+  opacity:0;transition:opacity 1.5s ease 0.5s;
+}
+.final-thanks.visible{opacity:1}
+.final-korean{
+  font-family:var(--font-korean);font-size:24px;color:var(--text-muted);
+  display:block;margin-top:8px;
+}
+.restart-btn{
+  margin-top:48px;background:transparent;border:1px solid var(--glass-border);
+  color:var(--text-muted);padding:12px 32px;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;
+  text-transform:uppercase;cursor:pointer;transition:all 0.4s;
+  opacity:0;transition:opacity 1s ease 2s,all 0.4s;
+}
+.restart-btn.visible{opacity:1}
+.restart-btn:hover{border-color:var(--neon-blue);color:var(--neon-blue)}
+
+/* ── SECTION LABELS ── */
+.section-label{
+  position:absolute;top:32px;left:32px;
+  font-family:var(--font-mono);font-size:9px;color:var(--text-dim);
+  letter-spacing:0.25em;text-transform:uppercase;z-index:10;
+}
+
+/* ── GLOW OVERLAYS ── */
+.glow-orb{
+  position:absolute;border-radius:50%;filter:blur(80px);
+  pointer-events:none;opacity:0.15;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes shimmer{
+  0%{background-position:200% center}
+  100%{background-position:-200% center}
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+/* ── SCENE TRANSITIONS ── */
+.scene-wrapper{opacity:0;transition:opacity 0.01s}
+.scene-wrapper.ready{opacity:1}
+
+/* ── SCROLL SNAP FEEL ── */
+#main-content{position:relative;z-index:5}
+
+/* ── CINEMATIC BARS ── */
+.cin-bar{
+  position:fixed;left:0;width:100%;height:clamp(30px,4vh,60px);
+  background:#000;z-index:50;pointer-events:none;
+}
+#cin-top{top:0}
+#cin-bottom{bottom:0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .answer-grid{grid-template-columns:1fr}
+  .moments-grid{grid-template-columns:1fr}
+  .audio-btn span{display:none}
+  .audio-btn{padding:8px}
+  .cin-bar{height:20px}
+}
+
+/* ── STARS BG ── */
+#stars-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:0.6;
+}
+
+/* ── SCENE GLOW ACCENT ── */
+.neon-line{
+  width:1px;height:80px;
+  background:linear-gradient(180deg,transparent,var(--neon-blue),transparent);
+  margin:0 auto 32px;box-shadow:0 0 15px var(--neon-blue);
+}
+.neon-line.gold{
+  background:linear-gradient(180deg,transparent,var(--neon-gold),transparent);
+  box-shadow:0 0 15px var(--neon-gold);
+}
+</style>
+</head>
+<body>
+
+<!-- CINEMATIC BARS -->
+<div class="cin-bar" id="cin-top"></div>
+<div class="cin-bar" id="cin-bottom"></div>
+
+<!-- PROGRESS -->
+<div id="progress-bar"></div>
+
+<!-- AUDIO CONTROLS -->
+<div id="audio-controls">
+  <button class="audio-btn" id="amb-btn" onclick="toggleAmb()">♪ <span>Ambient</span></button>
+  <button class="audio-btn" id="rain-btn" onclick="toggleRain()">⛈ <span>Rain</span></button>
+</div>
+
+<!-- BACKGROUND LAYERS -->
+<canvas id="stars-canvas"></canvas>
+<canvas id="particles-canvas"></canvas>
+<canvas id="rain-canvas"></canvas>
+<div id="korean-layer"></div>
+
+<!-- ═══════════════════════════════════════════
+  INTRO SCREEN
+═══════════════════════════════════════════ -->
+<div id="scene-intro">
+  <div class="glow-orb" style="width:500px;height:500px;background:var(--neon-blue);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <p class="intro-title">An interactive cinematic experience</p>
+  <h1 class="intro-main">The Exchange<br>Student <span>Simulator</span></h1>
+  <p class="intro-sub">교환학생 시뮬레이터 · 부산, 한국</p>
+  <button class="enter-btn" onclick="enterStory()">Begin the journey ↓</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+  MAIN CONTENT (hidden until intro dismissed)
+═══════════════════════════════════════════ -->
+<div id="main-content" style="opacity:0;transition:opacity 1s ease 0.5s">
+
+<!-- ══ SCENE 1: ARRIVAL ══ -->
+<section class="scene" id="scene-arrival" data-scene="1">
+  <div class="section-label">Chapter 01 · 도착 · Arrival</div>
+  <div class="glow-orb" style="width:600px;height:400px;background:var(--neon-blue);top:60%;left:20%;"></div>
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--neon-purple);top:20%;right:10%;"></div>
+
+  <div class="arrival-text" id="arrival-text">
+    <div class="neon-line"></div>
+    <span class="typewriter-line" data-delay="0">You arrived in Busan.</span>
+    <span class="typewriter-line" data-delay="600">The air smells like rain and possibility.</span>
+    <span class="typewriter-line accent" data-delay="1400">You don't understand the language.</span>
+    <span class="typewriter-line" data-delay="2200">You pretend not to be nervous.</span>
+    <span class="typewriter-line" style="font-size:clamp(13px,1.5vw,16px);color:var(--text-muted);letter-spacing:0.1em;font-style:normal;font-family:var(--font-korean)" data-delay="3200">부산에 오신 것을 환영합니다</span>
+    <div class="scene-divider" id="arrival-divider"></div>
+    <button class="cta-btn" id="arrival-cta" onclick="scrollToScene('scene-shock')">I remember that feeling →</button>
+  </div>
+
+  <!-- animated city lights -->
+  <canvas id="city-canvas" style="position:absolute;bottom:0;left:0;width:100%;height:45%;opacity:0.5;pointer-events:none;z-index:3"></canvas>
+</section>
+
+<!-- ══ SCENE 2: CULTURE SHOCK ══ -->
+<section class="scene" id="scene-shock" data-scene="2" style="min-height:120vh">
+  <div class="section-label">Chapter 02 · 충격 · Culture Shock</div>
+  <div class="glow-orb" style="width:700px;height:500px;background:var(--neon-purple);top:40%;left:30%;"></div>
+
+  <div class="question-container" id="shock-container">
+    <p style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:48px">
+      These questions have no wrong answers.
+    </p>
+
+    <div class="shock-question active" id="sq-0">
+      <p style="font-family:var(--font-mono);font-size:9px;color:var(--neon-purple);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Question 01</p>
+      Have you ever eaten alone in silence,<br>pretending your phone was company?
+    </div>
+
+    <div class="shock-question" id="sq-1">
+      <p style="font-family:var(--font-mono);font-size:9px;color:var(--neon-purple);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Question 02</p>
+      Did you smile even when<br>you felt completely lost?
+    </div>
+
+    <div class="shock-question" id="sq-2">
+      <p style="font-family:var(--font-mono);font-size:9px;color:var(--neon-purple);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Question 03</p>
+      Do you miss home<br>at night, when it's quiet?
+    </div>
+
+    <div class="shock-question" id="sq-3">
+      <p style="font-family:var(--font-mono);font-size:9px;color:var(--neon-purple);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Question 04</p>
+      Have you ever felt<br>invisible in a crowd of people?
+    </div>
+
+    <div class="answer-grid" id="answer-grid">
+      <button class="answer-btn" onclick="answerQ('yes')">Yes, always.</button>
+      <button class="answer-btn" onclick="answerQ('sometimes')">Sometimes.</button>
+      <button class="answer-btn" onclick="answerQ('no')">Not really.</button>
+      <button class="answer-btn" onclick="answerQ('secret')">More than I admit.</button>
+    </div>
+
+    <p class="shock-progress" id="shock-progress">0 / 4 moments remembered</p>
+  </div>
+</section>
+
+<!-- ══ SCENE 3: SMALL MOMENTS ══ -->
+<section class="scene" id="scene-moments" data-scene="3" style="min-height:auto;padding:100px 40px;">
+  <div class="section-label">Chapter 03 · 순간 · Small Moments</div>
+  <div class="glow-orb" style="width:500px;height:500px;background:var(--neon-blue);bottom:10%;right:5%;"></div>
+
+  <div style="position:relative;z-index:5;width:100%;max-width:900px;text-align:center">
+    <p class="moments-header">The moments you will never forget</p>
+    <p class="moments-quote">"Sometimes the smallest moments<br>change you forever."</p>
+    <div class="neon-line" style="margin:32px auto 48px"></div>
+  </div>
+
+  <div class="moments-grid" id="moments-grid">
+    <div class="moment-card" data-delay="0">
+      <span class="moment-icon" style="color:var(--neon-blue)">★</span>
+      <p class="moment-title">First Connection</p>
+      <p class="moment-text">A stranger held the elevator door. You both laughed at something untranslatable. For a second, you weren't an outsider.</p>
+      <p class="moment-korean">처음으로 연결되다</p>
+    </div>
+    <div class="moment-card" data-delay="150">
+      <span class="moment-icon" style="color:var(--neon-purple)">◈</span>
+      <p class="moment-title">3AM at the Desk</p>
+      <p class="moment-text">Studying when the city sleeps. The silence was different here — it had a texture. The screen lit your face like a lantern.</p>
+      <p class="moment-korean">새벽 세 시의 고독</p>
+    </div>
+    <div class="moment-card" data-delay="300">
+      <span class="moment-icon" style="color:var(--neon-pink)">▷</span>
+      <p class="moment-title">Convenience Store</p>
+      <p class="moment-text">Cup ramyeon at midnight. The fluorescent lights hummed. You ate standing up, and somehow it felt like home.</p>
+      <p class="moment-korean">편의점의 온기</p>
+    </div>
+    <div class="moment-card" data-delay="450">
+      <span class="moment-icon" style="color:var(--neon-gold)">◎</span>
+      <p class="moment-title">Rain on Gwangalli</p>
+      <p class="moment-text">You stood under an awning as rain swept the bridge. The lights blurred into watercolors. You didn't take a photo. You just watched.</p>
+      <p class="moment-korean">광안리의 빗소리</p>
+    </div>
+    <div class="moment-card" data-delay="600">
+      <span class="moment-icon" style="color:var(--neon-blue)">◇</span>
+      <p class="moment-title">Language Gaps</p>
+      <p class="moment-text">Conversations happening all around you, none of them yours. You learned to read emotions instead of words.</p>
+      <p class="moment-korean">말 없는 이해</p>
+    </div>
+    <div class="moment-card" data-delay="750">
+      <span class="moment-icon" style="color:var(--neon-purple)">✦</span>
+      <p class="moment-title">Haeundae at Dawn</p>
+      <p class="moment-text">The beach before the city woke up. You sat on the sand and realized you had survived more than you expected.</p>
+      <p class="moment-korean">새벽 해운대</p>
+    </div>
+  </div>
+
+  <div style="position:relative;z-index:5;margin-top:72px">
+    <button class="cta-btn visible" onclick="scrollToScene('scene-memory')">Write something to yourself →</button>
+  </div>
+</section>
+
+<!-- ══ SCENE: MEMORY ══ -->
+<section class="scene" id="scene-memory" data-scene="4">
+  <div class="section-label">Memory Capsule · 기억 캡슐</div>
+  <div class="glow-orb" style="width:600px;height:600px;background:var(--neon-purple);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+
+  <div class="memory-container">
+    <div class="neon-line" style="background:linear-gradient(180deg,transparent,var(--neon-purple),transparent);box-shadow:0 0 15px var(--neon-purple)"></div>
+    <p class="memory-label">A message to your future self</p>
+    <h2 class="memory-title">Right now, in this moment,<br>what do you want to remember?</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:24px;font-style:italic">It will return to you at the end.</p>
+    <textarea class="memory-textarea" id="memory-input" placeholder="Dear future me...&#10;I am here in Busan and I feel..."></textarea>
+    <button class="save-btn" onclick="saveMemory()">Seal the memory →</button>
+    <p class="save-confirm" id="save-confirm">✓ Saved. It will find you again.</p>
+    <div style="margin-top:36px">
+      <button class="cta-btn visible" onclick="scrollToScene('scene-transform')">Continue the journey →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SCENE 4: TRANSFORMATION ══ -->
+<section class="scene" id="scene-transform" data-scene="5">
+  <div class="section-label">Chapter 04 · 변화 · Transformation</div>
+
+  <div class="transform-content">
+    <div class="sunrise">
+      <div class="sunrise-glow"></div>
+    </div>
+
+    <div class="transform-q" id="tq-0">Are you still the same person who arrived?</div>
+    <div class="transform-q warm" id="tq-1">What changed inside you?</div>
+    <div class="transform-q" id="tq-2" style="color:rgba(255,255,255,0.9)">What did loneliness teach you?</div>
+    <div class="transform-q warm" id="tq-3" style="font-size:clamp(22px,3.5vw,40px)">Did Busan become part of you?</div>
+
+    <div style="margin-top:56px;opacity:0;transition:opacity 1s ease" id="transform-answer">
+      <p style="font-size:clamp(13px,1.5vw,16px);color:var(--text-muted);font-style:italic;line-height:1.8">
+        You don't have to answer.<br>Your presence here already says everything.
+      </p>
+      <div style="margin-top:40px">
+        <button class="cta-btn visible" onclick="scrollToScene('scene-final')">See how the story ends →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SCENE: FINAL ══ -->
+<section class="scene" id="scene-final" data-scene="6" style="min-height:100vh;background:#000">
+  <div class="glow-orb" style="width:500px;height:500px;background:var(--neon-blue);top:30%;left:10%;opacity:0.1"></div>
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--neon-purple);bottom:20%;right:15%;opacity:0.1"></div>
+
+  <div class="final-content">
+    <div class="neon-line" style="height:120px;margin-bottom:48px"></div>
+
+    <span class="final-line" id="fl-0" style="transition-delay:0s">
+      Maybe you did not come to Korea only to study.
+    </span>
+    <span class="final-line" id="fl-1" style="transition-delay:0.4s;margin-top:16px;color:var(--neon-blue)">
+      Maybe you came here to break open.
+    </span>
+    <span class="final-line" id="fl-2" style="transition-delay:0.9s;margin-top:16px">
+      To discover what you are made of,
+    </span>
+    <span class="final-line" id="fl-3" style="transition-delay:1.4s;margin-top:4px">
+      when everything familiar is taken away.
+    </span>
+    <span class="final-line" id="fl-4" style="transition-delay:2.2s;margin-top:40px;font-size:clamp(22px,3vw,34px);color:rgba(255,255,255,0.5)">
+      Maybe you came here to become someone else.
+    </span>
+
+    <!-- MEMORY REVEAL -->
+    <div class="memory-reveal" id="memory-reveal" style="transition-delay:0.5s">
+      <p class="memory-reveal-label">Your message · from the beginning of this journey</p>
+      <p class="memory-reveal-text" id="memory-reveal-text">
+        <em style="color:var(--text-dim)">No message saved. But your journey was real.</em>
+      </p>
+    </div>
+
+    <p class="final-thanks" id="final-thanks">
+      Thank you for experiencing<br>
+      <span class="final-korean">교환학생 시뮬레이터</span>
+      <span style="display:block;margin-top:8px;font-size:9px;letter-spacing:0.1em">The Exchange Student Simulator · Busan, South Korea · 동아대학교</span>
+    </p>
+
+    <button class="restart-btn" id="restart-btn" onclick="restartExperience()">
+      ↺ Experience again
+    </button>
+  </div>
+</section>
+
+</div><!-- /main-content -->
+
+<script>
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let currentQ = 0;
+const totalQ = 4;
+let answeredQ = 0;
+let ambPlaying = false;
+let rainPlaying = false;
+let ambCtx = null;
+let rainNodes = [];
+let masterGain = null;
+
+// ════════════════════════════════════════════════════════
+//  INTRO
+// ════════════════════════════════════════════════════════
+function enterStory(){
+  const intro = document.getElementById('scene-intro');
+  intro.classList.add('hidden');
+  const main = document.getElementById('main-content');
+  main.style.opacity = '1';
+  setTimeout(()=>{
+    initArrival();
+    updateProgress(1);
+  }, 600);
+}
+
+// ════════════════════════════════════════════════════════
+//  SCENE 1: ARRIVAL TEXT REVEAL
+// ════════════════════════════════════════════════════════
+function initArrival(){
+  const lines = document.querySelectorAll('.typewriter-line');
+  lines.forEach(l=>{
+    const delay = parseInt(l.dataset.delay)||0;
+    setTimeout(()=>{ l.classList.add('visible'); }, delay + 400);
+  });
+  setTimeout(()=>{
+    document.getElementById('arrival-divider').classList.add('visible');
+  }, 3800);
+  setTimeout(()=>{
+    document.getElementById('arrival-cta').classList.add('visible');
+  }, 4400);
+  drawCityLights();
+}
+
+function drawCityLights(){
+  const canvas = document.getElementById('city-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || window.innerWidth;
+  canvas.height = canvas.offsetHeight || 300;
+  const W = canvas.width, H = canvas.height;
+
+  const buildings = [];
+  let x = 0;
+  while(x < W){
+    const w = 30 + Math.random()*80;
+    const h = 60 + Math.random()*H*0.7;
+    buildings.push({x, w, h, color:`hsl(${200+Math.random()*60},70%,${15+Math.random()*10}%)`});
+    x += w + 2 + Math.random()*6;
+  }
+
+  function drawFrame(){
+    ctx.clearRect(0,0,W,H);
+    buildings.forEach(b=>{
+      ctx.fillStyle = b.color;
+      ctx.fillRect(b.x, H-b.h, b.w, b.h);
+      // windows
+      for(let wx=b.x+4; wx<b.x+b.w-6; wx+=10){
+        for(let wy=H-b.h+8; wy<H-4; wy+=14){
+          if(Math.random()<0.001) continue; // flicker
+          const lit = Math.random() < 0.4;
+          if(lit){
+            ctx.fillStyle = `rgba(${200+Math.random()*55},${180+Math.random()*40},${100+Math.random()*80},${0.6+Math.random()*0.4})`;
+            ctx.fillRect(wx, wy, 5, 7);
+          }
+        }
+      }
+    });
+    // reflection
+    const grad = ctx.createLinearGradient(0,H-40,0,H);
+    grad.addColorStop(0,'rgba(0,180,255,0.06)');
+    grad.addColorStop(1,'rgba(0,0,0,0.2)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, H-40, W, 40);
+
+    requestAnimationFrame(drawFrame);
+  }
+  drawFrame();
+}
+
+// ════════════════════════════════════════════════════════
+//  SCENE 2: CULTURE SHOCK Q&A
+// ════════════════════════════════════════════════════════
+function answerQ(type){
+  if(answeredQ >= totalQ) return;
+
+  // react emotionally
+  shiftAtmosphere(type);
+
+  // mark current answered
+  const curr = document.getElementById(`sq-${currentQ}`);
+  if(curr) curr.classList.add('past');
+
+  answeredQ++;
+  document.getElementById('shock-progress').textContent = `${answeredQ} / ${totalQ} moments remembered`;
+
+  if(currentQ < totalQ - 1){
+    currentQ++;
+    setTimeout(()=>{
+      const next = document.getElementById(`sq-${currentQ}`);
+      if(next) next.classList.add('active');
+    }, 400);
+  } else {
+    // all done
+    setTimeout(()=>{
+      document.getElementById('answer-grid').innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:24px">
+          <p style="font-style:italic;font-size:19px;color:rgba(255,255,255,0.7);line-height:1.8">
+            Every answer was honest.<br>That took courage.
+          </p>
+          <button class="cta-btn visible" style="margin:24px auto 0;display:block" onclick="scrollToScene('scene-moments')">
+            See the moments →
+          </button>
+        </div>`;
+    }, 600);
+  }
+}
+
+function shiftAtmosphere(type){
+  const map = {
+    yes: {hue:260, light:'rgba(181,111,255,0.08)'},
+    sometimes: {hue:200, light:'rgba(0,200,255,0.06)'},
+    no: {hue:150, light:'rgba(0,200,150,0.06)'},
+    secret: {hue:310, light:'rgba(255,90,160,0.08)'}
+  };
+  const cfg = map[type];
+  if(!cfg) return;
+  document.body.style.transition = 'background 2s ease';
+}
+
+// ════════════════════════════════════════════════════════
+//  SCROLL + SCENE TRIGGER
+// ════════════════════════════════════════════════════════
+function scrollToScene(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Intersection Observer for scene animations
+const sceneObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const id = entry.target.id;
+      animateScene(id);
+      const scene = entry.target.dataset.scene;
+      if(scene) updateProgress(parseInt(scene));
+    }
+  });
+},{threshold:0.2});
+
+document.querySelectorAll('.scene').forEach(s=> sceneObserver.observe(s));
+
+function animateScene(id){
+  if(id === 'scene-moments'){
+    document.querySelectorAll('.moment-card').forEach((card,i)=>{
+      const delay = parseInt(card.dataset.delay)||i*150;
+      setTimeout(()=> card.classList.add('visible'), delay + 100);
+    });
+  }
+  if(id === 'scene-transform'){
+    ['tq-0','tq-1','tq-2','tq-3'].forEach((tid,i)=>{
+      setTimeout(()=>{
+        const el = document.getElementById(tid);
+        if(el) el.classList.add('visible');
+      }, i * 800);
+    });
+    setTimeout(()=>{
+      const ans = document.getElementById('transform-answer');
+      if(ans) ans.style.opacity = '1';
+    }, 4000);
+  }
+  if(id === 'scene-final'){
+    revealFinalScene();
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  FINAL SCENE
+// ════════════════════════════════════════════════════════
+function revealFinalScene(){
+  ['fl-0','fl-1','fl-2','fl-3','fl-4'].forEach((id,i)=>{
+    setTimeout(()=>{
+      const el = document.getElementById(id);
+      if(el) el.classList.add('visible');
+    }, i * 500 + 300);
+  });
+
+  // Load memory
+  setTimeout(()=>{
+    const saved = localStorage.getItem('ess_memory');
+    const revealEl = document.getElementById('memory-reveal');
+    const revealText = document.getElementById('memory-reveal-text');
+    if(saved && saved.trim()){
+      revealText.textContent = saved;
+      revealText.style.color = 'rgba(255,255,255,0.9)';
+    }
+    if(revealEl) revealEl.classList.add('visible');
+  }, 3200);
+
+  setTimeout(()=>{
+    const thanks = document.getElementById('final-thanks');
+    if(thanks) thanks.classList.add('visible');
+  }, 5000);
+
+  setTimeout(()=>{
+    const rb = document.getElementById('restart-btn');
+    if(rb) rb.classList.add('visible');
+  }, 6500);
+
+  updateProgress(6);
+}
+
+// ════════════════════════════════════════════════════════
+//  MEMORY
+// ════════════════════════════════════════════════════════
+function saveMemory(){
+  const val = document.getElementById('memory-input').value.trim();
+  if(!val){
+    document.getElementById('memory-input').focus();
+    return;
+  }
+  localStorage.setItem('ess_memory', val);
+  const conf = document.getElementById('save-confirm');
+  if(conf) conf.classList.add('show');
+}
+
+// ════════════════════════════════════════════════════════
+//  PROGRESS BAR
+// ════════════════════════════════════════════════════════
+function updateProgress(scene){
+  const pct = Math.round((scene / 6) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ════════════════════════════════════════════════════════
+//  RESTART
+// ════════════════════════════════════════════════════════
+function restartExperience(){
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{ location.reload(); }, 700);
+}
+
+// ════════════════════════════════════════════════════════
+//  AUDIO (Web Audio API — generative)
+// ════════════════════════════════════════════════════════
+function initAudio(){
+  if(ambCtx) return;
+  ambCtx = new (window.AudioContext||window.webkitAudioContext)();
+  masterGain = ambCtx.createGain();
+  masterGain.gain.value = 0;
+  masterGain.connect(ambCtx.destination);
+}
+
+function createDrone(freq, vol){
+  const osc = ambCtx.createOscillator();
+  const gain = ambCtx.createGain();
+  const filter = ambCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 800 + Math.random()*400;
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+  gain.gain.value = vol;
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(masterGain);
+  osc.start();
+
+  // gentle LFO
+  const lfo = ambCtx.createOscillator();
+  const lfoGain = ambCtx.createGain();
+  lfo.frequency.value = 0.05 + Math.random()*0.1;
+  lfoGain.gain.value = vol * 0.3;
+  lfo.connect(lfoGain);
+  lfoGain.connect(gain.gain);
+  lfo.start();
+
+  return {osc, gain, lfo};
+}
+
+function createRainNode(){
+  const bufferSize = 4096;
+  const scriptNode = ambCtx.createScriptProcessor(bufferSize, 1, 1);
+  scriptNode.onaudioprocess = e=>{
+    const out = e.outputBuffer.getChannelData(0);
+    for(let i=0;i<bufferSize;i++){
+      out[i] = (Math.random()*2-1)*0.05;
+    }
+  };
+  const filter = ambCtx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 2000;
+  filter.Q.value = 0.5;
+  const rainGain = ambCtx.createGain();
+  rainGain.gain.value = 0;
+  scriptNode.connect(filter);
+  filter.connect(rainGain);
+  rainGain.connect(ambCtx.destination);
+  return {scriptNode, rainGain};
+}
+
+let droneNodes = [];
+let rainNode = null;
+
+function toggleAmb(){
+  initAudio();
+  ambPlaying = !ambPlaying;
+  const btn = document.getElementById('amb-btn');
+  if(ambPlaying){
+    btn.classList.add('active');
+    if(droneNodes.length === 0){
+      // Create ambient chord (Am pentatonic style)
+      const freqs = [55, 110, 146.8, 220, 329.6, 440];
+      freqs.forEach(f=>{
+        droneNodes.push(createDrone(f, 0.04 + Math.random()*0.03));
+      });
+    }
+    masterGain.gain.setTargetAtTime(0.7, ambCtx.currentTime, 2);
+    if(ambCtx.state === 'suspended') ambCtx.resume();
+  } else {
+    btn.classList.remove('active');
+    masterGain.gain.setTargetAtTime(0, ambCtx.currentTime, 1.5);
+  }
+}
+
+function toggleRain(){
+  initAudio();
+  rainPlaying = !rainPlaying;
+  const btn = document.getElementById('rain-btn');
+  const rainCanvas = document.getElementById('rain-canvas');
+
+  if(rainPlaying){
+    btn.classList.add('active');
+    rainCanvas.classList.add('active');
+    if(!rainNode) rainNode = createRainNode();
+    rainNode.rainGain.gain.setTargetAtTime(0.4, ambCtx.currentTime, 1);
+    if(ambCtx.state === 'suspended') ambCtx.resume();
+    startRainAnimation();
+  } else {
+    btn.classList.remove('active');
+    rainCanvas.classList.remove('active');
+    if(rainNode) rainNode.rainGain.gain.setTargetAtTime(0, ambCtx.currentTime, 1);
+    stopRainAnimation();
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  STARS CANVAS
+// ════════════════════════════════════════════════════════
+(function initStars(){
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const stars = Array.from({length:180},()=>({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*1.2,
+    a: Math.random(),
+    speed: 0.002 + Math.random()*0.005
+  }));
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s=>{
+      s.a += s.speed;
+      const alpha = (Math.sin(s.a)+1)/2 * 0.6 + 0.1;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  window.addEventListener('resize',()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+})();
+
+// ════════════════════════════════════════════════════════
+//  PARTICLES CANVAS
+// ════════════════════════════════════════════════════════
+(function initParticles(){
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#00c8ff','#b56fff','#ff5fa0','#ffd97d'];
+  const particles = Array.from({length:60},()=>({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    vx: (Math.random()-0.5)*0.3,
+    vy: (Math.random()-0.5)*0.3,
+    r: 0.5 + Math.random()*1.5,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    alpha: 0.1 + Math.random()*0.3
+  }));
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0) p.x=canvas.width;
+      if(p.x>canvas.width) p.x=0;
+      if(p.y<0) p.y=canvas.height;
+      if(p.y>canvas.height) p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.color + Math.round(p.alpha*255).toString(16).padStart(2,'0');
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  window.addEventListener('resize',()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+})();
+
+// ════════════════════════════════════════════════════════
+//  RAIN CANVAS
+// ════════════════════════════════════════════════════════
+let rainAnimFrame = null;
+const rainDrops = [];
+
+function startRainAnimation(){
+  const canvas = document.getElementById('rain-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  if(rainDrops.length === 0){
+    for(let i=0;i<200;i++){
+      rainDrops.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        len: 8 + Math.random()*20,
+        speed: 6 + Math.random()*8,
+        alpha: 0.1 + Math.random()*0.3
+      });
+    }
+  }
+
+  function drawRain(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = 'rgba(150,200,255,0.15)';
+    ctx.lineWidth = 0.5;
+    rainDrops.forEach(d=>{
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x - d.len*0.2, d.y + d.len);
+      ctx.globalAlpha = d.alpha;
+      ctx.stroke();
+      d.y += d.speed;
+      if(d.y > canvas.height){
+        d.y = -d.len;
+        d.x = Math.random()*canvas.width;
+      }
+    });
+    ctx.globalAlpha = 1;
+    rainAnimFrame = requestAnimationFrame(drawRain);
+  }
+  drawRain();
+}
+
+function stopRainAnimation(){
+  if(rainAnimFrame) cancelAnimationFrame(rainAnimFrame);
+  rainAnimFrame = null;
+}
+
+// ════════════════════════════════════════════════════════
+//  FLOATING KOREAN WORDS
+// ════════════════════════════════════════════════════════
+(function initKorean(){
+  const layer = document.getElementById('korean-layer');
+  const words = ['외로움','그리움','설렘','기억','순간','변화','연결','부산','이해','감사','친구','도전','성장','눈물','미소','밤하늘','바다','빛','시간','여행'];
+  const sizes = ['16px','20px','24px','14px','28px','18px','22px'];
+
+  function addWord(){
+    const word = words[Math.floor(Math.random()*words.length)];
+    const el = document.createElement('div');
+    el.className = 'korean-word';
+    el.textContent = word;
+    el.style.left = Math.random()*95 + '%';
+    el.style.fontSize = sizes[Math.floor(Math.random()*sizes.length)];
+    const duration = 18 + Math.random()*20;
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = Math.random()*-duration + 's';
+    layer.appendChild(el);
+    setTimeout(()=> el.remove(), duration * 1000 + 2000);
+  }
+
+  for(let i=0;i<12;i++) addWord();
+  setInterval(addWord, 3000);
+})();
+
+// ════════════════════════════════════════════════════════
+//  PARALLAX
+// ════════════════════════════════════════════════════════
+window.addEventListener('scroll',()=>{
+  const scrollY = window.scrollY;
+  const orbs = document.querySelectorAll('.glow-orb');
+  orbs.forEach((orb,i)=>{
+    const factor = (i%2===0?0.05:-0.04);
+    orb.style.transform += ``;
+    orb.style.marginTop = (scrollY * factor) + 'px';
+  });
+  const stars = document.getElementById('stars-canvas');
+  if(stars) stars.style.transform = `translateY(${scrollY*0.03}px)`;
+});
+
+// ════════════════════════════════════════════════════════
+//  LOAD EXISTING MEMORY
+// ════════════════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  const saved = localStorage.getItem('ess_memory');
+  if(saved){
+    const input = document.getElementById('memory-input');
+    if(input) input.value = saved;
+  }
+});
+</script>
+</body>
+</html>
