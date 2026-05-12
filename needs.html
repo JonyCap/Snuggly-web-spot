@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dong-A Exchange Student Guide 🇰🇷</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
+}
+
+:root{
+    --bg:#0b1020;
+    --card:rgba(255,255,255,0.08);
+    --border:rgba(255,255,255,0.12);
+    --text:#f5f5f5;
+    --muted:#b8c0d0;
+    --glow:#6ea8ff;
+    --pink:#ff7ac6;
+    --purple:#8b5cf6;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#070b17,#121c33,#0d1325);
+    color:var(--text);
+    overflow-x:hidden;
+}
+
+/* LOADER */
+
+.loader{
+    position:fixed;
+    inset:0;
+    background:#050814;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    transition:1s;
+}
+
+.loader.hidden{
+    opacity:0;
+    visibility:hidden;
+}
+
+.loader-circle{
+    width:90px;
+    height:90px;
+    border:5px solid rgba(255,255,255,0.1);
+    border-top:5px solid var(--glow);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin-bottom:20px;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+/* PARTICLES */
+
+.particles{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-1;
+}
+
+.particle{
+    position:absolute;
+    width:4px;
+    height:4px;
+    background:white;
+    border-radius:50%;
+    opacity:0.5;
+    animation:float 12s infinite linear;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(100vh) scale(0);
+    }
+    to{
+        transform:translateY(-10vh) scale(1.5);
+    }
+}
+
+/* NAVBAR */
+
+nav{
+    position:fixed;
+    top:0;
+    width:100%;
+    z-index:1000;
+    backdrop-filter:blur(15px);
+    background:rgba(0,0,0,0.25);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.nav-container{
+    max-width:1300px;
+    margin:auto;
+    padding:16px 25px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    font-weight:700;
+    font-size:1.2rem;
+    color:white;
+}
+
+.nav-links{
+    display:flex;
+    gap:20px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:var(--muted);
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+.menu-btn{
+    display:none;
+    font-size:1.8rem;
+    cursor:pointer;
+}
+
+/* HERO */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:120px 20px 80px;
+}
+
+.hero-content{
+    max-width:900px;
+}
+
+.hero h1{
+    font-size:4rem;
+    line-height:1.1;
+    margin-bottom:20px;
+    background:linear-gradient(90deg,#fff,#8cc6ff,#ffb7e8);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+    font-size:1.2rem;
+    color:var(--muted);
+    margin-bottom:40px;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:15px 28px;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:1rem;
+    transition:0.4s;
+    font-weight:600;
+}
+
+.primary{
+    background:linear-gradient(135deg,var(--glow),var(--purple));
+    color:white;
+    box-shadow:0 0 25px rgba(110,168,255,0.5);
+}
+
+.secondary{
+    background:rgba(255,255,255,0.08);
+    color:white;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.btn:hover{
+    transform:translateY(-4px) scale(1.03);
+}
+
+/* SECTIONS */
+
+section{
+    max-width:1300px;
+    margin:auto;
+    padding:90px 20px;
+}
+
+.section-title{
+    font-size:2.4rem;
+    margin-bottom:20px;
+}
+
+.section-sub{
+    color:var(--muted);
+    margin-bottom:40px;
+}
+
+/* GLASS */
+
+.glass{
+    background:var(--card);
+    backdrop-filter:blur(15px);
+    border:1px solid var(--border);
+    border-radius:25px;
+}
+
+/* SURVIVAL CARDS */
+
+.survival-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:20px;
+}
+
+.survival-card{
+    padding:25px;
+    cursor:pointer;
+    transition:0.4s;
+    position:relative;
+    overflow:hidden;
+}
+
+.survival-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 0 25px rgba(110,168,255,0.2);
+}
+
+.survival-card h3{
+    margin-top:12px;
+}
+
+.survival-card p{
+    color:var(--muted);
+    margin-top:10px;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:2000;
+    padding:20px;
+}
+
+.modal-content{
+    max-width:650px;
+    width:100%;
+    padding:35px;
+    position:relative;
+    animation:fadeIn 0.5s;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(30px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+.close{
+    position:absolute;
+    right:20px;
+    top:20px;
+    cursor:pointer;
+    font-size:1.5rem;
+}
+
+/* PLACE CARDS */
+
+.places-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:25px;
+}
+
+.place-card{
+    overflow:hidden;
+    position:relative;
+    transition:0.4s;
+}
+
+.place-card:hover{
+    transform:translateY(-10px);
+}
+
+.place-image{
+    height:200px;
+    background:linear-gradient(135deg,#243b55,#141e30);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:3rem;
+}
+
+.place-content{
+    padding:25px;
+}
+
+.category{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.08);
+    color:#ddd;
+    margin-bottom:15px;
+    font-size:0.8rem;
+}
+
+.place-content h3{
+    margin-bottom:10px;
+}
+
+.price{
+    color:#7fd8ff;
+    margin-bottom:15px;
+}
+
+.place-actions{
+    display:flex;
+    gap:12px;
+    margin-top:20px;
+}
+
+.small-btn{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    color:white;
+    transition:0.3s;
+}
+
+.map-btn{
+    background:linear-gradient(135deg,#ffb347,#ffcc33);
+    color:black;
+    font-weight:600;
+}
+
+.fav-btn{
+    background:rgba(255,255,255,0.08);
+}
+
+.small-btn:hover{
+    transform:scale(1.03);
+}
+
+.favorite-active{
+    background:linear-gradient(135deg,#ff5fa2,#ff85c0);
+}
+
+/* SURPRISE */
+
+.center{
+    text-align:center;
+}
+
+.surprise-btn{
+    margin-top:30px;
+    padding:18px 32px;
+    border:none;
+    border-radius:999px;
+    font-size:1rem;
+    background:linear-gradient(135deg,#8b5cf6,#ec4899);
+    color:white;
+    cursor:pointer;
+    transition:0.4s;
+    box-shadow:0 0 25px rgba(236,72,153,0.4);
+}
+
+.surprise-btn:hover{
+    transform:scale(1.05);
+}
+
+.highlight{
+    animation:highlightCard 2s infinite;
+}
+
+@keyframes highlightCard{
+    0%{box-shadow:0 0 0 rgba(255,255,255,0);}
+    50%{box-shadow:0 0 35px rgba(255,255,255,0.6);}
+    100%{box-shadow:0 0 0 rgba(255,255,255,0);}
+}
+
+/* MOOD */
+
+.mood-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.mood-btn{
+    padding:14px 20px;
+    border:none;
+    border-radius:16px;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.mood-btn:hover{
+    background:rgba(255,255,255,0.16);
+}
+
+.mood-result{
+    padding:30px;
+    line-height:1.8;
+}
+
+/* FOOTER */
+
+footer{
+    padding:40px 20px;
+    text-align:center;
+    color:var(--muted);
+}
+
+/* REVEAL */
+
+.reveal{
+    opacity:0;
+    transform:translateY(50px);
+    transition:1s;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* MUSIC */
+
+.music-toggle{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+    font-size:1.3rem;
+    z-index:999;
+    background:linear-gradient(135deg,#8b5cf6,#ec4899);
+    color:white;
+    box-shadow:0 0 20px rgba(236,72,153,0.5);
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.hero h1{
+    font-size:2.5rem;
+}
+
+.nav-links{
+    position:absolute;
+    top:70px;
+    right:20px;
+    background:#111827;
+    flex-direction:column;
+    padding:20px;
+    border-radius:20px;
+    display:none;
+}
+
+.nav-links.active{
+    display:flex;
+}
+
+.menu-btn{
+    display:block;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="loader">
+    <div class="loader-circle"></div>
+    <p>Loading Busan survival secrets...</p>
+</div>
+
+<div class="particles" id="particles"></div>
+
+<nav>
+    <div class="nav-container">
+        <div class="logo">🇰🇷 Dong-A Guide</div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#survival">Survival</a>
+            <a href="#secret">Secret Korea</a>
+            <a href="#mood">Student Mood</a>
+        </div>
+
+        <div class="menu-btn" id="menuBtn">☰</div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-content reveal">
+        <h1>Dong-A Exchange Student Guide 🔐</h1>
+        <p>Everything exchange students actually need in Busan</p>
+
+        <div class="hero-buttons">
+            <a href="#secret"><button class="btn primary">Explore Secrets</button></a>
+            <a href="#survival"><button class="btn secondary">Student Survival Guide</button></a>
+        </div>
+    </div>
+</section>
+
+<section id="survival">
+    <h2 class="section-title reveal">Quick Survival Section</h2>
+    <p class="section-sub reveal">
+        Things Korean locals never explain properly to foreigners 👀
+    </p>
+
+    <div class="survival-grid">
+
+        <div class="survival-card glass reveal" data-topic="transport">
+            <h2>🚌</h2>
+            <h3>Transportation</h3>
+            <p>T-money cards, buses, subway tips</p>
+        </div>
+
+        <div class="survival-card glass reveal" data-topic="food">
+            <h2>🍜</h2>
+            <h3>Korean Food Culture</h3>
+            <p>Hidden restaurant meanings & etiquette</p>
+        </div>
+
+        <div class="survival-card glass reveal" data-topic="trash">
+            <h2>🗑</h2>
+            <h3>Trash & Recycling</h3>
+            <p>Korea takes sorting seriously 😅</p>
+        </div>
+
+        <div class="survival-card glass reveal" data-topic="cafe">
+            <h2>☕</h2>
+            <h3>Café Culture</h3>
+            <p>How Korean cafés actually work</p>
+        </div>
+
+        <div class="survival-card glass reveal" data-topic="store">
+            <h2>🏪</h2>
+            <h3>Convenience Stores</h3>
+            <p>The real Korean student lifesaver</p>
+        </div>
+
+        <div class="survival-card glass reveal" data-topic="subway">
+            <h2>🚇</h2>
+            <h3>Subway Guide</h3>
+            <p>Navigate Busan like a local</p>
+        </div>
+
+    </div>
+</section>
+
+<section id="secret">
+    <h2 class="section-title reveal">Secret Korea Spots ✨</h2>
+    <p class="section-sub reveal">
+        Student-friendly places locals actually enjoy
+    </p>
+
+    <div class="places-grid" id="placesGrid"></div>
+
+    <div class="center">
+        <button class="surprise-btn" id="surpriseBtn">
+            🎲 Surprise Me
+        </button>
+    </div>
+</section>
+
+<section id="mood">
+    <h2 class="section-title reveal">Student Mood Helper 🌙</h2>
+    <p class="section-sub reveal">
+        Korea feels different depending on your mood
+    </p>
+
+    <div class="mood-buttons reveal">
+        <button class="mood-btn" data-mood="tired">😩 Tired</button>
+        <button class="mood-btn" data-mood="study">📚 Study Time</button>
+        <button class="mood-btn" data-mood="lonely">🌧 Lonely</button>
+        <button class="mood-btn" data-mood="hungry">🍜 Hungry</button>
+        <button class="mood-btn" data-mood="explore">🚶 Explore Busan</button>
+    </div>
+
+    <div class="mood-result glass reveal" id="moodResult">
+        Click your mood and get recommendations ✨
+    </div>
+</section>
+
+<footer>
+    Made with ☕ + late-night Busan energy 🇰🇷
+</footer>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+    <div class="modal-content glass">
+        <span class="close" id="closeModal">✕</span>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<!-- MUSIC -->
+
+<button class="music-toggle" id="musicToggle">🎵</button>
+
+<audio id="lofiMusic" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8d0d44a54.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* LOADER */
+
+window.addEventListener('load',()=>{
+    setTimeout(()=>{
+        document.querySelector('.loader').classList.add('hidden');
+    },1400);
+});
+
+/* MOBILE MENU */
+
+const menuBtn = document.getElementById('menuBtn');
+const navLinks = document.getElementById('navLinks');
+
+menuBtn.onclick = ()=>{
+    navLinks.classList.toggle('active');
+};
+
+/* PARTICLES */
+
+const particles = document.getElementById('particles');
+
+for(let i=0;i<70;i++){
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    p.style.left = Math.random()*100+'%';
+    p.style.animationDuration = (Math.random()*10+8)+'s';
+    p.style.opacity = Math.random();
+    p.style.width = p.style.height = Math.random()*4+2+'px';
+    particles.appendChild(p);
+}
+
+/* SURVIVAL MODAL */
+
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modalBody');
+
+const content = {
+transport:`
+<h2>🚌 Transportation Tips</h2>
+<br>
+<p>• Buy a <b>T-money card</b> from convenience stores.</p>
+<p>• Tap when entering AND leaving buses.</p>
+<p>• Korean buses are surprisingly quiet.</p>
+<p>• Transfers are free if you use the same card quickly.</p>
+<p>• KakaoMap is your survival app in Korea.</p>
+`,
+food:`
+<h2>🍜 Korean Food Culture</h2>
+<br>
+<p>• “Service” means FREE extra food/drink.</p>
+<p>• Side dishes are usually unlimited.</p>
+<p>• Calling staff loudly is normal in local restaurants.</p>
+<p>• Sharing food is common in Korea.</p>
+<p>• Students often eat late-night chicken together 🍗</p>
+`,
+trash:`
+<h2>🗑 Trash & Recycling</h2>
+<br>
+<p>• Korea separates trash very strictly.</p>
+<p>• Food waste has its own bin.</p>
+<p>• Plastic bottles should be emptied first.</p>
+<p>• Some buildings require official trash bags.</p>
+<p>• If confused, copy what Korean neighbors do 😅</p>
+`,
+cafe:`
+<h2>☕ Korean Café Culture</h2>
+<br>
+<p>• Cafés are study spaces too.</p>
+<p>• Many students stay for hours with laptops.</p>
+<p>• Ordering one drink is enough.</p>
+<p>• Quiet atmosphere is appreciated.</p>
+<p>• Window seats are premium spots.</p>
+`,
+store:`
+<h2>🏪 Convenience Stores</h2>
+<br>
+<p>• Convenience stores are part of Korean daily life.</p>
+<p>• Try ramen machines inside stores.</p>
+<p>• Triangle kimbap = student survival food.</p>
+<p>• 1+1 deals are everywhere.</p>
+<p>• CU, GS25, and 7-Eleven all feel different.</p>
+`,
+subway:`
+<h2>🚇 Subway Guide</h2>
+<br>
+<p>• Last trains matter — Korea closes subway earlier than expected.</p>
+<p>• Use KakaoMap or Naver Map for live routes.</p>
+<p>• Elderly seats should usually stay empty.</p>
+<p>• Subway stations often have underground shopping.</p>
+<p>• Busan subway is cleaner and calmer than many countries.</p>
+`
+};
+
+document.querySelectorAll('.survival-card').forEach(card=>{
+    card.addEventListener('click',()=>{
+        modal.style.display='flex';
+        modalBody.innerHTML = content[card.dataset.topic];
+    });
+});
+
+document.getElementById('closeModal').onclick=()=>{
+    modal.style.display='none';
+};
+
+window.onclick=(e)=>{
+    if(e.target===modal){
+        modal.style.display='none';
+    }
+};
+
+/* PLACES */
+
+const places = [
+{
+name:"Cheongchun Bulgogi (청춘불고기)",
+emoji:"🥩",
+category:"Korean Meal",
+price:"₩8,000 – ₩12,000",
+description:"A cozy local restaurant where students enjoy authentic Korean bulgogi at affordable prices.",
+tip:"Order lunch set menu.",
+map:"https://map.kakao.com/link/search/청춘불고기%20부산"
+},
+{
+name:"Jomojomo Cake Café",
+emoji:"🍰",
+category:"Dessert Café",
+price:"₩5,000 – ₩9,000",
+description:"A hidden aesthetic café with soft lighting and beautiful cakes.",
+tip:"Try cream cake + coffee combo.",
+map:"https://map.kakao.com/link/search/Jomojomo%20Busan"
+},
+{
+name:"Yeogsimi Tongdak (역시미통닭)",
+emoji:"🍗",
+category:"Fried Chicken",
+price:"₩10,000 – ₩18,000",
+description:"Classic Korean fried chicken at a student-friendly price.",
+tip:"Perfect for late-night meals with friends.",
+map:"https://map.kakao.com/link/search/역시미통닭%20부산"
+},
+{
+name:"Hada Café (하다카페)",
+emoji:"☕",
+category:"Hidden Café",
+price:"₩4,500 – ₩7,000",
+description:"A peaceful café perfect for studying and relaxing.",
+tip:"Bring a laptop or book.",
+map:"https://map.kakao.com/link/search/하다카페%20부산"
+},
+{
+name:"School Pizza",
+emoji:"🍕",
+category:"Pizza",
+price:"₩9,000 – ₩15,000",
+description:"Great quality pizza for students wanting non-Korean food.",
+tip:"Share a large pizza with friends.",
+map:"https://map.kakao.com/link/search/School%20Pizza%20Busan"
+},
+{
+name:"Juicy Smoothie",
+emoji:"🥤",
+category:"Drinks",
+price:"₩3,500 – ₩6,000",
+description:"Refreshing smoothies perfect after classes or during hot Busan days.",
+tip:"Try mango or strawberry smoothie.",
+map:"https://map.kakao.com/link/search/Juicy%20Busan"
+},
+{
+name:"Dong-A University Cafeteria",
+emoji:"🍱",
+category:"Campus Food",
+price:"Around ₩7,000",
+description:"Cheap Korean meals with changing menus every day.",
+tip:"Go early before lunch rush.",
+map:"https://map.kakao.com/link/search/동아대학교%20부민캠퍼스"
+}
+];
+
+const grid = document.getElementById('placesGrid');
+
+function getFavorites(){
+    return JSON.parse(localStorage.getItem('favorites')) || [];
+}
+
+function saveFavorites(favs){
+    localStorage.setItem('favorites',JSON.stringify(favs));
+}
+
+function renderPlaces(){
+    grid.innerHTML='';
+
+    const favorites = getFavorites();
+
+    places.forEach((place,index)=>{
+
+        const isFav = favorites.includes(place.name);
+
+        const card = document.createElement('div');
+        card.className='place-card glass reveal';
+        card.id='place-'+index;
+
+        card.innerHTML=`
+            <div class="place-image">${place.emoji}</div>
+
+            <div class="place-content">
+                <div class="category">${place.category}</div>
+
+                <h3>${place.name}</h3>
+
+                <div class="price">${place.price}</div>
+
+                <p>${place.description}</p>
+
+                <br>
+
+                <p><b>Best Time:</b> Evening</p>
+                <p><b>Local Tip:</b> ${place.tip}</p>
+
+                <div class="place-actions">
+                    <button class="small-btn fav-btn ${isFav ? 'favorite-active':''}">
+                        ❤️
+                    </button>
+
+                    <button class="small-btn map-btn">
+                        KakaoMap
+                    </button>
+                </div>
+            </div>
+        `;
+
+        const favBtn = card.querySelector('.fav-btn');
+
+        favBtn.addEventListener('click',()=>{
+
+            let favs = getFavorites();
+
+            if(favs.includes(place.name)){
+                favs = favs.filter(f=>f!==place.name);
+            }else{
+                favs.push(place.name);
+            }
+
+            saveFavorites(favs);
+            renderPlaces();
+        });
+
+        card.querySelector('.map-btn').onclick=()=>{
+            window.open(place.map,'_blank');
+        };
+
+        grid.appendChild(card);
+    });
+
+    reveal();
+}
+
+renderPlaces();
+
+/* SURPRISE BUTTON */
+
+document.getElementById('surpriseBtn').onclick=()=>{
+
+    document.querySelectorAll('.place-card').forEach(c=>{
+        c.classList.remove('highlight');
+    });
+
+    const random = Math.floor(Math.random()*places.length);
+
+    const selected = document.getElementById('place-'+random);
+
+    selected.classList.add('highlight');
+
+    selected.scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+    });
+};
+
+/* MOODS */
+
+const moodResult = document.getElementById('moodResult');
+
+const moods = {
+tired:"😩 Go to Hada Café, order coffee, bring headphones, and relax while Busan rain hits the windows.",
+study:"📚 Hada Café + Dong-A Cafeteria combo = classic Korean student life.",
+lonely:"🌧 Walk around Busan at night, buy convenience store snacks, and explore cozy cafés slowly.",
+hungry:"🍜 Try Cheongchun Bulgogi or late-night Korean fried chicken with friends.",
+explore:"🚶 Take subway rides randomly, explore hidden alleys, cafés, and small Korean streets."
+};
+
+document.querySelectorAll('.mood-btn').forEach(btn=>{
+    btn.onclick=()=>{
+        moodResult.innerHTML = moods[btn.dataset.mood];
+        moodResult.style.transform='scale(1.02)';
+
+        setTimeout(()=>{
+            moodResult.style.transform='scale(1)';
+        },300);
+    };
+});
+
+/* SCROLL REVEAL */
+
+function reveal(){
+    const reveals = document.querySelectorAll('.reveal');
+
+    reveals.forEach(r=>{
+        const top = r.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+
+        if(top < windowHeight - 80){
+            r.classList.add('active');
+        }
+    });
+}
+
+window.addEventListener('scroll',reveal);
+reveal();
+
+/* MUSIC */
+
+const music = document.getElementById('lofiMusic');
+const musicToggle = document.getElementById('musicToggle');
+
+let playing = false;
+
+musicToggle.onclick=()=>{
+
+    if(!playing){
+        music.play();
+        musicToggle.innerHTML='⏸';
+        playing=true;
+    }else{
+        music.pause();
+        musicToggle.innerHTML='🎵';
+        playing=false;
+    }
+};
+
+</script>
+
+</body>
+</html>
