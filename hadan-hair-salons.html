@@ -3,880 +3,934 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hair Salons Near Dong-A University (Hadan)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <title>Hair Salons Near Dong-A University · Hadan Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet" />
+
   <style>
-    /* ===== CSS VARIABLES ===== */
+    /* ── Design Tokens ─────────────────────────────────────── */
     :root {
-      --cream: #fdf6ee;
-      --warm-white: #fffcf8;
-      --blush: #f7c5b0;
-      --terracotta: #c96a4a;
-      --deep: #2a1f1a;
-      --muted: #7a6258;
-      --gold: #d4a853;
-      --gold-light: #f0d99a;
-      --best: #c96a4a;
-      --card-bg: #ffffff;
-      --shadow-soft: 0 4px 32px rgba(42,31,26,0.08);
-      --shadow-hover: 0 12px 48px rgba(42,31,26,0.14);
-      --radius: 20px;
+      --cream:   #fdf6ef;
+      --blush:   #f5ddd3;
+      --rose:    #e8a595;
+      --coral:   #d9705a;
+      --deep:    #3a2420;
+      --warm:    #7a4f3e;
+      --gold:    #c9964a;
+      --sky:     #daeaf5;
+      --muted:   #9b7b6e;
+      --card-bg: #fffaf7;
+      --shadow:  rgba(90,40,20,0.10);
+      --best-glow: 0 0 0 3px #e8a595, 0 8px 40px rgba(217,112,90,0.25);
     }
 
-    /* ===== RESET ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     html { scroll-behavior: smooth; }
+
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--cream);
       color: var(--deep);
-      line-height: 1.7;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* ===== BACKGROUND TEXTURE ===== */
+    /* ── Noise texture overlay ─────────────────────────────── */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        radial-gradient(circle at 15% 20%, rgba(247,197,176,0.22) 0%, transparent 50%),
-        radial-gradient(circle at 85% 70%, rgba(212,168,83,0.12) 0%, transparent 50%),
-        radial-gradient(circle at 50% 100%, rgba(201,106,74,0.08) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999;
     }
 
-    /* ===== LAYOUT ===== */
+    /* ── Hero / Header ─────────────────────────────────────── */
+    .hero {
+      position: relative;
+      background: linear-gradient(145deg, #3a2420 0%, #7a4f3e 55%, #d9705a 100%);
+      color: #fdf6ef;
+      padding: 80px 24px 72px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 60px;
+      background: var(--cream);
+      clip-path: ellipse(60% 100% at 50% 100%);
+    }
+
+    .hero-scissors {
+      font-size: 2.6rem;
+      display: block;
+      margin-bottom: 16px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50%       { transform: translateY(-8px) rotate(5deg); }
+    }
+
+    .hero h1 {
+      font-family: 'Gowun Batang', serif;
+      font-size: clamp(1.5rem, 5vw, 2.6rem);
+      line-height: 1.25;
+      max-width: 720px;
+      margin: 0 auto 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero h1 em {
+      color: var(--rose);
+      font-style: normal;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      opacity: 0.8;
+      max-width: 480px;
+      margin: 0 auto;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Layout ────────────────────────────────────────────── */
     .container {
       max-width: 860px;
       margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
+      padding: 0 20px;
     }
 
-    /* ===== HEADER ===== */
-    header {
-      text-align: center;
-      padding: 64px 24px 48px;
-      position: relative;
-      z-index: 1;
+    section {
+      margin: 56px 0;
     }
 
-    .header-tag {
-      display: inline-block;
-      background: var(--blush);
-      color: var(--terracotta);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-      animation: fadeDown 0.6s ease both;
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 900;
-      color: var(--deep);
-      line-height: 1.18;
-      max-width: 680px;
-      margin: 0 auto 20px;
-      animation: fadeDown 0.7s 0.1s ease both;
-    }
-
-    h1 span {
-      color: var(--terracotta);
-      font-style: italic;
-    }
-
-    .header-sub {
-      color: var(--muted);
-      font-size: 16px;
-      font-weight: 400;
-      max-width: 440px;
-      margin: 0 auto;
-      animation: fadeDown 0.7s 0.2s ease both;
-    }
-
-    /* ===== SECTION LABEL ===== */
     .section-label {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-    .section-label span {
-      font-size: 11px;
+      display: inline-block;
+      font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 2.5px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--terracotta);
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, var(--blush), transparent);
+      color: var(--coral);
+      background: var(--blush);
+      border-radius: 20px;
+      padding: 4px 12px;
+      margin-bottom: 10px;
     }
 
-    /* ===== SECTION TITLES ===== */
     .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.5rem, 3.5vw, 2.1rem);
-      font-weight: 700;
+      font-family: 'Gowun Batang', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
       color: var(--deep);
-      margin-bottom: 8px;
+      margin-bottom: 28px;
+      line-height: 1.2;
     }
 
-    /* ===== SALON CARDS ===== */
-    .salons-section {
-      padding: 16px 0 48px;
-    }
-
-    .salon-grid {
-      display: flex;
-      flex-direction: column;
+    /* ── Salon Cards ───────────────────────────────────────── */
+    .salons-grid {
+      display: grid;
       gap: 24px;
     }
 
     .salon-card {
       background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 36px 36px 30px;
-      box-shadow: var(--shadow-soft);
-      border: 1.5px solid rgba(42,31,26,0.06);
-      transition: transform 0.28s ease, box-shadow 0.28s ease;
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      border: 1.5px solid var(--blush);
+      box-shadow: 0 4px 20px var(--shadow);
       position: relative;
-      overflow: hidden;
-      animation: fadeUp 0.6s ease both;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-
-    .salon-card:nth-child(1) { animation-delay: 0.1s; }
-    .salon-card:nth-child(2) { animation-delay: 0.2s; }
-    .salon-card:nth-child(3) { animation-delay: 0.3s; }
 
     .salon-card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
+      box-shadow: 0 12px 36px var(--shadow);
     }
 
-    .salon-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--blush), var(--terracotta));
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .salon-card:hover::before { opacity: 1; }
-
-    /* BEST CARD */
+    /* Best card special treatment */
     .salon-card.best {
-      border: 2px solid var(--gold);
-      background: linear-gradient(145deg, #fffcf8, #fff8ee);
-      box-shadow: 0 4px 32px rgba(212,168,83,0.18), var(--shadow-soft);
-    }
-    .salon-card.best::before {
-      background: linear-gradient(90deg, var(--gold-light), var(--gold), var(--terracotta));
-      opacity: 1;
-    }
-    .salon-card.best:hover {
-      box-shadow: 0 16px 56px rgba(212,168,83,0.26), var(--shadow-hover);
+      border-color: var(--rose);
+      box-shadow: var(--best-glow);
+      background: linear-gradient(160deg, #fffaf7 0%, #fff0eb 100%);
     }
 
-    /* Decorative circle on cards */
-    .salon-card::after {
-      content: '';
+    .best-badge {
       position: absolute;
-      top: -40px; right: -40px;
-      width: 120px; height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(247,197,176,0.18), transparent 70%);
-      pointer-events: none;
+      top: -14px; left: 24px;
+      background: linear-gradient(90deg, var(--coral), var(--gold));
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(217,112,90,0.35);
     }
 
-    .card-header {
+    .card-top {
       display: flex;
       align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
-    .salon-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.55rem;
-      font-weight: 700;
-      color: var(--deep);
-    }
-
-    .badge-best {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: linear-gradient(135deg, var(--gold), #e8b84b);
-      color: #fff;
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 5px 12px;
-      border-radius: 100px;
-      white-space: nowrap;
-      box-shadow: 0 2px 12px rgba(212,168,83,0.4);
+    .card-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
       flex-shrink: 0;
-    }
-
-    .badge-good {
-      display: inline-flex;
-      align-items: center;
-      background: var(--cream);
-      color: var(--muted);
-      font-size: 10.5px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 5px 12px;
-      border-radius: 100px;
-      border: 1px solid rgba(122,98,88,0.18);
-      flex-shrink: 0;
-    }
-
-    .salon-address {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--muted);
-      font-size: 13.5px;
-      margin-bottom: 18px;
-    }
-    .salon-address svg { flex-shrink: 0; }
-
-    .salon-features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 22px;
-    }
-    .salon-features li {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 14.5px;
-      color: var(--deep);
-    }
-    .salon-features li::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
       background: var(--blush);
-      border: 1.5px solid var(--terracotta);
-      flex-shrink: 0;
     }
-    .best .salon-features li::before {
-      background: var(--gold-light);
-      border-color: var(--gold);
+
+    .salon-card.best .card-icon {
+      background: linear-gradient(135deg, #f5ddd3, #e8a595);
+    }
+
+    .card-name {
+      font-family: 'Gowun Batang', serif;
+      font-size: 1.25rem;
+      color: var(--deep);
+      margin-bottom: 4px;
+    }
+
+    .card-address {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .card-address svg {
+      flex-shrink: 0;
+      color: var(--coral);
+    }
+
+    .card-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      background: var(--sky);
+      color: #2a5a7a;
+      border-radius: 20px;
+      padding: 4px 11px;
+    }
+
+    .tag.price {
+      background: #eef7ee;
+      color: #2d6a30;
+      font-weight: 600;
     }
 
     .best-note {
-      background: linear-gradient(135deg, rgba(212,168,83,0.12), rgba(201,106,74,0.08));
-      border-left: 3px solid var(--gold);
-      border-radius: 0 12px 12px 0;
-      padding: 14px 18px;
-      margin-bottom: 22px;
-      font-size: 14px;
-      color: var(--deep);
-      font-style: italic;
+      background: linear-gradient(135deg, var(--blush), #fceadf);
+      border-left: 3px solid var(--coral);
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 0.85rem;
+      color: var(--warm);
+      margin-bottom: 18px;
+      line-height: 1.55;
     }
 
-    .price-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--cream);
-      border: 1px solid rgba(201,106,74,0.22);
-      border-radius: 100px;
-      padding: 7px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--terracotta);
-      margin-bottom: 24px;
-    }
-    .best .price-tag {
-      background: rgba(212,168,83,0.08);
-      border-color: rgba(212,168,83,0.35);
-      color: #9a6f1a;
+    .best-note strong { color: var(--coral); }
+
+    .card-footer {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    /* ===== BUTTONS ===== */
-    .btn-kakao {
+    .btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: #fee500;
-      color: #3c1e1e;
-      font-size: 14px;
+      gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
       font-weight: 600;
-      padding: 12px 22px;
-      border-radius: 12px;
+      border-radius: 10px;
+      padding: 9px 16px;
       text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
       border: none;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
+
+    .btn-kakao {
+      background: #FEE500;
+      color: #3C1E1E;
+    }
+
     .btn-kakao:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 22px rgba(254,229,0,0.5);
-      filter: brightness(1.04);
-    }
-    .btn-kakao svg { width: 18px; height: 18px; }
-
-    /* ===== PRICING SECTION ===== */
-    .pricing-section {
-      padding: 16px 0 48px;
-    }
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-top: 8px;
-    }
-    .pricing-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 24px 20px;
-      text-align: center;
-      box-shadow: var(--shadow-soft);
-      border: 1.5px solid rgba(42,31,26,0.06);
-      animation: fadeUp 0.5s ease both;
-    }
-    .pricing-card:nth-child(1) { animation-delay: 0.1s; }
-    .pricing-card:nth-child(2) { animation-delay: 0.2s; }
-    .pricing-card:nth-child(3) { animation-delay: 0.3s; }
-
-    .pricing-icon { font-size: 26px; margin-bottom: 10px; }
-    .pricing-range {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--terracotta);
-      margin-bottom: 4px;
-    }
-    .pricing-label {
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .pricing-note {
-      margin-top: 20px;
-      padding: 16px 20px;
-      background: rgba(201,106,74,0.06);
-      border-radius: 12px;
-      font-size: 14px;
-      color: var(--muted);
-      text-align: center;
-      border: 1px dashed rgba(201,106,74,0.22);
+      background: #f0d800;
+      transform: scale(1.03);
     }
 
-    /* ===== MAP SECTION ===== */
+    .btn-naver {
+      background: #03C75A;
+      color: #fff;
+    }
+
+    .btn-naver:hover {
+      background: #02b04e;
+      transform: scale(1.03);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--coral);
+      border: 1.5px solid var(--rose);
+    }
+
+    .btn-outline:hover {
+      background: var(--blush);
+    }
+
+    /* ── Map Section ───────────────────────────────────────── */
     .map-section {
-      padding: 16px 0 48px;
-    }
-    .map-visual {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 32px;
-      box-shadow: var(--shadow-soft);
-      border: 1.5px solid rgba(42,31,26,0.06);
-      margin-bottom: 20px;
-      animation: fadeUp 0.5s ease both;
+      background: linear-gradient(135deg, var(--deep), #5a3028);
+      border-radius: 24px;
+      padding: 36px;
+      color: var(--cream);
     }
 
-    .route-diagram {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      overflow-x: auto;
-      padding: 10px 0;
+    .map-section .section-label {
+      background: rgba(255,255,255,0.12);
+      color: var(--rose);
     }
-    .route-stop {
+
+    .map-section .section-title {
+      color: var(--cream);
+      margin-bottom: 20px;
+    }
+
+    .route-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+
+    .route-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .route-line {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      min-width: 120px;
-      flex: 1;
+      gap: 0;
     }
-    .route-dot {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      position: relative;
-      z-index: 1;
-    }
-    .route-dot.dorm { background: linear-gradient(135deg, #a8d8ea, #7bb8cc); }
-    .route-dot.station { background: linear-gradient(135deg, #95c8a2, #6aaa7a); }
-    .route-dot.salon { background: linear-gradient(135deg, var(--blush), var(--terracotta)); }
-    .route-dot.best-salon { background: linear-gradient(135deg, var(--gold-light), var(--gold)); }
 
-    .route-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--deep);
-      text-align: center;
-      line-height: 1.35;
-    }
-    .route-sublabel {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-    }
-    .route-arrow {
-      font-size: 18px;
-      color: var(--blush);
-      padding: 0 4px;
+    .route-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2.5px solid var(--rose);
+      background: var(--deep);
       flex-shrink: 0;
-      align-self: flex-start;
-      margin-top: 14px;
+      margin-top: 3px;
+    }
+
+    .route-dot.filled { background: var(--coral); }
+
+    .route-connector {
+      width: 2px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--rose), rgba(232,165,149,0.2));
+    }
+
+    .route-text {
+      padding-bottom: 24px;
+    }
+
+    .route-text strong {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+
+    .route-text span {
+      font-size: 0.8rem;
+      opacity: 0.65;
     }
 
     .map-buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+      display: flex; gap: 12px; flex-wrap: wrap;
     }
-    .btn-route {
+
+    .btn-map-kakao {
+      background: #FEE500;
+      color: #3C1E1E;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 12px 22px;
+      text-decoration: none;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--terracotta);
-      color: #fff;
-      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-map-kakao:hover { background: #f0d800; transform: scale(1.03); }
+
+    .btn-map-outline {
+      background: rgba(255,255,255,0.1);
+      color: var(--cream);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      font-size: 0.85rem;
       font-weight: 600;
-      padding: 13px 22px;
       border-radius: 12px;
+      padding: 12px 22px;
       text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
       cursor: pointer;
-    }
-    .btn-route:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 22px rgba(201,106,74,0.38);
-    }
-    .btn-outline {
-      background: transparent;
-      color: var(--terracotta);
-      border: 2px solid var(--terracotta);
-    }
-    .btn-outline:hover { background: rgba(201,106,74,0.06); }
-
-    /* ===== TIPS SECTION ===== */
-    .tips-section {
-      padding: 16px 0 48px;
-    }
-    .tips-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .tip-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 26px 22px;
-      box-shadow: var(--shadow-soft);
-      border: 1.5px solid rgba(42,31,26,0.06);
-      animation: fadeUp 0.5s ease both;
-    }
-    .tip-card:nth-child(1) { animation-delay: 0.1s; }
-    .tip-card:nth-child(2) { animation-delay: 0.2s; }
-    .tip-card:nth-child(3) { animation-delay: 0.3s; }
-
-    .tip-icon { font-size: 28px; margin-bottom: 12px; }
-    .tip-title {
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--deep);
-      margin-bottom: 10px;
-    }
-
-    /* Korean Phrases */
-    .phrase-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .phrase-item {
-      background: var(--cream);
-      border-radius: 10px;
-      padding: 12px 14px;
-      border-left: 3px solid var(--terracotta);
-    }
-    .phrase-korean {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--terracotta);
-      margin-bottom: 2px;
-    }
-    .phrase-english {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* Payment list */
-    .tip-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
+      transition: all 0.2s;
     }
-    .tip-list li {
-      font-size: 14px;
+
+    .btn-map-outline:hover { background: rgba(255,255,255,0.2); }
+
+    /* ── Mini Map Embed Placeholder ────────────────────────── */
+    .map-embed-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 24px;
+      border: 2px solid rgba(255,255,255,0.12);
+      height: 280px;
+      position: relative;
+      background: #2a1a16;
+    }
+
+    .map-embed-wrapper iframe {
+      width: 100%; height: 100%; border: none;
+    }
+
+    /* ── Pricing Table ─────────────────────────────────────── */
+    .price-table {
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1.5px solid var(--blush);
+      overflow: hidden;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--blush);
+      font-size: 0.92rem;
+      transition: background 0.15s;
+    }
+
+    .price-row:last-child { border-bottom: none; }
+    .price-row:hover { background: #fdf0e8; }
+
+    .price-row .salon-name {
+      font-weight: 600;
       color: var(--deep);
+    }
+
+    .price-row .salon-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .price-tag {
+      background: #eef7ee;
+      color: #2d6a30;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 20px;
+      padding: 5px 13px;
+      white-space: nowrap;
+    }
+
+    .price-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 14px;
       display: flex;
       align-items: flex-start;
       gap: 8px;
-    }
-    .tip-list li::before {
-      content: '✓';
-      color: var(--terracotta);
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
+      padding: 14px 24px;
+      background: #fdf6ef;
+      border-radius: 0 0 18px 18px;
+      border-top: 1px solid var(--blush);
     }
 
-    /* Photo tip */
-    .photo-tip {
-      background: linear-gradient(135deg, rgba(201,106,74,0.08), rgba(212,168,83,0.08));
-      border: 1.5px solid rgba(212,168,83,0.3);
-      border-radius: 14px;
-      padding: 20px 22px;
-      display: flex;
-      align-items: center;
+    /* ── Tips Section ──────────────────────────────────────── */
+    .tips-grid {
+      display: grid;
       gap: 16px;
-      margin-top: 16px;
-      animation: fadeUp 0.5s 0.35s ease both;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
-    .photo-tip-icon { font-size: 32px; flex-shrink: 0; }
-    .photo-tip-text strong { font-size: 15px; color: var(--deep); display: block; margin-bottom: 4px; }
-    .photo-tip-text span { font-size: 13.5px; color: var(--muted); }
 
-    /* ===== FOOTER ===== */
-    footer {
-      text-align: center;
-      padding: 40px 24px 56px;
-      color: var(--muted);
-      font-size: 13px;
-      position: relative;
-      z-index: 1;
+    .tip-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--blush);
+      border-radius: 16px;
+      padding: 20px;
+      transition: transform 0.2s;
     }
-    footer::before {
-      content: '';
+
+    .tip-card:hover { transform: translateY(-3px); }
+
+    .tip-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
       display: block;
-      width: 60px;
+    }
+
+    .tip-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--deep);
+      margin-bottom: 8px;
+    }
+
+    .tip-body {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Korean phrase cards */
+    .phrases-block {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-top: 24px;
+    }
+
+    .phrase-card {
+      background: linear-gradient(135deg, var(--blush), #fceadf);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+
+    .phrase-korean {
+      font-family: 'Gowun Batang', serif;
+      font-size: 1.2rem;
+      color: var(--coral);
+      margin-bottom: 4px;
+    }
+
+    .phrase-roman {
+      font-size: 0.78rem;
+      color: var(--warm);
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+
+    .phrase-english {
+      font-size: 0.82rem;
+      color: var(--deep);
+      font-weight: 600;
+    }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    footer {
+      background: var(--deep);
+      color: rgba(253,246,239,0.7);
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 72px;
+    }
+
+    footer a {
+      color: var(--rose);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--gold); }
+
+    .footer-ig {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      margin-top: 14px;
+      transition: opacity 0.2s;
+    }
+
+    .footer-ig:hover { opacity: 0.85; }
+
+    .footer-tagline {
+      font-size: 0.8rem;
+      margin-top: 20px;
+      opacity: 0.45;
+    }
+
+    /* ── Divider ───────────────────────────────────────────── */
+    .divider {
       height: 1px;
-      background: var(--blush);
-      margin: 0 auto 20px;
+      background: linear-gradient(to right, transparent, var(--blush), transparent);
+      margin: 48px 0;
     }
 
-    /* ===== ANIMATIONS ===== */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ── Animations ────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
     }
 
-    /* ===== RESPONSIVE ===== */
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
     @media (max-width: 600px) {
-      .salon-card { padding: 26px 22px 22px; }
-      .card-header { flex-direction: column; gap: 10px; }
-      .map-visual { padding: 22px 16px; }
-      .route-stop { min-width: 90px; }
-      .route-label { font-size: 11px; }
-      .photo-tip { flex-direction: column; text-align: center; }
+      .hero { padding: 60px 16px 64px; }
+      .map-section { padding: 24px 20px; }
+      .price-row { padding: 14px 16px; }
+      .card-top { flex-direction: row; }
+      .map-buttons { flex-direction: column; }
+      .btn-map-kakao, .btn-map-outline { justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
-  <header>
-    <div class="header-tag">✂️ Exchange Student Guide · Busan</div>
-    <h1>Best Hair Salons Near<br><span>Dong-A University</span><br>for Exchange Students</h1>
-    <p class="header-sub">Trusted picks near Hadan-dong dormitory — with prices, tips, and easy navigation</p>
+  <!-- ══ HERO ══════════════════════════════════════════════ -->
+  <header class="hero">
+    <span class="hero-scissors">✂️</span>
+    <h1>Best Hair Salons Near<br><em>Dong-A University (Hadan)</em><br>for Exchange Students</h1>
+    <p class="hero-sub">A friendly guide to getting a great haircut near your dormitory — prices, directions, and Korean phrases included.</p>
   </header>
 
-  <!-- ===== SALONS ===== -->
-  <section class="salons-section">
-    <div class="container">
-      <div class="section-label"><span>Recommended Salons</span></div>
-      <h2 class="section-title">Where to Get Your Hair Done</h2>
-      <p style="color:var(--muted);font-size:15px;margin-bottom:32px;">All three salons are within walking distance from the dormitory.</p>
+  <div class="container">
 
-      <div class="salon-grid">
+    <!-- ══ SALONS ═════════════════════════════════════════════ -->
+    <section>
+      <span class="section-label">✂️ Recommended Salons</span>
+      <h2 class="section-title">3 Salons Close to Your Dorm</h2>
 
-        <!-- CARD 1: Harry Hair -->
-        <div class="salon-card">
-          <div class="card-header">
-            <div class="salon-name">Harry Hair</div>
-            <span class="badge-good">Everyday Pick</span>
-          </div>
-          <div class="salon-address">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            7, Nakdong-daero 550beon-gil, Saha-gu, Busan
-          </div>
-          <ul class="salon-features">
-            <li>Good everyday option — reliable and consistent</li>
-            <li>Friendly, welcoming service</li>
-            <li>Convenient location near the dormitory</li>
-          </ul>
-          <div class="price-tag">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            From ₩15,000
-          </div>
-          <a href="#" class="btn-kakao">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.8 1.6 5.26 4 6.74-.15.57-.57 2.1-.65 2.44-.1.42.15.42.32.3.13-.09 2.05-1.38 2.88-1.94.46.06.93.1 1.45.1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
-            Open in Kakao Map
-          </a>
-        </div>
+      <div class="salons-grid">
 
-        <!-- CARD 2: Beauty Me (BEST) -->
-        <div class="salon-card best">
-          <div class="card-header">
-            <div class="salon-name">Beauty Me ⭐</div>
-            <span class="badge-best">★ Best Pick</span>
+        <!-- 1 · Harry Hair -->
+        <article class="salon-card fade-up">
+          <div class="card-top">
+            <div class="card-icon">💈</div>
+            <div>
+              <div class="card-name">Harry Hair</div>
+              <div class="card-address">
+                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                7, Nakdong-daero 550beon-gil, Saha-gu, Busan
+              </div>
+            </div>
           </div>
-          <div class="salon-address">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            553-2, Nakdong-daero, Saha-gu, Busan
+          <div class="card-tags">
+            <span class="tag">Everyday option</span>
+            <span class="tag">Friendly service</span>
+            <span class="tag price">From 15,000 ₩</span>
+          </div>
+          <div class="card-footer">
+            <a class="btn btn-kakao"
+               href="https://map.kakao.com/link/search/해리헤어+사하구+낙동대로550번길"
+               target="_blank" rel="noopener">
+              🗺️ Kakao Map
+            </a>
+            <a class="btn btn-naver"
+               href="https://map.naver.com/v5/search/해리헤어%20사하구%20낙동대로550번길"
+               target="_blank" rel="noopener">
+              🟢 Naver Map
+            </a>
+          </div>
+        </article>
+
+        <!-- 2 · Beauty Me ⭐ BEST -->
+        <article class="salon-card best fade-up">
+          <div class="best-badge">⭐ Best for Exchange Students</div>
+          <div class="card-top">
+            <div class="card-icon">🌸</div>
+            <div>
+              <div class="card-name">Beauty Me</div>
+              <div class="card-address">
+                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                553-2, Nakdong-daero, Saha-gu, Busan
+              </div>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="tag">Very kind staff</span>
+            <span class="tag">Comfortable atmosphere</span>
+            <span class="tag">Clean &amp; professional</span>
+            <span class="tag price">18,000 – 25,000 ₩</span>
           </div>
           <div class="best-note">
-            💬 This is the best option for exchange students. Staff are extremely friendly and make you feel comfortable even if you don't speak Korean well.
+            <strong>💬 Why we recommend this:</strong> This is the best option for exchange students. Staff are extremely friendly and make you feel comfortable even if you don't speak Korean well. Warm welcome, clean environment — you'll leave happy.
           </div>
-          <ul class="salon-features">
-            <li>⭐ Highly recommended by exchange students</li>
-            <li>Very kind staff — warm welcome, comfortable atmosphere</li>
-            <li>Great for international students with language barriers</li>
-            <li>Clean, professional environment</li>
-          </ul>
-          <div class="price-tag">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            ₩18,000 – ₩25,000
+          <div class="card-footer">
+            <a class="btn btn-kakao"
+               href="https://map.kakao.com/link/search/뷰티미+사하구+낙동대로+553-2"
+               target="_blank" rel="noopener">
+              🗺️ Kakao Map
+            </a>
+            <a class="btn btn-naver"
+               href="https://map.naver.com/v5/search/뷰티미%20사하구%20낙동대로553-2"
+               target="_blank" rel="noopener">
+              🟢 Naver Map
+            </a>
           </div>
-          <a href="#" class="btn-kakao">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.8 1.6 5.26 4 6.74-.15.57-.57 2.1-.65 2.44-.1.42.15.42.32.3.13-.09 2.05-1.38 2.88-1.94.46.06.93.1 1.45.1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
-            Open in Kakao Map
+        </article>
+
+        <!-- 3 · Siempre -->
+        <article class="salon-card fade-up">
+          <div class="card-top">
+            <div class="card-icon">✨</div>
+            <div>
+              <div class="card-name">Siempre</div>
+              <div class="card-address">
+                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                536, Nakdong-daero, Saha-gu, Busan
+              </div>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="tag">Good alternative</span>
+            <span class="tag">Slightly upscale</span>
+            <span class="tag price">20,000 – 30,000 ₩</span>
+          </div>
+          <div class="card-footer">
+            <a class="btn btn-kakao"
+               href="https://map.kakao.com/link/search/Siempre+사하구+낙동대로+536"
+               target="_blank" rel="noopener">
+              🗺️ Kakao Map
+            </a>
+            <a class="btn btn-naver"
+               href="https://map.naver.com/v5/search/시엠프레%20사하구%20낙동대로536"
+               target="_blank" rel="noopener">
+              🟢 Naver Map
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══ MAP / HOW TO GET THERE ══════════════════════════ -->
+    <section>
+      <div class="map-section fade-up">
+        <span class="section-label">🗺️ Navigation</span>
+        <h2 class="section-title">How to Get There</h2>
+
+        <div class="route-steps">
+          <div class="route-step">
+            <div class="route-line">
+              <div class="route-dot filled"></div>
+              <div class="route-connector"></div>
+            </div>
+            <div class="route-text">
+              <strong>🏠 Dong-A University Dormitory</strong>
+              <span>37, Nakdong-daero 550beon-gil, Saha-gu, Busan</span>
+            </div>
+          </div>
+          <div class="route-step">
+            <div class="route-line">
+              <div class="route-dot"></div>
+              <div class="route-connector"></div>
+            </div>
+            <div class="route-text">
+              <strong>🚇 Hadan Station (Line 1)</strong>
+              <span>Saha-gu, Busan · use as your reference landmark</span>
+            </div>
+          </div>
+          <div class="route-step">
+            <div class="route-line">
+              <div class="route-dot filled"></div>
+            </div>
+            <div class="route-text">
+              <strong>💈 Hair Salons — along Nakdong-daero</strong>
+              <span>All salons are within walking distance along the main road</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-buttons">
+          <!-- Opens Kakao Map centered on Hadan-dong area -->
+          <a class="btn-map-kakao"
+             href="https://map.kakao.com/link/map/하단동 낙동대로,35.1130916,128.9634520"
+             target="_blank" rel="noopener">
+            🟡 Open Area in Kakao Map
+          </a>
+          <!-- Route from dorm to Beauty Me -->
+          <a class="btn-map-kakao"
+             href="https://map.kakao.com/link/to/뷰티미,35.1130916,128.9634520"
+             target="_blank" rel="noopener">
+            📍 Route to Beauty Me (Best Pick)
+          </a>
+          <a class="btn-map-outline"
+             href="https://map.naver.com/v5/directions/-/14354910.5566,4176440.4566,뷰티미//walk"
+             target="_blank" rel="noopener">
+            🟢 Naver Walking Route
           </a>
         </div>
 
-        <!-- CARD 3: Siempre -->
-        <div class="salon-card">
-          <div class="card-header">
+        <!-- Embed a static map image via OpenStreetMap -->
+        <div class="map-embed-wrapper">
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=128.9580,35.1090,128.9700,35.1160&layer=mapnik&marker=35.1131,128.9635"
+            title="Map of Hadan area near Dong-A University"
+            loading="lazy"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p style="font-size:0.72rem;opacity:0.45;margin-top:8px;text-align:center;">
+          Map shows Nakdong-daero area · © OpenStreetMap contributors
+        </p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══ PRICING ═════════════════════════════════════════ -->
+    <section class="fade-up">
+      <span class="section-label">💸 Pricing</span>
+      <h2 class="section-title">What to Expect to Pay</h2>
+
+      <div class="price-table">
+        <div class="price-row">
+          <div>
+            <div class="salon-name">Harry Hair</div>
+            <div class="salon-hint">Good everyday option</div>
+          </div>
+          <span class="price-tag">from 15,000 ₩</span>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="salon-name">Beauty Me ⭐</div>
+            <div class="salon-hint">Best for international students</div>
+          </div>
+          <span class="price-tag">18,000 – 25,000 ₩</span>
+        </div>
+        <div class="price-row">
+          <div>
             <div class="salon-name">Siempre</div>
-            <span class="badge-good">Alternative</span>
+            <div class="salon-hint">Slightly upscale alternative</div>
           </div>
-          <div class="salon-address">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            536, Nakdong-daero, Saha-gu, Busan
-          </div>
-          <ul class="salon-features">
-            <li>Good alternative option with quality service</li>
-            <li>Slightly higher pricing for premium care</li>
-            <li>Well-reviewed local salon</li>
-          </ul>
-          <div class="price-tag">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            ₩20,000 – ₩30,000
-          </div>
-          <a href="#" class="btn-kakao">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.8 1.6 5.26 4 6.74-.15.57-.57 2.1-.65 2.44-.1.42.15.42.32.3.13-.09 2.05-1.38 2.88-1.94.46.06.93.1 1.45.1 5.523 0 10-3.477 10-7.8S17.523 3 12 3z"/></svg>
-            Open in Kakao Map
-          </a>
+          <span class="price-tag">20,000 – 30,000 ₩</span>
         </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PRICING ===== -->
-  <section class="pricing-section">
-    <div class="container">
-      <div class="section-label"><span>Pricing Guide</span></div>
-      <h2 class="section-title">How Much Does It Cost?</h2>
-      <p style="color:var(--muted);font-size:15px;margin-bottom:28px;">All prices are approximate and may vary slightly by salon.</p>
-
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <div class="pricing-icon">✂️</div>
-          <div class="pricing-range">From ₩15,000</div>
-          <div class="pricing-label">Simple Haircut</div>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-icon">💇</div>
-          <div class="pricing-range">₩15,000–₩30,000</div>
-          <div class="pricing-label">Average Range</div>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-icon">🎨</div>
-          <div class="pricing-range">₩30,000+</div>
-          <div class="pricing-label">Styling / Dye / Perm</div>
+        <div class="price-note">
+          ⚠️ Prices may vary for <strong>styling, dyeing, or perms</strong>. Always confirm the price before starting — saying <em>"얼마예요?"</em> (eol-ma-ye-yo?) means "How much is it?"
         </div>
       </div>
+    </section>
 
-      <div class="pricing-note">
-        💡 Prices may vary for styling, coloring, or perming services. Always ask for a price before starting.
-      </div>
-    </div>
-  </section>
+    <div class="divider"></div>
 
-  <!-- ===== MAP / HOW TO GET THERE ===== -->
-  <section class="map-section">
-    <div class="container">
-      <div class="section-label"><span>Navigation</span></div>
-      <h2 class="section-title">How to Get There</h2>
-      <p style="color:var(--muted);font-size:15px;margin-bottom:28px;">All salons are on Nakdong-daero and easily reachable on foot from the dormitory.</p>
-
-      <div class="map-visual">
-        <div class="route-diagram">
-          <div class="route-stop">
-            <div class="route-dot dorm">🏠</div>
-            <div class="route-label">Dormitory</div>
-            <div class="route-sublabel">37, Nakdong-daero<br>550beon-gil</div>
-          </div>
-          <div class="route-arrow">→</div>
-          <div class="route-stop">
-            <div class="route-dot station">🚇</div>
-            <div class="route-label">Hadan Station</div>
-            <div class="route-sublabel">Nearby reference<br>point</div>
-          </div>
-          <div class="route-arrow">→</div>
-          <div class="route-stop">
-            <div class="route-dot salon">✂️</div>
-            <div class="route-label">Harry Hair</div>
-            <div class="route-sublabel">~550beon-gil</div>
-          </div>
-          <div class="route-arrow">→</div>
-          <div class="route-stop">
-            <div class="route-dot best-salon">⭐</div>
-            <div class="route-label">Beauty Me</div>
-            <div class="route-sublabel">553-2, Nakdong-daero</div>
-          </div>
-          <div class="route-arrow">→</div>
-          <div class="route-stop">
-            <div class="route-dot salon">✂️</div>
-            <div class="route-label">Siempre</div>
-            <div class="route-sublabel">536, Nakdong-daero</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="map-buttons">
-        <a href="#" class="btn-route">
-          🗺️ View Route from Dorm
-        </a>
-        <a href="#" class="btn-route btn-outline">
-          📍 Open in Kakao Map
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== TIPS ===== -->
-  <section class="tips-section">
-    <div class="container">
-      <div class="section-label"><span>Helpful Tips</span></div>
+    <!-- ══ TIPS ════════════════════════════════════════════ -->
+    <section class="fade-up">
+      <span class="section-label">💡 Helpful Tips</span>
       <h2 class="section-title">Tips for Foreign Students</h2>
-      <p style="color:var(--muted);font-size:15px;margin-bottom:28px;">Everything you need to know before walking into a salon.</p>
 
       <div class="tips-grid">
-
-        <!-- Korean Phrases -->
         <div class="tip-card">
-          <div class="tip-icon">🇰🇷</div>
-          <div class="tip-title">Useful Korean Phrases</div>
-          <div class="phrase-list">
-            <div class="phrase-item">
-              <div class="phrase-korean">머리 자르고 싶어요</div>
-              <div class="phrase-english">I want a haircut</div>
-            </div>
-            <div class="phrase-item">
-              <div class="phrase-korean">짧게 해주세요</div>
-              <div class="phrase-english">Please cut it short</div>
-            </div>
-            <div class="phrase-item">
-              <div class="phrase-korean">조금만 잘라주세요</div>
-              <div class="phrase-english">Just a little trim, please</div>
-            </div>
-            <div class="phrase-item">
-              <div class="phrase-korean">얼마예요?</div>
-              <div class="phrase-english">How much is it?</div>
-            </div>
-          </div>
+          <span class="tip-icon">📸</span>
+          <div class="tip-title">Bring a Reference Photo</div>
+          <div class="tip-body">The single most helpful thing you can do! Show a photo of the hairstyle you want. This eliminates language barriers completely and ensures you get exactly what you're after.</div>
         </div>
-
-        <!-- Payment & Practical -->
         <div class="tip-card">
-          <div class="tip-icon">💳</div>
-          <div class="tip-title">Practical Info</div>
-          <ul class="tip-list">
-            <li>Most salons accept both cash and card (debit/credit)</li>
-            <li>Reservations are usually not needed — walk-ins welcome</li>
-            <li>Weekday mornings are the least busy</li>
-            <li>Best to avoid peak hours (evenings and weekends)</li>
-            <li>Staff at Beauty Me are especially comfortable with non-Korean speakers</li>
-          </ul>
+          <span class="tip-icon">💳</span>
+          <div class="tip-title">Cash & Card Both Accepted</div>
+          <div class="tip-body">Most salons in Hadan accept both cash and card. Bringing some cash (₩ won) as backup is always a safe idea just in case.</div>
         </div>
-
+        <div class="tip-card">
+          <span class="tip-icon">⏰</span>
+          <div class="tip-title">Timing Tip</div>
+          <div class="tip-body">Weekday afternoons are usually quietest. Weekends can get busy — if possible, go between Tuesday–Thursday for a more relaxed experience.</div>
+        </div>
+        <div class="tip-card">
+          <span class="tip-icon">😊</span>
+          <div class="tip-title">Be Patient & Smile</div>
+          <div class="tip-body">Korean hair stylists are generally very attentive. Even a little effort with Korean phrases will be greatly appreciated and warmly received.</div>
+        </div>
       </div>
 
-      <!-- Photo Tip -->
-      <div class="photo-tip">
-        <div class="photo-tip-icon">📸</div>
-        <div class="photo-tip-text">
-          <strong>Pro Tip: Bring a Reference Photo!</strong>
-          <span>Show a picture of the hairstyle you want — this is the most effective way to communicate your desired style, even without speaking Korean. Save a photo from Pinterest, Instagram, or Google beforehand.</span>
+      <!-- Korean Phrases -->
+      <h3 style="font-family:'Gowun Batang',serif;font-size:1.1rem;margin:32px 0 4px;color:var(--deep);">🗣️ Useful Korean Phrases</h3>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Copy these or show your phone screen to the stylist</p>
+
+      <div class="phrases-block">
+        <div class="phrase-card">
+          <div class="phrase-korean">머리 자르고 싶어요</div>
+          <div class="phrase-roman">meo-ri ja-reu-go si-peo-yo</div>
+          <div class="phrase-english">I want a haircut</div>
+        </div>
+        <div class="phrase-card">
+          <div class="phrase-korean">짧게 해주세요</div>
+          <div class="phrase-roman">jjalb-ge hae-ju-se-yo</div>
+          <div class="phrase-english">Please cut it short</div>
+        </div>
+        <div class="phrase-card">
+          <div class="phrase-korean">조금만 잘라주세요</div>
+          <div class="phrase-roman">jo-geum-man jal-la-ju-se-yo</div>
+          <div class="phrase-english">Just a little trim, please</div>
+        </div>
+        <div class="phrase-card">
+          <div class="phrase-korean">얼마예요?</div>
+          <div class="phrase-roman">eol-ma-ye-yo?</div>
+          <div class="phrase-english">How much is it?</div>
+        </div>
+        <div class="phrase-card">
+          <div class="phrase-korean">이 사진처럼 해주세요</div>
+          <div class="phrase-roman">i sa-jin-cheo-reom hae-ju-se-yo</div>
+          <div class="phrase-english">Please do it like this photo</div>
+        </div>
+        <div class="phrase-card">
+          <div class="phrase-korean">감사합니다</div>
+          <div class="phrase-roman">gam-sa-hab-ni-da</div>
+          <div class="phrase-english">Thank you</div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== FOOTER ===== -->
+  </div><!-- /container -->
+
+  <!-- ══ FOOTER ════════════════════════════════════════════ -->
   <footer>
-    <p>Made for exchange students at Dong-A University · Hadan-dong, Busan 🇰🇷</p>
-    <p style="margin-top:6px;font-size:12px;opacity:0.6;">Prices and details are approximate — always confirm directly with the salon.</p>
+    <p style="font-size:1rem;margin-bottom:6px;">Made with ❤️ for Dong-A University exchange students</p>
+    <p style="font-size:0.85rem;margin-bottom:16px;">Need more help? Reach out on Instagram 👇</p>
+    <a class="footer-ig" href="#" target="_blank" rel="noopener">
+      📷 Contact on Instagram
+    </a>
+    <p class="footer-tagline">Hadan-dong · Saha-gu · Busan, South Korea · Near Hadan Station (Line 1)</p>
   </footer>
 
-  <!-- ===== JS: Scroll Reveal ===== -->
+  <!-- ══ SCROLL ANIMATION ══════════════════════════════════ -->
   <script>
-    // Lightweight scroll-triggered animation for cards
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.12 });
-
-    // Apply to all animated elements
-    document.querySelectorAll('.salon-card, .pricing-card, .tip-card, .map-visual, .photo-tip').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(22px)';
-      el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    document.querySelectorAll('.fade-up').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.07}s`;
       observer.observe(el);
     });
   </script>
