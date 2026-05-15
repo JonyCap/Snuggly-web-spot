@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Invisible Rules of Korea 🇰🇷</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+:root{
+--bg:#050816;
+--panel:rgba(255,255,255,0.06);
+--border:rgba(255,255,255,0.12);
+--blue:#49b3ff;
+--purple:#8d5bff;
+--cyan:#00f0ff;
+--text:#f1f6ff;
+--muted:#aab5d6;
+--danger:#ff4c6d;
+--success:#58ffbb;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:radial-gradient(circle at top,#0b1430,#04050c 70%);
+color:var(--text);
+overflow-x:hidden;
+min-height:100vh;
+}
+
+body::before{
+content:'';
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at 20% 20%,rgba(73,179,255,.18),transparent 25%),
+radial-gradient(circle at 80% 30%,rgba(141,91,255,.18),transparent 25%),
+radial-gradient(circle at 50% 80%,rgba(0,240,255,.10),transparent 30%);
+pointer-events:none;
+z-index:-1;
+animation:bgMove 12s linear infinite alternate;
+}
+
+@keyframes bgMove{
+0%{transform:translateY(0px);}
+100%{transform:translateY(-20px);}
+}
+
+canvas{
+position:fixed;
+inset:0;
+z-index:-2;
+}
+
+.glass{
+background:var(--panel);
+border:1px solid var(--border);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+box-shadow:0 0 30px rgba(0,0,0,.45);
+}
+
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+position:relative;
+overflow:hidden;
+padding:20px;
+}
+
+.hero h1{
+font-size:clamp(3rem,8vw,7rem);
+font-weight:800;
+line-height:1;
+background:linear-gradient(to right,#fff,#66c7ff,#b794ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:20px;
+letter-spacing:-3px;
+}
+
+.hero p{
+max-width:800px;
+font-size:1.15rem;
+color:var(--muted);
+line-height:1.8;
+}
+
+.typewriter{
+margin-top:40px;
+font-size:1.1rem;
+height:70px;
+color:#dce8ff;
+opacity:.9;
+}
+
+.start-btn{
+margin-top:40px;
+padding:18px 40px;
+border:none;
+border-radius:18px;
+font-size:1rem;
+font-weight:700;
+letter-spacing:1px;
+cursor:pointer;
+color:white;
+background:linear-gradient(135deg,var(--blue),var(--purple));
+box-shadow:
+0 0 25px rgba(73,179,255,.45),
+0 0 60px rgba(141,91,255,.25);
+transition:.4s;
+}
+
+.start-btn:hover{
+transform:translateY(-5px) scale(1.03);
+box-shadow:
+0 0 40px rgba(73,179,255,.7),
+0 0 90px rgba(141,91,255,.4);
+}
+
+.floating-word{
+position:absolute;
+font-family:'Noto Sans KR',sans-serif;
+font-size:2rem;
+font-weight:700;
+opacity:.08;
+animation:float 10s infinite ease-in-out alternate;
+}
+
+@keyframes float{
+0%{transform:translateY(0px) rotate(0deg);}
+100%{transform:translateY(-40px) rotate(5deg);}
+}
+
+.system{
+display:none;
+padding:30px;
+max-width:1600px;
+margin:auto;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+margin-bottom:30px;
+flex-wrap:wrap;
+}
+
+.logo{
+font-size:1.4rem;
+font-weight:700;
+}
+
+.stats{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.stat{
+padding:16px 22px;
+border-radius:18px;
+min-width:180px;
+}
+
+.stat h4{
+font-size:.8rem;
+color:var(--muted);
+margin-bottom:10px;
+}
+
+.bar{
+height:10px;
+background:rgba(255,255,255,.08);
+border-radius:20px;
+overflow:hidden;
+}
+
+.fill{
+height:100%;
+border-radius:20px;
+background:linear-gradient(to right,var(--blue),var(--purple));
+width:40%;
+transition:1s;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+gap:25px;
+margin-top:20px;
+}
+
+.card{
+position:relative;
+padding:30px;
+border-radius:28px;
+overflow:hidden;
+cursor:pointer;
+transition:.4s;
+min-height:240px;
+}
+
+.card:hover{
+transform:translateY(-10px);
+border-color:rgba(255,255,255,.25);
+}
+
+.card::before{
+content:'';
+position:absolute;
+width:200%;
+height:200%;
+background:radial-gradient(circle,rgba(73,179,255,.15),transparent 40%);
+top:-60%;
+left:-60%;
+animation:rotateGlow 8s linear infinite;
+}
+
+@keyframes rotateGlow{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
+}
+
+.card h3{
+position:relative;
+z-index:2;
+font-size:1.3rem;
+margin-bottom:15px;
+}
+
+.card p{
+position:relative;
+z-index:2;
+line-height:1.7;
+color:var(--muted);
+}
+
+.simulation{
+display:none;
+margin-top:40px;
+padding:35px;
+border-radius:30px;
+position:relative;
+overflow:hidden;
+}
+
+.scenario{
+font-size:1.5rem;
+font-weight:700;
+margin-bottom:25px;
+line-height:1.6;
+}
+
+.question{
+color:#d7e4ff;
+margin-bottom:30px;
+font-size:1.05rem;
+}
+
+.choices{
+display:grid;
+gap:18px;
+}
+
+.choice{
+padding:22px;
+border-radius:20px;
+cursor:pointer;
+transition:.35s;
+border:1px solid rgba(255,255,255,.08);
+background:rgba(255,255,255,.03);
+}
+
+.choice:hover{
+transform:translateX(10px);
+background:rgba(73,179,255,.08);
+border-color:rgba(73,179,255,.35);
+}
+
+.analysis{
+margin-top:35px;
+display:none;
+padding:28px;
+border-radius:24px;
+animation:fadeUp .8s ease;
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+to{
+opacity:1;
+transform:translateY(0px);
+}
+}
+
+.analysis h2{
+margin-bottom:18px;
+}
+
+.analysis-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+margin-top:25px;
+}
+
+.fact{
+padding:20px;
+border-radius:18px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.06);
+}
+
+.fact h4{
+margin-bottom:10px;
+color:var(--blue);
+}
+
+.result-screen{
+display:none;
+margin-top:60px;
+padding:40px;
+border-radius:30px;
+text-align:center;
+}
+
+.result-screen h1{
+font-size:3rem;
+margin-bottom:20px;
+background:linear-gradient(to right,#fff,#66c7ff,#c299ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.result-cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-top:30px;
+}
+
+.result-card{
+padding:25px;
+border-radius:22px;
+}
+
+.result-card h3{
+margin-bottom:15px;
+}
+
+.sound-toggle{
+padding:12px 18px;
+border-radius:14px;
+cursor:pointer;
+border:none;
+background:rgba(255,255,255,.08);
+color:white;
+}
+
+.scanline{
+position:fixed;
+inset:0;
+pointer-events:none;
+background:linear-gradient(
+to bottom,
+transparent 50%,
+rgba(255,255,255,.015) 51%
+);
+background-size:100% 4px;
+opacity:.25;
+mix-blend-mode:overlay;
+}
+
+.pulse{
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{box-shadow:0 0 0 rgba(73,179,255,.4);}
+50%{box-shadow:0 0 40px rgba(73,179,255,.35);}
+100%{box-shadow:0 0 0 rgba(73,179,255,.4);}
+}
+
+.subway-alert{
+margin-top:25px;
+padding:20px;
+border-radius:20px;
+background:rgba(255,76,109,.1);
+border:1px solid rgba(255,76,109,.25);
+display:none;
+animation:shake .4s;
+}
+
+@keyframes shake{
+0%{transform:translateX(0);}
+25%{transform:translateX(-5px);}
+50%{transform:translateX(5px);}
+75%{transform:translateX(-5px);}
+100%{transform:translateX(0);}
+}
+
+.footer{
+text-align:center;
+padding:50px 20px;
+color:var(--muted);
+font-size:.9rem;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:3.5rem;
+}
+
+.card{
+min-height:auto;
+}
+
+.scenario{
+font-size:1.2rem;
+}
+
+.topbar{
+flex-direction:column;
+align-items:flex-start;
+}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+<div class="scanline"></div>
+
+<section class="hero" id="hero">
+
+<div class="floating-word" style="top:10%;left:10%;">눈치</div>
+<div class="floating-word" style="top:20%;right:10%;animation-delay:2s;">정</div>
+<div class="floating-word" style="bottom:15%;left:12%;animation-delay:1s;">빨리빨리</div>
+<div class="floating-word" style="bottom:20%;right:15%;animation-delay:3s;">괜찮아요</div>
+<div class="floating-word" style="top:45%;left:8%;animation-delay:4s;">선배</div>
+<div class="floating-word" style="top:60%;right:12%;animation-delay:5s;">후배</div>
+
+<h1>The Invisible Rules of Korea</h1>
+
+<p>
+Understanding the hidden social system behind everyday Korean life.
+An immersive cultural intelligence simulator for exchange students in Busan.
+</p>
+
+<div class="typewriter" id="typewriter"></div>
+
+<button class="start-btn pulse" onclick="startSystem()">
+START SIMULATION
+</button>
+
+</section>
+
+<section class="system" id="system">
+
+<div class="topbar">
+
+<div class="logo">
+CULTURAL INTELLIGENCE SYSTEM v4.2
+</div>
+
+<div class="stats">
+
+<div class="stat glass">
+<h4>Korean Adaptation Level</h4>
+<div class="bar">
+<div class="fill" id="adaptBar"></div>
+</div>
+</div>
+
+<div class="stat glass">
+<h4>Nunchi Detection</h4>
+<div class="bar">
+<div class="fill" id="nunchiBar" style="width:25%;"></div>
+</div>
+</div>
+
+<div class="stat glass">
+<h4>Misunderstanding Score</h4>
+<div class="bar">
+<div class="fill" id="misBar" style="width:60%;background:linear-gradient(to right,#ff4c6d,#ff8a6d);"></div>
+</div>
+</div>
+
+</div>
+
+<button class="sound-toggle glass" onclick="toggleSound()">
+🔊 Ambient Mode
+</button>
+
+</div>
+
+<h2 style="margin-bottom:10px;">Simulation Categories</h2>
+<p style="color:var(--muted);margin-bottom:30px;">
+Analyze hidden meanings. Decode indirect behavior. Survive Korean social systems.
+</p>
+
+<div class="grid">
+
+<div class="card glass" onclick="openSim(0)">
+<h3>👨‍🏫 Classroom Culture</h3>
+<p>
+Decode professor language, hidden criticism, silence dynamics, and academic hierarchy.
+</p>
+</div>
+
+<div class="card glass" onclick="openSim(1)">
+<h3>🍻 Drinking Culture</h3>
+<p>
+Navigate social bonding rituals, age hierarchy, and unspoken respect behavior.
+</p>
+</div>
+
+<div class="card glass" onclick="openSim(2)">
+<h3>🚇 Subway & Public Behavior</h3>
+<p>
+Understand harmony culture, public silence, and collective social awareness.
+</p>
+</div>
+
+<div class="card glass" onclick="openSim(3)">
+<h3>👥 Friendship & Social Life</h3>
+<p>
+Learn indirect invitations, emotional ambiguity, and relationship pacing.
+</p>
+</div>
+
+<div class="card glass" onclick="openSim(4)">
+<h3>💼 Group Projects</h3>
+<p>
+Experience invisible pressure, silent disagreement, and teamwork expectations.
+</p>
+</div>
+
+<div class="card glass" onclick="openSim(5)">
+<h3>📱 Korean Messaging Culture</h3>
+<p>
+Read emotional nuance through response speed, emojis, and message tone.
+</p>
+</div>
+
+</div>
+
+<div class="simulation glass" id="simulationBox">
+
+<div class="scenario" id="scenarioText"></div>
+
+<div class="question" id="questionText"></div>
+
+<div class="choices" id="choices"></div>
+
+<div class="subway-alert" id="subwayAlert">
+⚠ SOCIAL DISCOMFORT DETECTED — surrounding passengers activated collective awareness mode.
+</div>
+
+<div class="analysis glass" id="analysis"></div>
+
+</div>
+
+<div class="result-screen glass" id="resultScreen">
+
+<h1>Simulation Analysis Complete</h1>
+
+<p id="finalText"></p>
+
+<div class="result-cards">
+
+<div class="result-card glass">
+<h3>🧠 Behavioral Pattern</h3>
+<p id="behaviorType"></p>
+</div>
+
+<div class="result-card glass">
+<h3>👀 Nunchi Capability</h3>
+<p id="nunchiType"></p>
+</div>
+
+<div class="result-card glass">
+<h3>🇰🇷 Korean Adaptation</h3>
+<p id="adaptType"></p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<div class="footer">
+Designed as a cinematic cultural psychology simulator • Dong-A Exchange Intelligence Project
+</div>
+
+<script>
+
+const simulations = [
+
+{
+scenario:"Your Korean professor smiles softly and says: “You worked hard 🙂” after your presentation.",
+question:"What does this MOST likely mean in Korean academic culture?",
+choices:[
+{
+text:"Genuine strong praise",
+correct:false,
+analysis:"In Korea, praise is often softened and emotionally controlled. “You worked hard” can sometimes mean polite acknowledgement rather than enthusiastic approval."
+},
+{
+text:"Polite soft criticism",
+correct:true,
+analysis:"Correct. Korean communication often avoids direct confrontation. Professors may soften criticism to preserve harmony and avoid embarrassment."
+},
+{
+text:"Neutral professional response",
+correct:false,
+analysis:"Partially correct — but emotional nuance matters. The phrase may contain hidden evaluation depending on tone and hierarchy."
+}
+],
+deep:{
+meaning:"Indirect criticism protects social harmony and helps save face.",
+psychology:"Korean hierarchy discourages aggressive direct feedback.",
+western:"Western systems often value explicit evaluation and direct praise."
+}
+},
+
+{
+scenario:"At a drinking dinner, everyone turns away while drinking shots near older students.",
+question:"Why are they doing this?",
+choices:[
+{
+text:"It is a random habit",
+correct:false,
+analysis:"This behavior is deeply connected to hierarchy and respect traditions."
+},
+{
+text:"Respect toward elders/seniors",
+correct:true,
+analysis:"Correct. Turning away while drinking near elders demonstrates humility and social awareness."
+},
+{
+text:"Avoiding eye contact",
+correct:false,
+analysis:"Eye contact is not the main reason. Respect hierarchy is the core social logic."
+}
+],
+deep:{
+meaning:"Confucian hierarchy still shapes modern social behavior.",
+psychology:"Age and status subtly influence body language.",
+western:"Many Western cultures treat drinking as socially equal."
+}
+},
+
+{
+scenario:"You speak loudly on the subway while taking a phone call.",
+question:"How does the environment MOST likely react?",
+choices:[
+{
+text:"Nobody cares",
+correct:false,
+analysis:"Public harmony is extremely important in Korea."
+},
+{
+text:"People feel social discomfort silently",
+correct:true,
+analysis:"Correct. Koreans often avoid confrontation but internally judge disruption of collective calm."
+},
+{
+text:"Someone directly tells you to stop",
+correct:false,
+analysis:"Direct confrontation is less common unless behavior becomes extreme."
+}
+],
+deep:{
+meaning:"Public silence represents collective social harmony.",
+psychology:"People monitor shared spaces carefully through nunchi (social awareness).",
+western:"Some Western subway systems tolerate louder individual expression."
+},
+subway:true
+},
+
+{
+scenario:"A Korean friend says: “We should hang out sometime!”",
+question:"What does this ACTUALLY mean most of the time?",
+choices:[
+{
+text:"Immediate real invitation",
+correct:false,
+analysis:"Sometimes yes — but context matters heavily."
+},
+{
+text:"Polite social expression",
+correct:true,
+analysis:"Correct. In Korea, indirect friendliness often maintains positive atmosphere without concrete commitment."
+},
+{
+text:"A serious scheduled plan",
+correct:false,
+analysis:"Without exact time planning, it may remain socially symbolic."
+}
+],
+deep:{
+meaning:"Indirect language protects relationships from awkward rejection.",
+psychology:"Ambiguity helps maintain emotional flexibility.",
+western:"Western communication may value clearer commitments."
+}
+},
+
+{
+scenario:"In a group project, nobody openly disagrees with the leader even though the idea has problems.",
+question:"Why?",
+choices:[
+{
+text:"Nobody noticed the issue",
+correct:false,
+analysis:"People often notice but remain careful."
+},
+{
+text:"Avoiding social tension",
+correct:true,
+analysis:"Correct. Preserving group harmony can become more important than direct conflict."
+},
+{
+text:"Fear of public speaking",
+correct:false,
+analysis:"The issue is more cultural than personal."
+}
+],
+deep:{
+meaning:"Harmony often overrides open disagreement.",
+psychology:"Public criticism risks damaging relationships and status balance.",
+western:"Western classrooms may encourage direct debate."
+}
+},
+
+{
+scenario:"Your Korean friend replies instantly every day… then suddenly takes 7 hours to answer.",
+question:"What might this signal?",
+choices:[
+{
+text:"They hate you now",
+correct:false,
+analysis:"Emotional interpretation may be exaggerated."
+},
+{
+text:"Relationship mood or social energy shifted",
+correct:true,
+analysis:"Correct. Korean messaging culture carries emotional nuance through timing and consistency."
+},
+{
+text:"Phones stopped working in Korea",
+correct:false,
+analysis:"Not impossible... but unlikely."
+}
+],
+deep:{
+meaning:"Response timing can carry emotional meaning.",
+psychology:"Digital communication becomes a social-emotional signal.",
+western:"Some cultures separate texting speed from emotional closeness."
+}
+}
+
+];
+
+let score = 0;
+let completed = 0;
+
+function startSystem(){
+
+document.getElementById('hero').style.display='none';
+document.getElementById('system').style.display='block';
+
+window.scrollTo({
+top:0,
+behavior:'smooth'
+});
+
+}
+
+function openSim(index){
+
+const sim = simulations[index];
+
+document.getElementById('simulationBox').style.display='block';
+
+document.getElementById('scenarioText').innerHTML = sim.scenario;
+document.getElementById('questionText').innerHTML = sim.question;
+
+const choicesDiv = document.getElementById('choices');
+choicesDiv.innerHTML='';
+
+document.getElementById('analysis').style.display='none';
+document.getElementById('subwayAlert').style.display='none';
+
+sim.choices.forEach(choice=>{
+
+const btn = document.createElement('div');
+btn.className='choice glass';
+btn.innerHTML=choice.text;
+
+btn.onclick=()=>{
+
+if(choice.correct){
+score++;
+}
+
+completed++;
+
+if(sim.subway){
+document.getElementById('subwayAlert').style.display='block';
+}
+
+showAnalysis(choice.analysis,sim.deep);
+
+updateBars();
+
+if(completed >= 4){
+generateResult();
+}
+
+};
+
+choicesDiv.appendChild(btn);
+
+});
+
+window.scrollTo({
+top:document.getElementById('simulationBox').offsetTop-40,
+behavior:'smooth'
+});
+
+}
+
+function showAnalysis(text,deep){
+
+const box = document.getElementById('analysis');
+
+box.style.display='block';
+
+box.innerHTML=`
+
+<h2>Hidden Cultural Analysis</h2>
+
+<p style="line-height:1.9;color:#dbe6ff;">
+${text}
+</p>
+
+<div class="analysis-grid">
+
+<div class="fact">
+<h4>🧠 Hidden Meaning</h4>
+<p>${deep.meaning}</p>
+</div>
+
+<div class="fact">
+<h4>👥 Social Psychology</h4>
+<p>${deep.psychology}</p>
+</div>
+
+<div class="fact">
+<h4>🌍 Western Comparison</h4>
+<p>${deep.western}</p>
+</div>
+
+</div>
+
+`;
+
+}
+
+function updateBars(){
+
+let adapt = Math.min((score/6)*100,100);
+let nunchi = Math.min((score/6)*85+10,100);
+let misunderstanding = 100 - adapt;
+
+document.getElementById('adaptBar').style.width = adapt+'%';
+document.getElementById('nunchiBar').style.width = nunchi+'%';
+document.getElementById('misBar').style.width = misunderstanding+'%';
+
+}
+
+function generateResult(){
+
+document.getElementById('resultScreen').style.display='block';
+
+let title = '';
+let behavior = '';
+let nunchi = '';
+let adapt = '';
+
+if(score <= 1){
+
+title = "You currently misunderstand Korean social signals more than 82% of new exchange students.";
+behavior = "Social Survivor";
+nunchi = "Low environmental awareness detected.";
+adapt = "Still operating on direct communication logic.";
+
+}else if(score <= 3){
+
+title = "You are beginning to detect emotional nuance and hidden hierarchy systems.";
+behavior = "Cultural Detective";
+nunchi = "Moderate social awareness.";
+adapt = "Partially adapted to indirect communication.";
+
+}else if(score <= 5){
+
+title = "You understand Korean indirect communication better than most exchange students.";
+behavior = "Silent Observer";
+nunchi = "High contextual sensitivity.";
+adapt = "Strong adaptation to Korean social environments.";
+
+}else{
+
+title = "WARNING: You have become dangerously Koreanized 😭";
+behavior = "Nunchi Master";
+nunchi = "Advanced emotional scanning ability.";
+adapt = "Fully integrated into invisible social systems.";
+
+}
+
+document.getElementById('finalText').innerHTML = title;
+document.getElementById('behaviorType').innerHTML = behavior;
+document.getElementById('nunchiType').innerHTML = nunchi;
+document.getElementById('adaptType').innerHTML = adapt;
+
+}
+
+const lines = [
+"Some rules are never written.",
+"But everyone follows them.",
+"Every silence contains information.",
+"Korea is a high-context society.",
+"Nunchi can change everything."
+];
+
+let line = 0;
+let char = 0;
+
+function typeWriter(){
+
+if(line < lines.length){
+
+const current = lines[line];
+
+document.getElementById('typewriter').innerHTML =
+current.substring(0,char);
+
+char++;
+
+if(char > current.length){
+
+line++;
+char = 0;
+
+setTimeout(typeWriter,1000);
+
+}else{
+setTimeout(typeWriter,50);
+}
+
+}
+
+}
+
+typeWriter();
+
+function toggleSound(){
+
+const btn = document.querySelector('.sound-toggle');
+
+if(btn.innerHTML.includes('🔊')){
+btn.innerHTML='🔈 Ambient Muted';
+}else{
+btn.innerHTML='🔊 Ambient Mode';
+}
+
+}
+
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<120;i++){
+
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+dx:(Math.random()-.5)*0.4,
+dy:(Math.random()-.5)*0.4
+});
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach(p=>{
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle='rgba(120,180,255,.7)';
+ctx.fill();
+
+p.x += p.dx;
+p.y += p.dy;
+
+if(p.x<0 || p.x>canvas.width) p.dx*=-1;
+if(p.y<0 || p.y>canvas.height) p.dy*=-1;
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+window.addEventListener('resize',()=>{
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+});
+
+</script>
+
+</body>
+</html>
