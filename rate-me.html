@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RATE ME! ⭐ — Season Finale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-bg: #030508;
+    --c-deep: #060b12;
+    --c-surface: rgba(10,20,35,0.7);
+    --c-border: rgba(80,160,255,0.15);
+    --c-border-hover: rgba(80,200,255,0.5);
+    --c-glow: #00c8ff;
+    --c-glow2: #7b2fff;
+    --c-gold: #ffd166;
+    --c-accent: #ff4d6d;
+    --c-text: #c8dff0;
+    --c-muted: #4a6a88;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    pointer-events: none; mix-blend-mode: screen;
+  }
+  .cursor-dot {
+    width: 8px; height: 8px;
+    background: var(--c-glow);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s;
+    box-shadow: 0 0 12px var(--c-glow), 0 0 24px var(--c-glow);
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,200,255,0.5);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    transition: transform 0.15s ease, width 0.3s, height 0.3s, border-color 0.3s;
+    pointer-events: none; z-index: 9998;
+  }
+  body:has(.card:hover) .cursor-ring {
+    width: 60px; height: 60px;
+    border-color: rgba(0,200,255,0.8);
+  }
+
+  /* CANVAS PARTICLES */
+  #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* MOUSE GLOW */
+  .mouse-glow {
+    position: fixed; width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,150,255,0.06) 0%, transparent 70%);
+    transform: translate(-50%,-50%);
+    pointer-events: none; z-index: 1;
+    transition: opacity 0.3s;
+  }
+
+  /* AMBIENT LIGHTS */
+  .ambient {
+    position: fixed; border-radius: 50%;
+    filter: blur(120px); pointer-events: none; z-index: 0; opacity: 0.3;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+  .amb1 { width: 600px; height: 600px; background: var(--c-glow2); top: -200px; left: -150px; animation-delay: 0s; }
+  .amb2 { width: 500px; height: 500px; background: var(--c-glow); bottom: -150px; right: -100px; animation-delay: -6s; }
+  .amb3 { width: 300px; height: 300px; background: var(--c-accent); top: 40%; left: 50%; animation-delay: -3s; opacity: 0.15; }
+
+  @keyframes drift {
+    0% { transform: translate(0,0) scale(1); }
+    100% { transform: translate(40px, 30px) scale(1.1); }
+  }
+
+  /* SCANLINES OVERLAY */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 999; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  }
+
+  /* ===================== HERO ===================== */
+  #hero {
+    position: relative; z-index: 10;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 2rem;
+    overflow: hidden;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem; letter-spacing: 0.4em;
+    color: var(--c-glow); text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, #fff 0%, var(--c-glow) 50%, var(--c-glow2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(0,200,255,0.3));
+    opacity: 0; animation: fadeUp 0.9s 0.5s forwards;
+    position: relative;
+  }
+  .hero-title::after {
+    content: 'RATE ME!';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #fff 0%, var(--c-glow) 50%, var(--c-glow2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(20px) drop-shadow(0 0 60px rgba(0,200,255,0.5));
+    opacity: 0.4; z-index: -1;
+  }
+
+  .hero-star {
+    font-size: clamp(3rem, 8vw, 7rem);
+    animation: starPulse 2s ease-in-out infinite;
+    display: block; margin-bottom: -0.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards, starPulse 2s 1.5s ease-in-out infinite;
+  }
+
+  @keyframes starPulse {
+    0%, 100% { filter: drop-shadow(0 0 10px gold); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 30px gold) drop-shadow(0 0 60px rgba(255,200,0,0.4)); transform: scale(1.05); }
+  }
+
+  .hero-sub {
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 600; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--c-text);
+    margin-top: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.8rem; color: var(--c-muted);
+    margin-top: 1rem; letter-spacing: 0.15em;
+    opacity: 0; animation: fadeUp 0.8s 1s forwards;
+  }
+
+  .hero-divider {
+    width: 120px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-glow), transparent);
+    margin: 2rem auto;
+    opacity: 0; animation: fadeIn 1s 1.2s forwards;
+  }
+
+  .scroll-indicator {
+    position: absolute; bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    opacity: 0; animation: fadeIn 1s 1.5s forwards;
+  }
+  .scroll-label {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 0.3em; color: var(--c-muted); text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--c-glow), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  /* EPISODE COUNTER */
+  .ep-counter {
+    display: flex; gap: 0.4rem; margin-top: 2rem;
+    opacity: 0; animation: fadeIn 1s 1.3s forwards;
+  }
+  .ep-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--c-muted);
+    transition: all 0.3s;
+  }
+  .ep-dot.active { background: var(--c-glow); box-shadow: 0 0 8px var(--c-glow); }
+
+  /* ===================== PROGRESS BAR ===================== */
+  .progress-bar-wrap {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 500; height: 2px;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--c-glow2), var(--c-glow), var(--c-gold));
+    width: 0%; transition: width 0.1s;
+    box-shadow: 0 0 8px var(--c-glow);
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
+    z-index: 400; display: flex; gap: 0; align-items: center;
+    background: rgba(5,15,28,0.8); backdrop-filter: blur(20px);
+    border: 1px solid var(--c-border); border-radius: 2rem; padding: 0.4rem;
+    opacity: 0; animation: fadeIn 1s 1.8s forwards;
+  }
+  .nav-item {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--c-muted); padding: 0.4rem 0.9rem;
+    border-radius: 2rem; cursor: none;
+    transition: all 0.3s; white-space: nowrap;
+  }
+  .nav-item:hover, .nav-item.active {
+    color: var(--c-glow); background: rgba(0,200,255,0.08);
+  }
+
+  /* ===================== SECTION HEADER ===================== */
+  .section-header {
+    text-align: center; padding: 5rem 2rem 3rem;
+    position: relative; z-index: 10;
+  }
+  .section-label {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    letter-spacing: 0.5em; color: var(--c-glow);
+    text-transform: uppercase; margin-bottom: 1rem;
+    display: block;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    background: linear-gradient(135deg, #fff, var(--c-text));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1;
+  }
+  .section-sub {
+    font-family: var(--font-body); font-size: 0.9rem;
+    color: var(--c-muted); margin-top: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ===================== PROJECTS GRID ===================== */
+  #projects { position: relative; z-index: 10; padding: 0 1.5rem 4rem; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 1.5rem; max-width: 1400px; margin: 0 auto;
+  }
+
+  /* ===================== CARD ===================== */
+  .card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 1rem; padding: 2rem;
+    backdrop-filter: blur(20px);
+    position: relative; overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), border-color 0.4s, box-shadow 0.4s;
+    opacity: 0; transform: translateY(30px);
+    cursor: none;
+  }
+  .card.revealed { opacity: 1; transform: translateY(0); }
+  .card:hover {
+    border-color: var(--c-border-hover);
+    box-shadow: 0 0 40px rgba(0,200,255,0.12), 0 20px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,200,255,0.03);
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  /* CARD INNER GLOW */
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,200,255,0.06) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.4s; pointer-events: none; border-radius: inherit;
+  }
+  .card:hover::before { opacity: 1; }
+
+  /* CARD CORNER ACCENTS */
+  .card::after {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 40px; height: 40px;
+    border-top: 1px solid var(--c-glow); border-left: 1px solid var(--c-glow);
+    border-radius: 1rem 0 0 0; opacity: 0.5;
+    transition: opacity 0.3s, width 0.3s, height 0.3s;
+  }
+  .card:hover::after { opacity: 1; width: 60px; height: 60px; }
+
+  .card-corner-br {
+    position: absolute; bottom: 0; right: 0;
+    width: 40px; height: 40px;
+    border-bottom: 1px solid var(--c-glow2); border-right: 1px solid var(--c-glow2);
+    border-radius: 0 0 1rem 0; opacity: 0.5;
+    transition: opacity 0.3s, width 0.3s, height 0.3s;
+  }
+  .card:hover .card-corner-br { opacity: 1; width: 60px; height: 60px; }
+
+  .card-ep {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 0.3em; color: var(--c-glow);
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.9rem; line-height: 1; color: #fff;
+    margin-bottom: 0.5rem; letter-spacing: 0.02em;
+  }
+
+  .card-desc {
+    font-family: var(--font-body);
+    font-size: 0.85rem; color: var(--c-muted);
+    font-weight: 400; line-height: 1.5;
+    margin-bottom: 1.5rem; min-height: 2.5rem;
+  }
+
+  .rating-label {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 0.25em; color: var(--c-muted);
+    text-transform: uppercase; margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .rating-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--c-border), transparent);
+  }
+
+  .stars-row {
+    display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+  }
+
+  .star-btn {
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 700;
+    width: 2.4rem; height: 2.4rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.4rem; color: var(--c-muted);
+    cursor: none; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .star-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--c-glow2), var(--c-glow));
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .star-btn span { position: relative; z-index: 1; }
+  .star-btn:hover {
+    border-color: var(--c-glow); color: #fff;
+    transform: scale(1.15) translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,200,255,0.3);
+  }
+  .star-btn:hover::before { opacity: 0.3; }
+  .star-btn.selected {
+    border-color: var(--c-gold);
+    color: var(--c-gold);
+    box-shadow: 0 0 16px rgba(255,200,0,0.4), inset 0 0 10px rgba(255,200,0,0.1);
+    transform: scale(1.1);
+  }
+  .star-btn.selected::before { opacity: 0; }
+  .star-btn.fill {
+    background: linear-gradient(135deg, rgba(123,47,255,0.4), rgba(0,200,255,0.4));
+    border-color: var(--c-glow); color: #fff;
+  }
+  .star-btn.fill::before { opacity: 1; }
+
+  .submit-btn {
+    width: 100%; padding: 0.85rem;
+    font-family: var(--font-display); font-size: 1.1rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    background: linear-gradient(135deg, rgba(123,47,255,0.3), rgba(0,200,255,0.3));
+    border: 1px solid rgba(0,200,255,0.3); border-radius: 0.6rem;
+    color: var(--c-glow); cursor: none;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .submit-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(123,47,255,0.5), rgba(0,200,255,0.5));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .submit-btn:hover {
+    box-shadow: 0 0 24px rgba(0,200,255,0.3), 0 4px 20px rgba(0,0,0,0.4);
+    color: #fff; border-color: var(--c-glow);
+    transform: translateY(-1px);
+  }
+  .submit-btn:hover::before { opacity: 1; }
+  .submit-btn span { position: relative; z-index: 1; }
+  .submit-btn.submitted {
+    border-color: var(--c-gold);
+    background: linear-gradient(135deg, rgba(255,209,102,0.15), rgba(255,150,50,0.15));
+    color: var(--c-gold);
+  }
+  .submit-btn:disabled { opacity: 0.5; pointer-events: none; }
+
+  .card-status {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    color: var(--c-gold); text-align: center;
+    margin-top: 0.75rem; letter-spacing: 0.1em;
+    min-height: 1rem; opacity: 0; transition: opacity 0.5s;
+  }
+  .card-status.show { opacity: 1; }
+
+  /* RATED BADGE */
+  .rated-badge {
+    position: absolute; top: 1rem; right: 1rem;
+    background: rgba(255,209,102,0.15); border: 1px solid rgba(255,209,102,0.4);
+    border-radius: 2rem; padding: 0.25rem 0.7rem;
+    font-family: var(--font-mono); font-size: 0.6rem;
+    color: var(--c-gold); letter-spacing: 0.15em;
+    opacity: 0; transform: scale(0.8);
+    transition: all 0.4s; text-transform: uppercase;
+  }
+  .rated-badge.show { opacity: 1; transform: scale(1); }
+
+  /* ===================== SUCCESS TOAST ===================== */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    z-index: 999;
+    background: rgba(5,15,28,0.95); backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,209,102,0.4);
+    border-radius: 1rem; padding: 1.2rem 2rem;
+    font-family: var(--font-body); font-size: 1rem;
+    color: var(--c-gold); letter-spacing: 0.05em;
+    box-shadow: 0 0 40px rgba(255,200,0,0.2), 0 20px 60px rgba(0,0,0,0.5);
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast-icon { font-size: 1.5rem; animation: spinOnce 0.5s ease; }
+  @keyframes spinOnce { from { transform: rotate(-30deg) scale(0); } to { transform: rotate(0) scale(1); } }
+
+  /* ===================== FINALE SECTION ===================== */
+  #finale {
+    position: relative; z-index: 10;
+    min-height: 80vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 4rem 2rem;
+    overflow: hidden;
+  }
+
+  .finale-line {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    letter-spacing: 0.5em; color: var(--c-glow);
+    text-transform: uppercase; margin-bottom: 2rem;
+  }
+
+  .finale-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 9rem);
+    background: linear-gradient(135deg, var(--c-gold), #fff, var(--c-glow));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 0.9; margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 40px rgba(255,200,0,0.2));
+  }
+
+  .finale-msg {
+    font-family: var(--font-body); font-size: 1rem;
+    color: var(--c-muted); max-width: 480px;
+    line-height: 1.8; letter-spacing: 0.05em;
+  }
+
+  .finale-stars {
+    display: flex; gap: 0.5rem; font-size: 1.5rem;
+    margin: 2rem 0; justify-content: center;
+  }
+  .finale-stars span { animation: floatStar 3s ease-in-out infinite; }
+  .finale-stars span:nth-child(1) { animation-delay: 0s; }
+  .finale-stars span:nth-child(2) { animation-delay: 0.2s; }
+  .finale-stars span:nth-child(3) { animation-delay: 0.4s; }
+  .finale-stars span:nth-child(4) { animation-delay: 0.6s; }
+  .finale-stars span:nth-child(5) { animation-delay: 0.8s; }
+
+  @keyframes floatStar {
+    0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 4px gold); }
+    50% { transform: translateY(-10px); filter: drop-shadow(0 0 12px gold); }
+  }
+
+  .finale-credit {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    color: rgba(80,120,160,0.5); margin-top: 4rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+
+  /* DIVIDER */
+  .glow-divider {
+    position: relative; z-index: 10;
+    height: 1px; margin: 0 auto;
+    max-width: 800px;
+    background: linear-gradient(90deg, transparent, var(--c-glow), var(--c-glow2), transparent);
+    opacity: 0.4;
+  }
+
+  /* ===================== KEYFRAMES ===================== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 600px) {
+    .star-btn { width: 2rem; height: 2rem; font-size: 0.9rem; }
+    .nav { display: none; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring, .mouse-glow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- AMBIENT + CURSOR -->
+<div class="ambient amb1"></div>
+<div class="ambient amb2"></div>
+<div class="ambient amb3"></div>
+<canvas id="particles"></canvas>
+<div class="mouse-glow" id="mouseGlow"></div>
+<div class="cursor" id="cursorDot"><div class="cursor-dot"></div></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-item active" onclick="scrollTo(0,0)">INTRO</div>
+  <div class="nav-item" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">EPISODES</div>
+  <div class="nav-item" onclick="document.getElementById('finale').scrollIntoView({behavior:'smooth'})">FINALE</div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section id="hero">
+  <span class="hero-eyebrow">UNIVERSITY PROJECT COLLECTION · SEASON 01</span>
+  <span class="hero-star">⭐</span>
+  <h1 class="hero-title">RATE ME!</h1>
+  <p class="hero-sub">9 Projects &nbsp;·&nbsp; One Journey</p>
+  <p class="hero-tagline">Every project tells part of the story.</p>
+  <div class="hero-divider"></div>
+  <div class="ep-counter" id="epCounter"></div>
+  <div class="scroll-indicator">
+    <span class="scroll-label">Scroll to Rate</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===================== PROJECTS ===================== -->
+<section id="projects">
+  <div class="section-header">
+    <span class="section-label">Episode Guide</span>
+    <h2 class="section-title">THE EPISODES</h2>
+    <p class="section-sub">Select your score · Submit your verdict</p>
+  </div>
+  <div class="projects-grid" id="projectsGrid"></div>
+</section>
+
+<div class="glow-divider" style="margin: 4rem auto;"></div>
+
+<!-- ===================== FINALE ===================== -->
+<section id="finale">
+  <p class="finale-line">— SEASON 01 FINALE —</p>
+  <h2 class="finale-title">THE SEASON<br>FINALE</h2>
+  <div class="finale-stars">
+    <span>⭐</span><span>✨</span><span>⭐</span><span>✨</span><span>⭐</span>
+  </div>
+  <p class="finale-msg">Thank you for experiencing my university project journey. Every page, every click, every idea — built with passion in Busan.</p>
+  <p class="finale-credit">DESIGNED & DEVELOPED · 2025 · BUSAN, KOREA</p>
+</section>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">⭐</span>
+  <span id="toastMsg">Rating submitted!</span>
+</div>
+
+<script>
+/* ===================== CONFIG ===================== */
+const SCRIPT_URL = "PASTE_MY_GOOGLE_SCRIPT_URL_HERE";
+
+const PROJECTS = [
+  { id: "need_asap",    ep: "EP. 01", title: "need something asap?",        desc: "Emergency helper-style student utility project." },
+  { id: "party",        ep: "EP. 02", title: "Partyyyyyyyy",                  desc: "Interactive nightlife and fun experience project." },
+  { id: "haircare",     ep: "EP. 03", title: "HAIR-CARE",                    desc: "Smart hair-care recommendation and styling project." },
+  { id: "dining",       ep: "EP. 04", title: "dining in campus",             desc: "Campus dining and food experience project." },
+  { id: "open_it",      ep: "EP. 05", title: "are you sure to open it???",   desc: "Mysterious interactive surprise experience." },
+  { id: "hiking",       ep: "EP. 06", title: "HIKING!!!",                    desc: "Interactive Busan hiking and adventure experience." },
+  { id: "univ_life",    ep: "EP. 07", title: "some univ and Korea life",     desc: "University survival and Korean student life guide." },
+  { id: "etiquettes",  ep: "EP. 08", title: "etiquettes",                   desc: "Interactive Korean social rules and etiquette simulator." },
+  { id: "rate_me",      ep: "EP. 09", title: "THIS RATE ME PAGE!",           desc: "The final season finale project experience." },
+];
+
+/* ===================== GOOGLE SHEETS SUBMIT ===================== */
+function submitRating(project, rating) {
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({ project, rating })
+  })
+  .then(res => res.json())
+  .then(data => { showSuccessMessage(project, rating); })
+  .catch(() => { showSuccessMessage(project, rating); }); // graceful fallback
+}
+
+/* ===================== BUILD CARDS ===================== */
+const grid = document.getElementById('projectsGrid');
+const epCounter = document.getElementById('epCounter');
+const ratings = JSON.parse(localStorage.getItem('ratings') || '{}');
+
+PROJECTS.forEach((p, idx) => {
+  // Episode dots
+  const dot = document.createElement('div');
+  dot.className = 'ep-dot' + (idx === 0 ? ' active' : '');
+  dot.id = 'dot-' + idx;
+  epCounter.appendChild(dot);
+
+  // Card
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + idx;
+  card.style.transitionDelay = (idx * 0.06) + 's';
+
+  const saved = ratings[p.id];
+
+  let starsHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    starsHTML += `<button class="star-btn ${saved && i <= saved ? 'fill' : ''} ${saved && i === saved ? 'selected' : ''}"
+      data-score="${i}" data-idx="${idx}">
+      <span>${i}</span>
+    </button>`;
+  }
+
+  card.innerHTML = `
+    <div class="card-corner-br"></div>
+    <div class="rated-badge ${saved ? 'show' : ''}" id="badge-${idx}">${saved ? '★ RATED ' + saved + '/10' : 'RATED'}</div>
+    <div class="card-ep">${p.ep}</div>
+    <div class="card-title">${p.title}</div>
+    <div class="card-desc">${p.desc}</div>
+    <div class="rating-label">Your Rating</div>
+    <div class="stars-row" id="stars-${idx}">${starsHTML}</div>
+    <button class="submit-btn ${saved ? 'submitted' : ''}" id="submit-${idx}" ${saved ? 'disabled' : ''}>
+      <span>${saved ? '✓ RATED' : 'SUBMIT RATING'}</span>
+    </button>
+    <div class="card-status ${saved ? 'show' : ''}" id="status-${idx}">
+      ${saved ? '⭐ Thanks for rating ' + p.title : ''}
+    </div>
+  `;
+  grid.appendChild(card);
+
+  // Card mouse glow
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
+    const y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
+    card.style.setProperty('--mx', x + '%');
+    card.style.setProperty('--my', y + '%');
+  });
+});
+
+/* ===================== STAR SELECTION ===================== */
+grid.addEventListener('click', e => {
+  const btn = e.target.closest('.star-btn');
+  if (!btn) return;
+  const idx = +btn.dataset.idx;
+  const score = +btn.dataset.score;
+  const row = document.getElementById('stars-' + idx);
+  row.querySelectorAll('.star-btn').forEach((b, i) => {
+    b.classList.remove('selected', 'fill');
+    if (i < score) b.classList.add('fill');
+    if (i === score - 1) b.classList.add('selected');
+  });
+  row.dataset.selected = score;
+});
+
+/* ===================== SUBMIT ===================== */
+grid.addEventListener('click', e => {
+  const btn = e.target.closest('.submit-btn');
+  if (!btn || btn.disabled) return;
+  const idx = +btn.id.replace('submit-', '');
+  const row = document.getElementById('stars-' + idx);
+  const score = +row.dataset.selected;
+  if (!score) {
+    row.style.animation = 'shake 0.4s';
+    setTimeout(() => row.style.animation = '', 400);
+    return;
+  }
+  const p = PROJECTS[idx];
+
+  // Save locally
+  ratings[p.id] = score;
+  localStorage.setItem('ratings', JSON.stringify(ratings));
+
+  // Update UI
+  btn.innerHTML = '<span>✓ RATED</span>';
+  btn.classList.add('submitted'); btn.disabled = true;
+  const badge = document.getElementById('badge-' + idx);
+  badge.textContent = '★ RATED ' + score + '/10';
+  badge.classList.add('show');
+  updateEpDot(idx);
+
+  submitRating(p.title, score);
+});
+
+function showSuccessMessage(project, rating) {
+  const status = document.querySelector(`.card-status[id^=status-]`);
+  // Find card by project title
+  PROJECTS.forEach((p, idx) => {
+    if (p.title === project) {
+      const s = document.getElementById('status-' + idx);
+      s.textContent = `⭐ Thanks for rating ${project}`;
+      s.classList.add('show');
+    }
+  });
+  showToast(`Thanks for rating "${project}" — ${rating}/10`);
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+function updateEpDot(idx) {
+  const dot = document.getElementById('dot-' + idx);
+  if (dot) dot.classList.add('active');
+}
+
+// Restore dots for already-rated
+Object.keys(ratings).forEach(id => {
+  const idx = PROJECTS.findIndex(p => p.id === id);
+  if (idx >= 0) updateEpDot(idx);
+});
+
+/* ===================== SCROLL REVEAL ===================== */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.card').forEach(c => observer.observe(c));
+
+/* ===================== PROGRESS BAR ===================== */
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progressBar').style.width = (window.scrollY / max * 100) + '%';
+});
+
+/* ===================== CURSOR ===================== */
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+const mouseGlow = document.getElementById('mouseGlow');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursorDot.style.left = mx + 'px'; cursorDot.style.top = my + 'px';
+  mouseGlow.style.left = mx + 'px'; mouseGlow.style.top = my + 'px';
+});
+
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+/* ===================== PARTICLES ===================== */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); initParticles(); });
+
+function initParticles() {
+  particles = [];
+  const count = Math.floor(W * H / 14000);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.6 + 0.1,
+      hue: Math.random() > 0.7 ? 190 + Math.random() * 40 : 260 + Math.random() * 30
+    });
+  }
+}
+initParticles();
+
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${p.hue},100%,75%,${p.alpha})`;
+    ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+  });
+  // Mouse repulsion
+  particles.forEach(p => {
+    const dx = p.x - mx, dy = p.y - my;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 100) {
+      p.x += dx / dist * 1.5;
+      p.y += dy / dist * 1.5;
+    }
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* SHAKE */
+const style = document.createElement('style');
+style.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
