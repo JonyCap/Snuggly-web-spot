@@ -1,0 +1,490 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+  .hero {
+    text-align: center;
+    padding: 4rem 1rem 3rem;
+    position: relative;
+  }
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #378ADD;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  .hero-title {
+    font-size: 2.6rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    margin-bottom: 1.2rem;
+  }
+  .hero-title span { color: #378ADD; }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 2rem;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 0.5px solid #B5D4F4;
+    background: #E6F1FB;
+    color: #185FA5;
+    font-size: 13px;
+  }
+
+  .divider {
+    width: 40px;
+    height: 2px;
+    background: #378ADD;
+    border-radius: 2px;
+    margin: 3rem auto;
+    opacity: 0.4;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #378ADD;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 0.9rem;
+    line-height: 1.35;
+  }
+  .section-body {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+
+  .intro-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 560px) {
+    .intro-block { grid-template-columns: 1fr; }
+    .hero-title { font-size: 1.8rem; }
+  }
+
+  .stat-card {
+    background: #E6F1FB;
+    border: 0.5px solid #B5D4F4;
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #185FA5;
+    display: block;
+  }
+  .stat-desc {
+    font-size: 13px;
+    color: #378ADD;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .timeline {
+    position: relative;
+    margin: 2rem 0;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 1.5px;
+    background: linear-gradient(to bottom, #B5D4F4, #85B7EB, #B5D4F4);
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 2rem;
+    cursor: pointer;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -1.75rem;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-background-primary);
+    border: 2px solid #378ADD;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .tl-item:hover::before, .tl-item.open::before {
+    background: #378ADD;
+    transform: scale(1.2);
+  }
+  .tl-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+  }
+  .tl-item:hover .tl-header, .tl-item.open .tl-header {
+    border-color: #B5D4F4;
+    background: #E6F1FB;
+  }
+  .tl-phase {
+    font-size: 11px;
+    color: #378ADD;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .tl-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-top: 2px;
+  }
+  .tl-arrow {
+    font-size: 16px;
+    color: #378ADD;
+    transition: transform 0.25s;
+  }
+  .tl-item.open .tl-arrow { transform: rotate(180deg); }
+  .tl-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.3s;
+    opacity: 0;
+  }
+  .tl-item.open .tl-body {
+    max-height: 400px;
+    opacity: 1;
+  }
+  .tl-content {
+    padding: 1rem 1.25rem 0.25rem;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    border-left: 2px solid #B5D4F4;
+    margin-top: 6px;
+    margin-left: 0.25rem;
+  }
+
+  .struggles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 1.5rem 0;
+  }
+  .struggle-card {
+    padding: 1.1rem;
+    border-radius: var(--border-radius-lg);
+    border: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    transition: border-color 0.2s, transform 0.18s;
+    cursor: default;
+  }
+  .struggle-card:hover {
+    border-color: #B5D4F4;
+    transform: translateY(-2px);
+  }
+  .struggle-icon {
+    font-size: 20px;
+    color: #378ADD;
+    margin-bottom: 8px;
+  }
+  .struggle-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+  }
+  .struggle-desc {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+
+  .quote-block {
+    border-left: 3px solid #378ADD;
+    padding: 1.2rem 1.5rem;
+    background: #E6F1FB;
+    border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;
+    margin: 1.5rem 0;
+  }
+  .quote-text {
+    font-size: 1.05rem;
+    color: #0C447C;
+    line-height: 1.75;
+    font-style: italic;
+  }
+  .quote-attr {
+    font-size: 12px;
+    color: #378ADD;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  .solution-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin: 1.5rem 0;
+  }
+  .sol-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 24px;
+    border: 0.5px solid #B5D4F4;
+    background: var(--color-background-primary);
+    font-size: 13px;
+    color: #185FA5;
+    font-weight: 500;
+    transition: background 0.18s;
+  }
+  .sol-pill:hover { background: #E6F1FB; }
+  .sol-pill i { font-size: 15px; }
+
+  .closing {
+    text-align: center;
+    padding: 3rem 1rem;
+    border-radius: var(--border-radius-xl);
+    border: 0.5px solid #B5D4F4;
+    background: linear-gradient(160deg, #E6F1FB 0%, var(--color-background-secondary) 100%);
+    margin-top: 2rem;
+  }
+  .closing-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 0.8rem;
+  }
+  .closing-body {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    max-width: 460px;
+    margin: 0 auto 1.5rem;
+  }
+  .closing-tag {
+    font-size: 12px;
+    color: #378ADD;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<div class="page" role="main">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Origin story of the Korea Survival System project for exchange students at Dong-A University</h2>
+
+  <div class="hero reveal">
+    <div class="hero-label">Project origin story</div>
+    <div class="hero-title">How this idea<br><span>came up</span> <span style="color:var(--color-text-secondary);font-size:2rem;">💡</span></div>
+    <div class="hero-sub">A real experience. A real gap. A real system built to help the next generation of exchange students at Dong-A University, Busan.</div>
+    <div class="hero-badge">
+      <i class="ti ti-map-pin" aria-hidden="true"></i>
+      Dong-A University · Busan, Korea
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="reveal" style="margin-bottom:2.5rem;">
+    <div class="section-label">The starting point</div>
+    <div class="section-title">It started with being lost — literally.</div>
+    <div class="section-body">Living as an international student in Korea is exciting, but the first months are often disorienting. Not because Korea is unwelcoming — it isn't — but because the information students need is scattered, incomplete, or simply in a language they cannot yet read.</div>
+
+    <div class="intro-block" style="margin-top:1.5rem;">
+      <div class="stat-card">
+        <span class="stat-num">Years</span>
+        <span class="stat-desc">of personal experience living and studying in Korea</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">One gap</span>
+        <span class="stat-desc">no structured survival guide existed for incoming exchange students</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal" style="margin-bottom:2.5rem;">
+    <div class="section-label">The problem</div>
+    <div class="section-title">What exchange students actually go through</div>
+    <div class="section-body" style="margin-bottom:1rem;">These aren't hypothetical struggles. Every one of these was observed — or personally experienced — during years of living in Busan.</div>
+    <div class="struggles-grid">
+      <div class="struggle-card">
+        <div class="struggle-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></div>
+        <div class="struggle-title">Information overload</div>
+        <div class="struggle-desc">Too much online, none of it organized or reliable for newcomers</div>
+      </div>
+      <div class="struggle-card">
+        <div class="struggle-icon"><i class="ti ti-language" aria-hidden="true"></i></div>
+        <div class="struggle-title">Language barrier</div>
+        <div class="struggle-desc">Korean systems — transit, banking, apps — are often not in English</div>
+      </div>
+      <div class="struggle-card">
+        <div class="struggle-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
+        <div class="struggle-title">Asking strangers</div>
+        <div class="struggle-desc">Students rely on random people who give partial or incorrect answers</div>
+      </div>
+      <div class="struggle-card">
+        <div class="struggle-icon"><i class="ti ti-device-mobile" aria-hidden="true"></i></div>
+        <div class="struggle-title">Missing the right apps</div>
+        <div class="struggle-desc">Essential Korean apps for daily life go completely unknown for weeks</div>
+      </div>
+      <div class="struggle-card">
+        <div class="struggle-icon"><i class="ti ti-mood-confused" aria-hidden="true"></i></div>
+        <div class="struggle-title">Cultural confusion</div>
+        <div class="struggle-desc">Unspoken social norms lead to awkward or uncomfortable situations</div>
+      </div>
+      <div class="struggle-card">
+        <div class="struggle-icon"><i class="ti ti-clock" aria-hidden="true"></i></div>
+        <div class="struggle-title">Months of adjustment</div>
+        <div class="struggle-desc">What could take days often takes months without proper guidance</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-block reveal">
+    <div class="quote-text">"I remembered thinking — if only someone had given me a clear, honest guide during my first week, everything would have been so much easier. Not a brochure. A real system."</div>
+    <div class="quote-attr">— The creator, reflecting on early days in Busan</div>
+  </div>
+
+  <div class="reveal" style="margin-bottom:2.5rem;">
+    <div class="section-label">The journey</div>
+    <div class="section-title">From personal confusion to a clear idea</div>
+    <div class="section-body" style="margin-bottom:1.5rem;">The idea didn't arrive in one moment. It built slowly — through experiences, observations, and conversations with other students who faced the same walls.</div>
+
+    <div class="timeline">
+      <div class="tl-item" id="tl0">
+        <div class="tl-header" onclick="toggleTL(0)">
+          <div>
+            <div class="tl-phase">Phase 01</div>
+            <div class="tl-name">Arriving and struggling</div>
+          </div>
+          <i class="ti ti-chevron-down tl-arrow" aria-hidden="true"></i>
+        </div>
+        <div class="tl-body">
+          <div class="tl-content">The first weeks in Korea felt overwhelming. Simple tasks — registering a phone, finding the right bus, understanding university admin systems — were far harder than expected. Every small obstacle cost hours of searching, asking, and guessing.</div>
+        </div>
+      </div>
+
+      <div class="tl-item" id="tl1">
+        <div class="tl-header" onclick="toggleTL(1)">
+          <div>
+            <div class="tl-phase">Phase 02</div>
+            <div class="tl-name">Noticing the pattern</div>
+          </div>
+          <i class="ti ti-chevron-down tl-arrow" aria-hidden="true"></i>
+        </div>
+        <div class="tl-body">
+          <div class="tl-content">Over time, it became clear this wasn't a personal problem — it was universal. Other international students at Dong-A faced the same walls. New students asked the same questions semester after semester, often getting different or incomplete answers each time.</div>
+        </div>
+      </div>
+
+      <div class="tl-item" id="tl2">
+        <div class="tl-header" onclick="toggleTL(2)">
+          <div>
+            <div class="tl-phase">Phase 03</div>
+            <div class="tl-name">Building personal knowledge</div>
+          </div>
+          <i class="ti ti-chevron-down tl-arrow" aria-hidden="true"></i>
+        </div>
+        <div class="tl-body">
+          <div class="tl-content">After years of living in Korea, the knowledge accumulated naturally — which apps actually matter, how Korean etiquette works in practice, how to navigate the transport system confidently, where to find good food without guessing. This knowledge was real, tested, and useful. But it only existed informally.</div>
+        </div>
+      </div>
+
+      <div class="tl-item" id="tl3">
+        <div class="tl-header" onclick="toggleTL(3)">
+          <div>
+            <div class="tl-phase">Phase 04</div>
+            <div class="tl-name">The idea crystallizes</div>
+          </div>
+          <i class="ti ti-chevron-down tl-arrow" aria-hidden="true"></i>
+        </div>
+        <div class="tl-body">
+          <div class="tl-content">The question became simple: what if all of this — practical survival tips, cultural understanding, transportation guides, app recommendations, etiquette — existed in one place, designed specifically for incoming exchange students at Dong-A? Not a Wikipedia page. Not a forum thread. A real, structured, interactive system.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal" style="margin-bottom:2.5rem;">
+    <div class="section-label">The solution</div>
+    <div class="section-title">What the Korea Survival System covers</div>
+    <div class="section-body" style="margin-bottom:1.25rem;">It was designed not as a website, but as a complete support system — giving future students a head start before they even land in Busan.</div>
+    <div class="solution-grid">
+      <div class="sol-pill"><i class="ti ti-map" aria-hidden="true"></i> Transportation</div>
+      <div class="sol-pill"><i class="ti ti-device-mobile" aria-hidden="true"></i> Essential apps</div>
+      <div class="sol-pill"><i class="ti ti-tools-kitchen-2" aria-hidden="true"></i> Food guide</div>
+      <div class="sol-pill"><i class="ti ti-brain" aria-hidden="true"></i> Korean culture</div>
+      <div class="sol-pill"><i class="ti ti-shield" aria-hidden="true"></i> Practical survival</div>
+      <div class="sol-pill"><i class="ti ti-users" aria-hidden="true"></i> Social etiquette</div>
+      <div class="sol-pill"><i class="ti ti-building" aria-hidden="true"></i> University systems</div>
+      <div class="sol-pill"><i class="ti ti-heart" aria-hidden="true"></i> Real-life advice</div>
+    </div>
+  </div>
+
+  <div class="closing reveal">
+    <div class="closing-title">Built from experience. Designed with care.</div>
+    <div class="closing-body">This project exists because someone lived through the confusion and decided the next students shouldn't have to. It is personal. It is practical. And it is built for the future exchange students of Dong-A University.</div>
+    <div class="closing-tag"><i class="ti ti-map-pin" aria-hidden="true"></i> &nbsp;Busan, Korea — Dong-A University</div>
+  </div>
+
+</div>
+
+<script>
+  function toggleTL(n) {
+    const el = document.getElementById('tl' + n);
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.tl-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.06) + 's';
+    observer.observe(el);
+  });
+</script>
