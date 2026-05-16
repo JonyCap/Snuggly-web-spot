@@ -1,0 +1,189 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.hero{padding:3rem 2rem 2rem;text-align:center;border-bottom:0.5px solid var(--color-border-tertiary)}
+.hero-tag{display:inline-block;font-size:12px;font-weight:500;letter-spacing:.06em;color:var(--color-text-info);background:var(--color-background-info);padding:4px 14px;border-radius:var(--border-radius-md);margin-bottom:1.2rem}
+.hero h1{font-size:28px;font-weight:500;color:var(--color-text-primary);line-height:1.3;margin-bottom:.75rem}
+.hero p{font-size:15px;color:var(--color-text-secondary);max-width:520px;margin:0 auto;line-height:1.7}
+.section{padding:2rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:1rem}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:0}
+.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.9rem 1rem}
+.stat-card .num{font-size:26px;font-weight:500;color:var(--color-text-primary);display:block}
+.stat-card .lbl{font-size:12px;color:var(--color-text-secondary);margin-top:4px;line-height:1.4}
+.stat-card .num span{font-size:13px;font-weight:400;color:var(--color-text-secondary)}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.p-card{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden}
+.p-card .p-head{padding:.75rem 1rem;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.p-card .p-head i{font-size:16px}
+.p-card .p-body{font-size:13px;color:var(--color-text-secondary);line-height:1.6;padding:0 1rem .9rem;display:none}
+.p-card.open .p-body{display:block}
+.p-card.open .p-head{border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:.75rem}
+.toggle-icon{margin-left:auto;font-size:14px;transition:transform .25s}
+.p-card.open .toggle-icon{transform:rotate(180deg)}
+.vs-section{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs-col{border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);padding:1rem 1.25rem}
+.vs-col .vs-head{font-size:12px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+.vs-col.problem .vs-head{color:var(--color-text-danger)}
+.vs-col.solution .vs-head{color:var(--color-text-success)}
+.vs-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.vs-col ul li{font-size:13px;color:var(--color-text-secondary);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.vs-col ul li i{font-size:15px;margin-top:1px;flex-shrink:0}
+.vs-col.problem ul li i{color:var(--color-text-danger)}
+.vs-col.solution ul li i{color:var(--color-text-success)}
+.benefit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.benefit-card{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem;display:flex;flex-direction:column;gap:6px}
+.benefit-card i{font-size:20px;color:var(--color-text-info)}
+.benefit-card .b-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.benefit-card .b-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.author-card{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--color-text-info);flex-shrink:0}
+.author-info p.name{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.author-info p.role{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.author-info p.bio{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-top:.6rem}
+.footer{padding:1.5rem 2rem;text-align:center;font-size:13px;color:var(--color-text-tertiary)}
+.animate-in{opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease}
+.animate-in.visible{opacity:1;transform:translateY(0)}
+</style>
+
+<h2 class="sr-only">Korea Survival System — Why this project is useful for exchange students and international visitors</h2>
+
+<div class="hero animate-in">
+  <div class="hero-tag">Exchange student perspective</div>
+  <h1>Is this useful? Yes — here's why.</h1>
+  <p>A guide built from real student life in Busan, not from tourism brochures.</p>
+</div>
+
+<div class="section animate-in">
+  <div class="section-label">By the numbers</div>
+  <div class="stat-grid">
+    <div class="stat-card"><span class="num" id="s1">0 <span>yrs</span></span><div class="lbl">Living and studying in Busan</div></div>
+    <div class="stat-card"><span class="num" id="s2">0</span><div class="lbl">Topics covered — transport, apps, food, culture</div></div>
+    <div class="stat-card"><span class="num" id="s3">0<span>%</span></span><div class="lbl">Based on personal, first-hand experience</div></div>
+    <div class="stat-card"><span class="num" id="s4">0 <span>uni</span></span><div class="lbl">Focus: Dong-A University student life</div></div>
+  </div>
+</div>
+
+<div class="section animate-in">
+  <div class="section-label">What students don't know when they arrive</div>
+  <div class="problem-grid" id="problems">
+    <div class="p-card open">
+      <div class="p-head" onclick="toggle(this)"><i class="ti ti-bus" aria-hidden="true"></i> Transportation<i class="ti ti-chevron-down toggle-icon" aria-hidden="true"></i></div>
+      <div class="p-body">Korea's transit system is efficient but unfamiliar — T-money cards, express buses, subway transfers, and app-based routes are not obvious to newcomers.</div>
+    </div>
+    <div class="p-card">
+      <div class="p-head" onclick="toggle(this)"><i class="ti ti-device-mobile" aria-hidden="true"></i> Essential apps<i class="ti ti-chevron-down toggle-icon" aria-hidden="true"></i></div>
+      <div class="p-body">KakaoTalk, Naver Map, Coupang, and Baemin are daily necessities. Most students don't know these exist until weeks in.</div>
+    </div>
+    <div class="p-card">
+      <div class="p-head" onclick="toggle(this)"><i class="ti ti-salad" aria-hidden="true"></i> Food & dietary needs<i class="ti ti-chevron-down toggle-icon" aria-hidden="true"></i></div>
+      <div class="p-body">Vegetarian, halal, and allergen-aware options require knowing exactly where to look. Korean menus are often only in Korean.</div>
+    </div>
+    <div class="p-card">
+      <div class="p-head" onclick="toggle(this)"><i class="ti ti-building" aria-hidden="true"></i> University culture<i class="ti ti-chevron-down toggle-icon" aria-hidden="true"></i></div>
+      <div class="p-body">Korean academic expectations, attendance norms, professor etiquette, and club culture are very different from most home universities.</div>
+    </div>
+    <div class="p-card">
+      <div class="p-head" onclick="toggle(this)"><i class="ti ti-users" aria-hidden="true"></i> Korean etiquette<i class="ti ti-chevron-down toggle-icon" aria-hidden="true"></i></div>
+      <div class="p-body">Age-based speech levels, dining customs, public behavior, and unspoken social rules affect daily interaction in ways students don't anticipate.</div>
+    </div>
+    <div class="p-card">
+      <div class="p-head" onclick="toggle(this)"><i class="ti ti-home" aria-hidden="true"></i> Daily survival<i class="ti ti-chevron-down toggle-icon" aria-hidden="true"></i></div>
+      <div class="p-body">Banking without a Korean ID, finding a sim card, understanding bank apps, getting a health check — all of this is confusing the first time.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section animate-in">
+  <div class="section-label">Problem vs solution</div>
+  <div class="vs-section">
+    <div class="vs-col problem">
+      <div class="vs-head"><i class="ti ti-alert-circle" aria-hidden="true"></i> Without this guide</div>
+      <ul>
+        <li><i class="ti ti-x" aria-hidden="true"></i>Weeks of confusion and trial-and-error</li>
+        <li><i class="ti ti-x" aria-hidden="true"></i>Relying on scattered, outdated blogs</li>
+        <li><i class="ti ti-x" aria-hidden="true"></i>Missing important cultural context</li>
+        <li><i class="ti ti-x" aria-hidden="true"></i>Feeling unprepared and stressed</li>
+      </ul>
+    </div>
+    <div class="vs-col solution">
+      <div class="vs-head"><i class="ti ti-circle-check" aria-hidden="true"></i> With this guide</div>
+      <ul>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Organized, practical information ready to use</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Advice from someone who lived it</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Cultural context included naturally</li>
+        <li><i class="ti ti-check" aria-hidden="true"></i>Faster adaptation, less anxiety</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section animate-in">
+  <div class="section-label">Why it's different</div>
+  <div class="benefit-grid">
+    <div class="benefit-card"><i class="ti ti-map-pin" aria-hidden="true"></i><div class="b-title">Real location</div><div class="b-desc">Focused on Busan and Dong-A — not generic "Korea"</div></div>
+    <div class="benefit-card"><i class="ti ti-user-check" aria-hidden="true"></i><div class="b-title">Lived experience</div><div class="b-desc">Not copied from a travel blog or tourism site</div></div>
+    <div class="benefit-card"><i class="ti ti-clock" aria-hidden="true"></i><div class="b-title">Saves time</div><div class="b-desc">No need to search 20 websites for basic answers</div></div>
+    <div class="benefit-card"><i class="ti ti-school" aria-hidden="true"></i><div class="b-title">Student-focused</div><div class="b-desc">Built around real student life, not tourist visits</div></div>
+    <div class="benefit-card"><i class="ti ti-language" aria-hidden="true"></i><div class="b-title">Cultural depth</div><div class="b-desc">Explains the "why" behind Korean customs</div></div>
+    <div class="benefit-card"><i class="ti ti-layers-intersect" aria-hidden="true"></i><div class="b-title">Practical first</div><div class="b-desc">Every piece of information is actually usable</div></div>
+  </div>
+</div>
+
+<div class="section animate-in">
+  <div class="section-label">About the creator</div>
+  <div class="author-card">
+    <div class="avatar">IS</div>
+    <div class="author-info">
+      <p class="name">International student — Busan</p>
+      <p class="role">Dong-A University · Several years of student life in Korea</p>
+      <p class="bio">This project wasn't built from research — it was built from experience. Every confusion, every mistake, every moment of not knowing where to go or what to do in a foreign country became part of this guide. That's what makes it different.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer animate-in">Built from real student life · Busan, Korea</div>
+
+<script>
+function toggle(head){
+  const card=head.closest('.p-card');
+  card.classList.toggle('open');
+}
+
+const targets=[
+  {id:'s1',end:3,suffix:' yrs',decimals:0},
+  {id:'s2',end:6,suffix:'',decimals:0},
+  {id:'s3',end:100,suffix:'%',decimals:0},
+  {id:'s4',end:1,suffix:' uni',decimals:0}
+];
+
+function animateNum(el,end,suffix){
+  let start=0,dur=1200,s=null;
+  function step(ts){
+    if(!s)s=ts;
+    const p=Math.min((ts-s)/dur,1);
+    const ease=1-Math.pow(1-p,3);
+    el.innerHTML=Math.round(ease*end)+(suffix?'<span>'+suffix+'</span>':'');
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      targets.forEach(t=>{
+        const el=document.getElementById(t.id);
+        if(el&&!el.dataset.animated){
+          el.dataset.animated=1;
+          animateNum(el,t.end,t.suffix);
+        }
+      });
+    }
+  });
+},{threshold:0.15});
+
+document.querySelectorAll('.animate-in').forEach(el=>observer.observe(el));
+</script>
