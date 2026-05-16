@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Korea Survival System 🇰🇷</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-50: #f0f7ff;
+    --blue-100: #e0effe;
+    --blue-200: #bae0fd;
+    --blue-400: #38bdf8;
+    --blue-500: #0ea5e9;
+    --blue-600: #0284c7;
+    --blue-700: #0369a1;
+    --navy: #0f172a;
+    --slate: #334155;
+    --slate-light: #64748b;
+    --white: #ffffff;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --accent: #0ea5e9;
+    --accent-soft: rgba(14,165,233,0.1);
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 16px rgba(15,23,42,0.08), 0 2px 6px rgba(15,23,42,0.04);
+    --shadow-lg: 0 12px 40px rgba(15,23,42,0.12), 0 4px 14px rgba(15,23,42,0.06);
+    --shadow-xl: 0 24px 60px rgba(15,23,42,0.16);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--navy);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  .nav-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500; color: var(--slate);
+    background: none; border: none; cursor: pointer;
+    padding: 6px 12px; border-radius: 8px;
+    transition: var(--transition);
+  }
+  .nav-btn:hover { background: var(--gray-100); color: var(--navy); }
+  .mobile-menu .nav-btn { font-size: 0.9rem; padding: 10px 14px; text-align: left; width: 100%; }
+  .f-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; color: rgba(255,255,255,0.6);
+    background: none; border: none; cursor: pointer;
+    transition: color 0.2s; padding: 0;
+  }
+  .f-btn:hover { color: white; }
+
+  /* ──────────── NAV ──────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gray-200);
+    transition: var(--transition);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 64px;
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-logo span { font-size: 1.2rem; }
+  .nav-links { display: flex; gap: 4px; align-items: center; }
+  .nav-links a {
+    font-size: 0.82rem; font-weight: 500; color: var(--slate);
+    text-decoration: none; padding: 6px 12px; border-radius: 8px;
+    transition: var(--transition);
+  }
+  .nav-links a:hover { background: var(--gray-100); color: var(--navy); }
+  .nav-cta {
+    background: var(--navy) !important; color: var(--white) !important;
+    padding: 7px 16px !important; border-radius: 8px !important;
+  }
+  .nav-cta:hover { background: var(--blue-700) !important; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; border-radius: 8px; transition: var(--transition); }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: var(--transition); }
+  .hamburger:hover { background: var(--gray-100); }
+  .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 16px 24px; z-index: 999; flex-direction: column; gap: 4px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { font-size: 0.9rem; font-weight: 500; color: var(--slate); text-decoration: none; padding: 10px 14px; border-radius: 8px; transition: var(--transition); }
+  .mobile-menu a:hover { background: var(--gray-100); color: var(--navy); }
+
+  /* ──────────── HERO ──────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, #f0f7ff 0%, #ffffff 50%, #f8fafc 100%);
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(14,165,233,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 80%, rgba(3,105,161,0.06) 0%, transparent 60%);
+    animation: heroBgShift 12s ease-in-out infinite alternate;
+  }
+  @keyframes heroBgShift {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.05); }
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent-soft); border: 1px solid rgba(14,165,233,0.2);
+    border-radius: 100px; padding: 6px 16px 6px 10px;
+    font-size: 0.78rem; font-weight: 600; color: var(--blue-600);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    margin-bottom: 28px; position: relative; z-index: 1;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-badge-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    font-weight: 700; line-height: 1.1;
+    color: var(--navy); letter-spacing: -0.03em;
+    margin-bottom: 20px; position: relative; z-index: 1;
+    animation: fadeUp 0.9s 0.1s ease both;
+  }
+  .hero h1 em { font-style: normal; color: var(--blue-600); }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.25rem); font-weight: 400; color: var(--slate);
+    max-width: 600px; margin: 0 auto 16px; position: relative; z-index: 1;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+  .hero-desc {
+    font-size: 0.93rem; color: var(--slate-light); max-width: 520px;
+    margin: 0 auto 48px; position: relative; z-index: 1;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; animation: fadeUp 1s 0.4s ease both; }
+  .btn-primary {
+    background: var(--navy); color: var(--white);
+    padding: 14px 28px; border-radius: 12px;
+    font-size: 0.92rem; font-weight: 600; text-decoration: none;
+    transition: var(--transition); box-shadow: var(--shadow-md);
+    border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--blue-700); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .btn-secondary {
+    background: var(--white); color: var(--navy);
+    padding: 14px 28px; border-radius: 12px;
+    font-size: 0.92rem; font-weight: 600; text-decoration: none;
+    transition: var(--transition); box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { background: var(--gray-50); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .hero-stats {
+    display: flex; gap: 48px; justify-content: center; flex-wrap: wrap;
+    margin-top: 72px; position: relative; z-index: 1;
+    animation: fadeUp 1s 0.5s ease both;
+    padding-top: 48px; border-top: 1px solid var(--gray-200);
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--navy); line-height: 1; }
+  .hero-stat-label { font-size: 0.78rem; color: var(--slate-light); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ──────────── SECTIONS ──────────── */
+  section { padding: 100px 24px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .section-header { margin-bottom: 56px; }
+  .section-tag {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--blue-600);
+    background: var(--accent-soft); padding: 4px 12px; border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: var(--navy); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 12px; }
+  .section-desc { font-size: 1rem; color: var(--slate-light); max-width: 540px; }
+  .alt-bg { background: var(--gray-50); }
+
+  /* ──────────── REVEAL ──────────── */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ──────────── APP CARDS ──────────── */
+  .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .app-card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: 24px;
+    cursor: pointer; transition: var(--transition);
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+  }
+  .app-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--blue-400), var(--blue-600)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+  .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--blue-200); }
+  .app-card:hover::before { transform: scaleX(1); }
+  .app-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px; }
+  .app-name { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .app-cat { font-size: 0.74rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue-500); margin-bottom: 10px; }
+  .app-desc { font-size: 0.86rem; color: var(--slate); line-height: 1.6; margin-bottom: 16px; }
+  .app-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 0.72rem; font-weight: 600; background: var(--gray-100); color: var(--slate); padding: 3px 10px; border-radius: 100px; }
+  .app-more { margin-top: 16px; font-size: 0.82rem; font-weight: 600; color: var(--blue-600); display: flex; align-items: center; gap: 4px; }
+
+  /* ──────────── TRANSPORT ──────────── */
+  .transport-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+  .transport-card {
+    border-radius: var(--radius); padding: 28px;
+    cursor: pointer; transition: var(--transition);
+    border: 1px solid var(--gray-200); background: var(--white);
+    box-shadow: var(--shadow-sm);
+  }
+  .transport-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .transport-icon { font-size: 2rem; margin-bottom: 16px; }
+  .transport-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .transport-card p { font-size: 0.87rem; color: var(--slate); line-height: 1.65; }
+  .expand-content { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-200); }
+  .expand-content.open { display: block; }
+  .expand-content ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .expand-content ul li { font-size: 0.84rem; color: var(--slate); display: flex; gap: 10px; align-items: flex-start; }
+  .expand-content ul li::before { content: '→'; color: var(--blue-500); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .expand-btn { margin-top: 14px; font-size: 0.82rem; font-weight: 600; color: var(--blue-600); cursor: pointer; display: flex; align-items: center; gap: 4px; background: none; border: none; padding: 0; }
+  .expand-btn .arrow { transition: transform 0.3s ease; display: inline-block; }
+  .expand-btn.open .arrow { transform: rotate(90deg); }
+
+  /* ──────────── BANKING ──────────── */
+  .banking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .banking-card {
+    border-radius: var(--radius); padding: 28px;
+    background: var(--white); border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm); transition: var(--transition);
+  }
+  .banking-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+  .banking-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .banking-card p { font-size: 0.86rem; color: var(--slate); line-height: 1.65; }
+  .tip-box { background: rgba(14,165,233,0.06); border: 1px solid rgba(14,165,233,0.15); border-radius: 10px; padding: 14px 16px; margin-top: 14px; font-size: 0.83rem; color: var(--blue-700); }
+  .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); border-radius: 10px; padding: 14px 16px; margin-top: 14px; font-size: 0.83rem; color: #92400e; }
+
+  /* ──────────── FOOD ──────────── */
+  .food-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+  .filter-btn {
+    padding: 9px 20px; border-radius: 100px; font-size: 0.84rem; font-weight: 600;
+    border: 2px solid var(--gray-200); background: var(--white); color: var(--slate);
+    cursor: pointer; transition: var(--transition);
+  }
+  .filter-btn:hover { border-color: var(--blue-400); color: var(--blue-600); }
+  .filter-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+  .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .food-card {
+    border-radius: var(--radius-sm); padding: 20px;
+    background: var(--white); border: 1px solid var(--gray-200);
+    transition: var(--transition); box-shadow: var(--shadow-sm);
+  }
+  .food-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+  .food-card.hidden { display: none; }
+  .food-emoji { font-size: 2.2rem; margin-bottom: 12px; }
+  .food-name { font-size: 0.98rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .food-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+  .badge { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .badge-veg { background: #dcfce7; color: #166534; }
+  .badge-pork { background: #fee2e2; color: #991b1b; }
+  .badge-beef { background: #fef3c7; color: #92400e; }
+  .badge-halal { background: #e0f2fe; color: #0c4a6e; }
+  .badge-warn { background: #fef3c7; color: #92400e; }
+  .food-note { font-size: 0.82rem; color: var(--slate); line-height: 1.55; }
+
+  /* ──────────── UNIVERSITY ──────────── */
+  .uni-accordion { display: flex; flex-direction: column; gap: 12px; }
+  .uni-item {
+    background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-sm);
+    overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition);
+  }
+  .uni-item:hover { box-shadow: var(--shadow-md); }
+  .uni-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 24px; cursor: pointer;
+  }
+  .uni-header h3 { font-size: 0.96rem; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 12px; }
+  .uni-toggle { width: 28px; height: 28px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 1rem; color: var(--slate); flex-shrink: 0; }
+  .uni-body { display: none; padding: 0 24px 20px; border-top: 1px solid var(--gray-200); }
+  .uni-body.open { display: block; }
+  .uni-body p { font-size: 0.87rem; color: var(--slate); line-height: 1.7; margin-top: 16px; }
+  .scenario-box { background: var(--blue-50); border-radius: 10px; padding: 16px; margin-top: 12px; font-size: 0.84rem; color: var(--slate); border-left: 3px solid var(--blue-400); }
+  .scenario-box strong { color: var(--blue-700); }
+
+  /* ──────────── EMERGENCY ──────────── */
+  .emergency-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .emergency-card {
+    border-radius: var(--radius-sm); padding: 24px;
+    text-align: center; border: 1px solid var(--gray-200);
+    background: var(--white); box-shadow: var(--shadow-sm); transition: var(--transition);
+  }
+  .emergency-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+  .emergency-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .emergency-label { font-size: 0.82rem; font-weight: 700; color: var(--slate); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .emergency-desc { font-size: 0.8rem; color: var(--slate-light); line-height: 1.5; }
+
+  .daily-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 48px; }
+  .daily-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 24px; box-shadow: var(--shadow-sm); transition: var(--transition); }
+  .daily-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+  .daily-card h4 { font-size: 0.96rem; font-weight: 700; color: var(--navy); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .daily-card p { font-size: 0.84rem; color: var(--slate); line-height: 1.65; }
+
+  /* ──────────── CHECKLIST ──────────── */
+  .checklist-wrapper { max-width: 680px; }
+  .progress-bar-wrap { background: var(--gray-200); border-radius: 100px; height: 10px; margin-bottom: 8px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--blue-400), var(--blue-600)); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+  .progress-label { font-size: 0.84rem; color: var(--slate); margin-bottom: 32px; }
+  .progress-label span { font-weight: 700; color: var(--navy); }
+  .checklist-group { margin-bottom: 32px; }
+  .checklist-group h3 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-light); margin-bottom: 14px; }
+  .check-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px; border-radius: 10px; margin-bottom: 8px;
+    background: var(--white); border: 1px solid var(--gray-200);
+    cursor: pointer; transition: var(--transition); user-select: none;
+  }
+  .check-item:hover { border-color: var(--blue-300); background: var(--blue-50); }
+  .check-item.checked { border-color: var(--blue-200); background: var(--blue-50); }
+  .check-box {
+    width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--gray-300);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: var(--transition);
+  }
+  .check-item.checked .check-box { background: var(--blue-600); border-color: var(--blue-600); }
+  .check-box .check-icon { color: white; font-size: 0.75rem; display: none; }
+  .check-item.checked .check-box .check-icon { display: block; }
+  .check-text { font-size: 0.9rem; color: var(--slate); font-weight: 500; transition: color 0.2s; }
+  .check-item.checked .check-text { color: var(--slate-light); text-decoration: line-through; }
+  .confetti-message { display: none; text-align: center; padding: 32px; background: linear-gradient(135deg, var(--blue-50), var(--white)); border: 1px solid var(--blue-200); border-radius: var(--radius); margin-top: 24px; }
+  .confetti-message.show { display: block; }
+  .confetti-message h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 8px; }
+  .confetti-message p { font-size: 0.9rem; color: var(--slate); }
+
+  /* ──────────── MODAL ──────────── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 2000;
+    background: rgba(15,23,42,0.55); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: var(--radius-lg);
+    max-width: 640px; width: 100%; max-height: 88vh;
+    overflow-y: auto; box-shadow: var(--shadow-xl);
+    animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal-header { padding: 28px 28px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .modal-close { width: 36px; height: 36px; border-radius: 50%; background: var(--gray-100); border: none; cursor: pointer; font-size: 1.1rem; color: var(--slate); display: flex; align-items: center; justify-content: center; transition: var(--transition); flex-shrink: 0; }
+  .modal-close:hover { background: var(--gray-200); }
+  .modal-body { padding: 20px 28px 28px; }
+  .modal-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .modal-cat { font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue-500); margin-bottom: 16px; }
+  .modal-section { margin-top: 20px; }
+  .modal-section h4 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate-light); margin-bottom: 8px; }
+  .modal-section p, .modal-section li { font-size: 0.89rem; color: var(--slate); line-height: 1.7; }
+  .modal-section ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .modal-section ul li { display: flex; gap: 8px; align-items: flex-start; }
+  .modal-section ul li::before { content: '→'; color: var(--blue-500); font-weight: 700; flex-shrink: 0; }
+  .modal-dl-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 20px; background: var(--navy); color: var(--white);
+    padding: 12px 24px; border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+    text-decoration: none; transition: var(--transition);
+  }
+  .modal-dl-btn:hover { background: var(--blue-700); transform: translateY(-1px); }
+  .divider { height: 1px; background: var(--gray-200); margin: 20px 0; }
+
+  /* ──────────── FOOTER ──────────── */
+  footer {
+    background: var(--navy); color: white;
+    padding: 48px 24px 32px;
+    text-align: center;
+  }
+  footer .f-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
+  footer p { font-size: 0.84rem; color: rgba(255,255,255,0.5); line-height: 1.7; max-width: 480px; margin: 0 auto; }
+  footer .f-links { display: flex; gap: 24px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
+  footer .f-links a { font-size: 0.82rem; color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+  footer .f-links a:hover { color: white; }
+
+  /* ──────────── RESPONSIVE ──────────── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .banking-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero-stats { gap: 32px; }
+    section { padding: 72px 20px; }
+  }
+  @media (max-width: 480px) {
+    .apps-grid, .transport-grid, .food-grid, .daily-grid { grid-template-columns: 1fr; }
+    .banking-grid { grid-template-columns: 1fr; }
+    .emergency-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo" onclick="goTo('hero')" style="cursor:pointer"><span>🇰🇷</span> Korea Survival</span>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="goTo('apps')">Apps</button>
+      <button class="nav-btn" onclick="goTo('transport')">Transport</button>
+      <button class="nav-btn" onclick="goTo('banking')">Banking</button>
+      <button class="nav-btn" onclick="goTo('food')">Food</button>
+      <button class="nav-btn" onclick="goTo('university')">University</button>
+      <button class="nav-btn" onclick="goTo('emergency')">Emergency</button>
+      <button class="nav-btn nav-cta" onclick="goTo('checklist')">Checklist ✓</button>
+    </div>
+    <div class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="nav-btn" onclick="goTo('apps');closeMenu()">📱 Apps</button>
+  <button class="nav-btn" onclick="goTo('transport');closeMenu()">🚇 Transport</button>
+  <button class="nav-btn" onclick="goTo('banking');closeMenu()">💳 Banking</button>
+  <button class="nav-btn" onclick="goTo('food');closeMenu()">🍜 Food</button>
+  <button class="nav-btn" onclick="goTo('university');closeMenu()">🎓 University</button>
+  <button class="nav-btn" onclick="goTo('emergency');closeMenu()">🚨 Emergency</button>
+  <button class="nav-btn" onclick="goTo('checklist');closeMenu()">✅ Checklist</button>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-badge"><span class="hero-badge-dot"></span> International Student Platform</div>
+  <h1>Korea Survival<br>System <em>🇰🇷</em></h1>
+  <p class="hero-sub">Everything international students wish they knew before coming to Korea.</p>
+  <p class="hero-desc">From transportation and banking apps to dietary survival, university life, and daily Korean systems — your complete preparation guide.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="goTo('apps')">Start Exploring →</button>
+    <button class="btn-secondary" onclick="goTo('checklist')">✅ View Checklist</button>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">11</div><div class="hero-stat-label">Essential Apps</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">6</div><div class="hero-stat-label">Topic Guides</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">25+</div><div class="hero-stat-label">Pro Tips</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">100%</div><div class="hero-stat-label">Foreigner Focus</div></div>
+  </div>
+</section>
+
+<!-- SECTION 1: APPS -->
+<section id="apps">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 01</div>
+      <h2 class="section-title">Essential Korea Apps</h2>
+      <p class="section-desc">The apps locals use every single day. Without these, surviving in Korea is genuinely harder than it needs to be.</p>
+    </div>
+    <div class="apps-grid" id="appsGrid">
+      <!-- Cards generated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: TRANSPORT -->
+<section id="transport" class="alt-bg">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 02</div>
+      <h2 class="section-title">Transportation Survival</h2>
+      <p class="section-desc">Korea's transport system is world-class — once you understand how it works. Click any card to expand.</p>
+    </div>
+    <div class="transport-grid" id="transportGrid"></div>
+  </div>
+</section>
+
+<!-- SECTION 3: BANKING -->
+<section id="banking">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 03</div>
+      <h2 class="section-title">Banking & Money</h2>
+      <p class="section-desc">Money management in Korea has hidden rules that catch every foreigner off guard. Here's what actually works.</p>
+    </div>
+    <div class="banking-grid" id="bankingGrid"></div>
+  </div>
+</section>
+
+<!-- SECTION 4: FOOD -->
+<section id="food" class="alt-bg">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 04</div>
+      <h2 class="section-title">Food & Dietary Restrictions</h2>
+      <p class="section-desc">Korean cuisine is amazing — but has hidden ingredients that can be tricky. Filter by your dietary needs.</p>
+    </div>
+    <div class="food-filters" id="foodFilters">
+      <button class="filter-btn active" data-filter="all">🍽 All Foods</button>
+      <button class="filter-btn" data-filter="vegetarian">🥬 Vegetarian</button>
+      <button class="filter-btn" data-filter="no-pork">🚫🐷 No Pork</button>
+      <button class="filter-btn" data-filter="no-beef">🚫🐄 No Beef</button>
+      <button class="filter-btn" data-filter="halal">☪️ Halal-Friendly</button>
+    </div>
+    <div class="food-grid" id="foodGrid"></div>
+  </div>
+</section>
+
+<!-- SECTION 5: UNIVERSITY -->
+<section id="university">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 05</div>
+      <h2 class="section-title">University Survival</h2>
+      <p class="section-desc">Korean university culture operates on unwritten rules. Understanding them transforms your entire experience.</p>
+    </div>
+    <div class="uni-accordion" id="uniAccordion"></div>
+  </div>
+</section>
+
+<!-- SECTION 6: EMERGENCY -->
+<section id="emergency" class="alt-bg">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 06</div>
+      <h2 class="section-title">Emergency & Daily Life</h2>
+      <p class="section-desc">Know these numbers and systems before you need them — not after.</p>
+    </div>
+    <div class="emergency-grid" id="emergencyGrid"></div>
+    <div class="daily-grid" id="dailyGrid"></div>
+  </div>
+</section>
+
+<!-- SECTION 7: CHECKLIST -->
+<section id="checklist">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Section 07</div>
+      <h2 class="section-title">Final Survival Checklist</h2>
+      <p class="section-desc">Track your preparation progress. Check off each item as you complete it.</p>
+    </div>
+    <div class="checklist-wrapper">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel"><span id="progressCount">0</span> of <span id="progressTotal">0</span> completed</div>
+      <div id="checklistContainer"></div>
+      <div class="confetti-message" id="confettiMsg">
+        <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+        <h3>You're Korea-Ready!</h3>
+        <p>You've completed your survival preparation. Welcome to Korea — enjoy every moment of your adventure.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalContent">
+    <div class="modal-header">
+      <div></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo">🇰🇷 Korea Survival System</div>
+  <div class="f-links">
+    <button class="f-btn" onclick="goTo('apps')">Apps</button>
+    <button class="f-btn" onclick="goTo('transport')">Transport</button>
+    <button class="f-btn" onclick="goTo('banking')">Banking</button>
+    <button class="f-btn" onclick="goTo('food')">Food</button>
+    <button class="f-btn" onclick="goTo('university')">University</button>
+    <button class="f-btn" onclick="goTo('emergency')">Emergency</button>
+    <button class="f-btn" onclick="goTo('checklist')">Checklist</button>
+  </div>
+  <p>Built for international students, exchange students, and first-time visitors to Korea. Your complete preparation platform for surviving and thriving in Korean life.</p>
+</footer>
+
+<script>
+function goTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const offset = 70;
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const APPS = [
+  {
+    icon: '🗺️', name: 'KakaoMap', cat: 'Navigation', color: '#FEE500',
+    desc: 'Korea\'s primary mapping app. Google Maps has severely limited data in Korea due to national regulations — KakaoMap is what everyone actually uses.',
+    tags: ['Navigation', 'Must-Have'],
+    store: 'https://map.kakao.com',
+    details: {
+      why: 'Google Maps cannot show accurate real-time transit, walking routes, or business details in Korea due to map data export restrictions. KakaoMap has complete, real-time Korean data.',
+      when: 'Any time you need directions — walking, transit, driving, or cycling.',
+      tips: ['Enable Korean language for more results', 'Use "Road View" (로드뷰) to preview locations', 'Save favorites to plan your day', 'Search by bus stop number'],
+      mistake: 'Assuming Google Maps will work well. It often gives wrong transit times or misses stops entirely.',
+      scenario: 'You\'re trying to find a small restaurant in Sinchon. Google Maps shows nothing. KakaoMap shows it with real hours, photos, and reviews.'
+    }
+  },
+  {
+    icon: '🧭', name: 'Naver Map', cat: 'Navigation', color: '#03C75A',
+    desc: 'Alternative to KakaoMap with excellent search features. Better for searching unknown business names and detailed local information.',
+    tags: ['Navigation', 'Search'],
+    store: 'https://map.naver.com',
+    details: {
+      why: 'Naver is Korea\'s dominant search engine. Naver Map has the most comprehensive database of Korean businesses, restaurants, and places.',
+      when: 'When searching by business name, looking for reviews (블로그 후기), or finding opening hours.',
+      tips: ['Search in Korean for better results', 'Check "Naver Blog Reviews" for honest restaurant opinions', 'Use for bus route planning as backup'],
+      mistake: 'Only installing one map app. Use both — they complement each other.',
+      scenario: 'A Korean friend recommends a 순대국밥 place. You search the name in Naver Map and instantly find location, hours, and 200+ reviews.'
+    }
+  },
+  {
+    icon: '🚕', name: 'Kakao T', cat: 'Taxi & Ride', color: '#F7E600',
+    desc: 'The only taxi app you need in Korea. Hail taxis instantly, pay by card, and track your driver. Essential for late nights when buses stop running.',
+    tags: ['Taxi', 'Essential'],
+    store: 'https://www.kakaomobility.com',
+    details: {
+      why: 'Regular street taxis can be hard to hail and some drivers refuse foreign cards. Kakao T lets you book, pay, and communicate without speaking Korean.',
+      when: 'After midnight, bad weather, heavy bags, or anywhere unfamiliar.',
+      tips: ['Set pickup as "current location" for easiest booking', 'Kakao Taxi Black is premium — worth it for airports', 'You can pay with card inside the app — no cash needed', 'Share ride status with friends for safety'],
+      mistake: 'Trying to flag taxis on busy streets during rush hour — use the app instead.',
+      scenario: 'It\'s 1am after a school festival. Buses have stopped. You open Kakao T, a driver is there in 3 minutes, and you pay through the app. Zero language barrier.'
+    }
+  },
+  {
+    icon: '🌐', name: 'Papago', cat: 'Translation', color: '#00C73C',
+    desc: 'Naver\'s translation app specifically trained on Korean. Dramatically more accurate than Google Translate for Korean — especially for menus, signs, and conversations.',
+    tags: ['Translation', 'Must-Have'],
+    store: 'https://papago.naver.com',
+    details: {
+      why: 'Google Translate struggles with Korean nuance, informal speech, and food menus. Papago was built by a Korean company with Korean-first AI.',
+      when: 'Reading menus, understanding bank documents, talking to landlords, reading university notices.',
+      tips: ['Use the camera scan mode for instant menu translation', 'Voice mode is surprisingly accurate for conversation', 'Bookmark common phrases', 'Works offline after download'],
+      mistake: 'Trusting Google Translate for important documents — it sometimes produces dangerously wrong translations for Korean.',
+      scenario: 'Your university sends a PDF notice in Korean. You photograph each section with Papago camera — complete translation in seconds.'
+    }
+  },
+  {
+    icon: '🛵', name: 'Coupang Eats', cat: 'Food Delivery', color: '#E4003C',
+    desc: 'Korea\'s fastest food delivery app. Incredibly wide restaurant selection with 30-60 minute delivery times. Part of Coupang\'s massive logistics network.',
+    tags: ['Food', 'Delivery'],
+    store: 'https://www.coupangeats.com',
+    details: {
+      why: 'Delivery culture in Korea is world-class. You can order almost any meal, any time, with transparent tracking and fast delivery.',
+      when: 'Late night studying, rainy days, when you don\'t want to cook, or exploring new foods safely from home.',
+      tips: ['Filter by rating and delivery time', 'Many restaurants show allergy info on the listing', 'Order tracking is extremely precise', 'Payment works with foreign Visa/Mastercard'],
+      mistake: 'Ordering from a restaurant with under 4.3 stars — Koreans rate food very critically so 4.5+ is genuinely excellent.',
+      scenario: 'Exam week, midnight. You order 김치찌개 and it arrives in 28 minutes to your dormitory door.'
+    }
+  },
+  {
+    icon: '🍱', name: 'Baemin', cat: 'Food Delivery', color: '#2AC1BC',
+    desc: 'Korea\'s most popular food delivery app. Massive selection, well-organized categories, and often has exclusive restaurant deals. A Korean daily life staple.',
+    tags: ['Food', 'Most Popular'],
+    store: 'https://www.baemin.com',
+    details: {
+      why: 'Baemin (배달의민족) literally means "nation of delivery." It\'s the app Koreans think of first for food delivery — more restaurants are listed here than anywhere else.',
+      when: 'When you want the widest selection or are looking for Korean comfort foods specifically.',
+      tips: ['Look for the "1인분 주문가능" tag — means you can order for one person', 'Baemin Club membership gives consistent discounts', 'Restaurant photos are accurate in Korea unlike other countries'],
+      mistake: 'Not knowing the minimum order requirement — most places have one (usually ₩10,000-15,000).',
+      scenario: 'Sunday hungover morning. You browse by category, find a nearby 해장국 restaurant with 4,000+ reviews and order recovery soup in three taps.'
+    }
+  },
+  {
+    icon: '💸', name: 'Toss', cat: 'Finance', color: '#0064FF',
+    desc: 'Korea\'s most innovative fintech app. Send money instantly, check credit scores, manage finances, and pay at stores. Used by nearly every Korean under 40.',
+    tags: ['Finance', 'Payments'],
+    store: 'https://toss.im',
+    details: {
+      why: 'Korean banking apps are notoriously difficult for foreigners. Toss has the simplest UX and is designed for quick, everyday financial management.',
+      when: 'Splitting bills with Korean friends, sending money to classmates, checking spending.',
+      tips: ['Requires Korean phone number and bank account to set up', 'Use the "토스페이" function at CU and GS25 convenience stores', 'Friend request feature makes splitting restaurant bills easy'],
+      mistake: 'Expecting your home country banking app to work seamlessly — Korean financial systems have unique authentication requirements.',
+      scenario: 'Group dinner with 8 people. Someone pays. Toss splits the bill automatically and everyone transfers their share instantly. Total time: 90 seconds.'
+    }
+  },
+  {
+    icon: '🚌', name: 'Bustago', cat: 'Intercity Bus', color: '#FF6B35',
+    desc: 'Book intercity express bus tickets across Korea. Essential for weekend trips to Busan, Gyeongju, Jeonju, and other cities without a smartphone-unfriendly terminal.',
+    tags: ['Travel', 'Intercity'],
+    store: 'https://www.bustago.or.kr',
+    details: {
+      why: 'Korean express bus terminals have limited English signage. Bustago lets you browse routes, see exact prices, and purchase tickets in advance from your phone.',
+      when: 'Weekend trips, holidays, traveling outside Seoul or your university city.',
+      tips: ['Book during Chuseok/Seollal holidays weeks in advance — sold out fast', 'Select "창가" for window seat', 'Express buses (고속버스) are different from intercity buses (시외버스) — Bustago covers both'],
+      mistake: 'Showing up at the bus terminal without a ticket on a long weekend — you may wait 4+ hours.',
+      scenario: 'Friday afternoon. You decide to go to Gyeongju for the weekend. Open Bustago, find a 6pm departure, pay ₩18,500, and board with a QR code.'
+    }
+  },
+  {
+    icon: '🚄', name: 'Korail', cat: 'Train', color: '#003087',
+    desc: 'Official Korean train booking app. Reserve KTX (bullet train), ITX, and Mugunghwa trains. The fastest way to travel between major Korean cities.',
+    tags: ['Train', 'KTX'],
+    store: 'https://www.letskorail.com',
+    details: {
+      why: 'KTX travels Seoul-Busan in just 2 hours 15 minutes. Without the app, booking requires navigating Korean kiosks with limited English options.',
+      when: 'Traveling to Busan, Daejeon, Daegu, Gwangju, or anywhere with a KTX stop.',
+      tips: ['Book at least 3 days ahead for weekend KTX', 'Standing tickets (입석) are cheaper if you don\'t mind standing', 'KTX seats are numbered — no rushing for seats', 'Korail Pass for foreigners offers significant monthly discounts'],
+      mistake: 'Buying a ticket for the wrong direction — Seoul station has trains going both ways from the same platform.',
+      scenario: 'Long weekend. KTX Seoul to Busan at 8am. You\'re at Haeundae Beach by 10:30am. Booked and paid on the app the night before.'
+    }
+  },
+  {
+    icon: '🚇', name: 'Subway Korea', cat: 'Subway', color: '#003499',
+    desc: 'Comprehensive Korean subway app covering all major cities. Real-time arrivals, route planning, and offline maps. The commuter\'s essential companion.',
+    tags: ['Subway', 'Daily Use'],
+    store: 'https://www.subway.co.kr',
+    details: {
+      why: 'Each Korean city has a different subway system. Subway Korea consolidates Seoul, Busan, Daegu, Gwangju, and more into one app with live timing.',
+      when: 'Every single subway trip. Morning commute, late night returns, navigating transfers.',
+      tips: ['Turn on notifications for last train alerts', 'Transfers between lines are usually free within 30 minutes with T-money', 'Check "지금 몇 분?" for real arrival countdown', 'Save your home and university as favorites'],
+      mistake: 'Missing the last train — Seoul subway stops around midnight depending on the line. Daejeon and other cities even earlier.',
+      scenario: 'You\'re at Hongdae at 11:30pm. You check the app — last train to your station is at 11:52pm Line 2. You make it with 5 minutes to spare.'
+    }
+  },
+  {
+    icon: '🍽️', name: 'MangoPlate', cat: 'Restaurant Discovery', color: '#FF4500',
+    desc: 'Korea\'s most trusted restaurant review platform. Unlike Naver, MangoPlate is curated by food critics and serious food lovers — quality over quantity.',
+    tags: ['Food', 'Reviews'],
+    store: 'https://www.mangoplate.com',
+    details: {
+      why: 'Finding good food as a foreigner in Korea is hard when you can\'t read reviews. MangoPlate has English-friendly interface and honest, critical reviews.',
+      when: 'Date nights, special occasions, exploring a new neighborhood, or wanting something above street food quality.',
+      tips: ['Filter by "English menu available"', 'Check "English-friendly staff" tag', 'Reservations sometimes available directly in app', 'Lists are curated by food experts — highly reliable'],
+      mistake: 'Using only the star rating without reading reviews — Korean food culture means context matters.',
+      scenario: 'Valentine\'s Day. You want a good wine and steak place near Itaewon. MangoPlate shows 5 options with English menus, prices, and honest reviews. Decision made in 10 minutes.'
+    }
+  }
+];
+
+const TRANSPORT = [
+  {
+    icon: '🚇', title: 'Seoul Metropolitan Subway',
+    desc: 'One of the world\'s largest subway networks. Cheap, reliable, air-conditioned. Goes nearly everywhere you need in Seoul and surrounding cities.',
+    tips: ['Use T-money card — cheaper than single journey tickets', 'Colored lines numbered 1-9 plus special lines', 'Free transfers between most lines within 30 min', 'Announcements in Korean, English, Chinese, Japanese', 'Priority seats (pink/blue) are strictly for elderly/pregnant — never sit there']
+  },
+  {
+    icon: '💳', title: 'T-money Card',
+    desc: 'The essential rechargeable transit card. Use it on subways, buses, and even taxis and convenience stores. Life without it is genuinely more expensive and inconvenient.',
+    tips: ['Buy at any convenience store (GS25, CU, 7-Eleven) for ₩2,500', 'Recharge at subway machines or convenience stores', 'Works in Seoul, Busan, Incheon, Daejeon, and most Korean cities', 'Some stores accept T-money as payment', 'Transfer discount only applies with T-money — not paper tickets']
+  },
+  {
+    icon: '🚌', title: 'City Buses',
+    desc: 'Seoul\'s bus system is color-coded by function. Blue buses are long-distance arterial routes, green are neighborhood circulars, red are express to suburbs, yellow are inner-city.',
+    tips: ['Always tap ON and tap OFF — or you\'re charged maximum fare', 'Front doors for boarding, back doors for exit (usually)', 'Bus arrival shown in real-time on Naver/Kakao Map', 'Standing is normal and expected on crowded buses', 'Call the number at bus stops to hear next arrival times']
+  },
+  {
+    icon: '🚕', title: 'Kakao T Taxi',
+    desc: 'Use Kakao T for comfortable, card-payment-ready taxis. Regular taxis (일반택시) are affordable. Premium black taxis (카카오 블랙) are like Korean Uber premium.',
+    tips: ['Base fare: ~₩4,800 in Seoul', 'Night surcharge applies 11pm–2am', 'All licensed taxis have meters — refuse any without', 'Kakao T lets driver and passenger communicate without speaking', 'Airport limousine buses are often better value than taxis for airports']
+  },
+  {
+    icon: '🚄', title: 'KTX Bullet Train',
+    desc: 'Korea\'s high-speed rail connects major cities at 300km/h. Seoul to Busan in 2h15m. Comfortable, punctual, and often more convenient than flights for distances under 500km.',
+    tips: ['Book at least 3-5 days ahead for weekends', 'Seats are numbered — no rush to board', 'Quiet cars (조용한 칸) are strictly silent', 'Food cart comes through — Korean train snacks are surprisingly good', 'Korail Pass for foreigners offers excellent monthly discounts']
+  },
+  {
+    icon: '🏙️', title: 'Rush Hour Culture',
+    desc: 'Seoul rush hour (7:30-9am and 6-8pm) is intense. Trains are packed beyond Western comfort levels. Understanding the etiquette prevents friction.',
+    tips: ['Move completely inside the train — don\'t stand in doorways', 'Remove backpack and hold in front or overhead', 'Priority seats: never sit even if empty (unless very elderly)', 'Loud calls are considered rude — Koreans are surprisingly quiet on transit', 'Women-only cars exist on some lines during rush hour']
+  }
+];
+
+const BANKING = [
+  {
+    icon: '🏦', title: 'Opening a Korean Bank Account',
+    desc: 'Most universities have on-campus branches of major banks (Woori, Shinhan, KB Kookmin). Bring your ARC (Alien Registration Card), passport, and student ID. The process takes about 1-2 hours with paperwork.',
+    tip: 'Open your account during university orientation week — banks set up booths specifically for international students.',
+    warn: null
+  },
+  {
+    icon: '💳', title: 'Foreign Cards in Korea',
+    desc: 'Visa and Mastercard work at most large retailers, convenience stores, and restaurants. American Express has limited acceptance. Some smaller local restaurants and markets are still cash-only.',
+    tip: 'Notify your home bank before arriving to avoid fraud blocks on your card.',
+    warn: 'Online Korean shopping platforms (Coupang, etc.) often require Korean-issued cards for certain payment methods. Set up a Korean account early.'
+  },
+  {
+    icon: '🏧', title: 'ATMs in Korea',
+    desc: '7-Eleven, GS25, and CU convenience stores have ATMs that accept foreign cards 24/7. Major bank ATMs also work with international Visa/Mastercard. Withdrawal fees are typically ₩2,000-3,000 per transaction.',
+    tip: 'Shinhan Bank ATMs have the best English interface and widest foreign card support.',
+    warn: null
+  },
+  {
+    icon: '💱', title: 'Currency Exchange',
+    desc: 'Best exchange rates are at Myeongdong\'s official private exchange booths — not banks, not airports. Airport exchange rates are the worst (up to 5% loss). Myeongdong and Dongdaemun markets have competitive money changers.',
+    tip: 'Exchange at least ₩100,000-200,000 in cash when you arrive — some places are still cash-only.',
+    warn: 'Never exchange currency from people on the street, no matter how good the rate sounds.'
+  },
+  {
+    icon: '📱', title: 'Korean Mobile Payment',
+    desc: 'Koreans pay with Samsung Pay, Kakao Pay, and Naver Pay constantly. Most require a Korean bank account and Korean phone number to set up. Toss Pay is the most foreigner-accessible option.',
+    tip: 'International Apple Pay now works in Korea at contactless terminals — one of the easiest payment options for foreigners.',
+    warn: null
+  },
+  {
+    icon: '📋', title: 'Important: ARC Card',
+    desc: 'Your Alien Registration Card (외국인등록증) is critical for opening bank accounts, signing phone contracts, and many official processes. Apply at your local immigration office within 90 days of arrival.',
+    tip: 'Apply for ARC as early as possible — processing can take 2-4 weeks.',
+    warn: 'Without ARC, many Korean financial services are inaccessible. Don\'t delay this step.'
+  }
+];
+
+const FOODS = [
+  { emoji: '🥚', name: 'Bibimbap (비빔밥)', badges: ['vegetarian', 'no-pork', 'no-beef'], note: 'Request without meat (고기 빼주세요). Naturally vegetable-focused. Sauce on side for control.' },
+  { emoji: '🍜', name: 'Doenjang Jjigae (된장찌개)', badges: ['no-pork', 'no-beef'], note: 'Fermented soybean paste stew. Usually made with tofu and vegetables. Ask if made with meat broth.' },
+  { emoji: '🥗', name: 'Japchae (잡채)', badges: ['vegetarian', 'no-pork', 'no-beef', 'halal'], note: 'Glass noodles with vegetables. Can be made fully vegetarian — confirm no pork/beef strips.' },
+  { emoji: '🐟', name: 'Haemul Pajeon (해물파전)', badges: ['no-pork', 'no-beef', 'halal'], note: 'Seafood and green onion pancake. No pork or beef. Fresh and delicious. Crispy edges.' },
+  { emoji: '🍳', name: 'Sundubu Jjigae (순두부찌개)', badges: ['no-beef'], note: 'Soft tofu stew. Often has pork or seafood. Request seafood version (해물 순두부) for no-pork.' },
+  { emoji: '🍚', name: 'Gimbap (김밥)', badges: ['no-beef', 'no-pork'], note: 'Korean seaweed rice rolls. Usually tuna or vegetable-based. Confirm ingredients at counter.' },
+  { emoji: '🫙', name: 'Kimchi Jjigae (김치찌개)', badges: [], note: '⚠️ Almost always made with pork. Ask specifically for seafood kimchi jjigae (해물 김치찌개). Avoid if pork-free.' },
+  { emoji: '🥩', name: 'Galbi (갈비)', badges: ['no-pork', 'halal'], note: 'Grilled beef short ribs. Pure beef, no pork. Confirm at halal-certified Korean BBQ restaurants.' },
+  { emoji: '🍲', name: 'Samgyetang (삼계탕)', badges: ['no-pork', 'no-beef', 'halal'], note: 'Whole chicken stuffed with ginseng and rice. No pork, no beef. A healthy Korean classic.' },
+  { emoji: '🐄', name: 'Bulgogi (불고기)', badges: ['no-pork', 'halal'], note: 'Marinated beef. Completely pork-free. At halal-certified restaurants, fully acceptable.' },
+  { emoji: '🥬', name: 'Dootorimuk (도토리묵)', badges: ['vegetarian', 'no-pork', 'no-beef', 'halal'], note: 'Acorn jelly salad. Entirely plant-based. Excellent vegetarian option at traditional restaurants.' },
+  { emoji: '🍥', name: 'Tteokbokki (떡볶이)', badges: ['vegetarian', 'no-pork', 'no-beef'], note: 'Spicy rice cakes. Usually vegetarian-friendly but ask about anchovy broth (멸치육수).' }
+];
+
+const UNI = [
+  {
+    icon: '👥', title: 'Group Project Culture',
+    body: 'Korean group projects follow a strict unwritten hierarchy. The oldest or most experienced student often naturally leads. Koreans value consensus — announcing "I disagree" directly in front of others is avoided.',
+    scenario: '<strong>Situation:</strong> In a group meeting, you want to suggest a different approach. Instead of "That\'s wrong," try "What if we also considered...?" This indirect framing is much better received and you\'ll be taken more seriously.'
+  },
+  {
+    icon: '🧑‍🏫', title: 'Professor Interaction',
+    body: 'Korean professors are treated with significant formality. Always bow slightly when entering and leaving. Address professors as "교수님" (Gyosunim — Professor-nim). Asking questions in class is increasingly accepted in modern universities but varies by department and professor.',
+    scenario: '<strong>Situation:</strong> You missed a class due to illness. Email your professor formally (subject: [Course Code] Absence Explanation), explain briefly, and ask what you missed. Attach a medical certificate if possible. Koreans respect formal procedure.'
+  },
+  {
+    icon: '📋', title: 'Attendance Culture',
+    body: 'Attendance is taken very seriously. Many Korean professors have strict attendance policies — 3 unexcused absences can mean automatic failure. Arrive on time. Being late is noticed and remembered. If you must be late, enter quietly from the back.',
+    scenario: '<strong>Situation:</strong> Your bus was late and you arrive 8 minutes after class started. Enter quietly from the back door, sit closest to the entrance, and don\'t make a commotion. Apologize briefly after class rather than during.'
+  },
+  {
+    icon: '🎯', title: 'Senior-Junior Hierarchy (선후배)',
+    body: 'The Sunbae (선배 — senior) and Hoobae (후배 — junior) system governs much of Korean social and academic life. Seniors are expected to guide, pay for juniors occasionally, and make decisions. Juniors show respect and deference. As a foreigner you get cultural leeway, but understanding this helps enormously.',
+    scenario: '<strong>Situation:</strong> A 3rd-year student in your club offers to pay for your meal. Resist politely twice before accepting — refusing completely is considered rude. This cycle of offering and accepting is called "눈치" (reading the social atmosphere).'
+  },
+  {
+    icon: '🤫', title: 'Silence in Class',
+    body: 'Many Korean university lectures are quiet. Students don\'t casually speak out or chat during lectures. This isn\'t rudeness or disinterest — it\'s respect. Spontaneous class participation varies widely by professor, department, and whether the course has exchange students.',
+    scenario: '<strong>Situation:</strong> You\'re used to raising your hand frequently in class. In Korea, observe first. Some professors love this; others prefer post-lecture questions. Ask a Korean classmate what the norm is for that specific professor.'
+  },
+  {
+    icon: '💻', title: 'Presentations & Academic Work',
+    body: 'Korean students invest enormous effort in visual presentations. PowerPoint slides are often design-heavy and detailed. Group presentations follow a clear structure. Practice before presenting — Korean students rehearse extensively. Being thoroughly prepared is a sign of respect to your audience.',
+    scenario: '<strong>Situation:</strong> Your group presentation is next week. Korean teammates will likely suggest meeting 2-3 times to rehearse. Don\'t skip these meetings — they\'re not optional social events, they\'re professional rehearsals.'
+  }
+];
+
+const EMERGENCY = [
+  { num: '112', label: 'Police', desc: 'Crime, emergency, and general police assistance. Has English operators.' },
+  { num: '119', label: 'Fire & EMS', desc: 'Fire emergencies and ambulance service. Has English operators.' },
+  { num: '1339', label: 'Medical Info', desc: '24/7 medical help hotline including English support.' },
+  { num: '1330', label: 'Tourism Help', desc: 'Korean Tourism Organization helpline. English, Chinese, Japanese.' },
+  { num: '120', label: 'Seoul Help', desc: 'Seoul metropolitan government helpline. Multiple languages.' },
+  { num: '182', label: 'Coast Guard', desc: 'Maritime and water rescue emergency number.' }
+];
+
+const DAILY = [
+  { icon: '🏥', title: 'Hospitals & Clinics', desc: 'University hospitals (대학병원) have international patient centers. For minor issues, neighborhood clinics (의원) are cheap (₩5,000-20,000 after insurance). Always bring your ARC card.' },
+  { icon: '💊', title: 'Pharmacies (약국)', desc: 'Pharmacies are everywhere and open late. Pharmacists can recommend OTC medicine and speak some English in major cities. No prescription needed for most common medicines.' },
+  { icon: '🏪', title: 'Convenience Stores', desc: 'CU, GS25, and 7-Eleven are open 24/7. You can pay bills, use ATMs, print documents, heat food, receive packages, and even cook simple meals. They are genuinely essential infrastructure.' },
+  { icon: '🗑️', title: 'Garbage Sorting', desc: 'Korea has mandatory waste separation. General trash uses designated paid bags (종량제 봉투) from convenience stores. Recyclables go in separate bags or bins. Fines for incorrect disposal are real.' },
+  { icon: '😷', title: 'Air Quality (미세먼지)', desc: 'Yellow dust from China and local pollution affect Korea, especially spring. Install AirVisual or check Naver Weather for daily air quality index. N95 masks are standard on bad days.' },
+  { icon: '☔', title: 'Weather Survival', desc: 'Korean summers are hot and humid (30°C+, high humidity). Monsoon season is June-July. Winters are cold and dry (-10°C possible in Seoul). Busan is milder. Dress in layers.' }
+];
+
+const CHECKLIST_DATA = [
+  { group: '📱 Apps Setup', items: ['Downloaded KakaoMap', 'Downloaded Naver Map', 'Installed Kakao T (taxi)', 'Installed Papago translator', 'Installed Subway Korea app'] },
+  { group: '💳 Money & Banking', items: ['Got T-money card from convenience store', 'Notified home bank of Korea travel', 'Know where nearest ATM is', 'Have ₩50,000+ cash for emergencies', 'Applied for ARC card (within 90 days)'] },
+  { group: '🚇 Transportation', items: ['Charged T-money card', 'Know subway route from dorm to university', 'Know last subway time for my line', 'Downloaded Korail app for KTX trips'] },
+  { group: '🍜 Food & Dining', items: ['Know my dietary restrictions in Korean', 'Can say "no pork please" (돼지고기 빼주세요)', 'Tried ordering at a Korean restaurant', 'Know which campus restaurants are safe for my diet'] },
+  { group: '🎓 University Life', items: ['Understand attendance policy for each class', 'Know how to email professors formally', 'Connected with at least one Korean classmate', 'Know location of International Student Office'] },
+  { group: '🚨 Emergency Prep', items: ['Saved 112 (police) in phone contacts', 'Saved 119 (ambulance) in phone contacts', 'Know nearest hospital/clinic location', 'Know how Korean garbage bags work'] }
+];
+
+// ─── RENDER FUNCTIONS ───────────────────────────────────────────────────────
+
+function renderApps() {
+  const grid = document.getElementById('appsGrid');
+  grid.innerHTML = APPS.map((app, i) => `
+    <div class="app-card reveal" style="transition-delay:${i * 0.05}s" onclick="openAppModal(${i})">
+      <div class="app-icon" style="background:${app.color}22">${app.icon}</div>
+      <div class="app-cat">${app.cat}</div>
+      <div class="app-name">${app.name}</div>
+      <div class="app-desc">${app.desc}</div>
+      <div class="app-tags">${app.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="app-more">Learn more <span>→</span></div>
+    </div>
+  `).join('');
+}
+
+function openAppModal(i) {
+  const app = APPS[i];
+  const d = app.details;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-icon">${app.icon}</div>
+    <div class="modal-cat">${app.cat}</div>
+    <div class="modal-title">${app.name}</div>
+    <div class="modal-section">
+      <h4>Why Foreigners Need This</h4>
+      <p>${d.why}</p>
+    </div>
+    <div class="divider"></div>
+    <div class="modal-section">
+      <h4>When To Use It</h4>
+      <p>${d.when}</p>
+    </div>
+    <div class="modal-section">
+      <h4>Pro Tips</h4>
+      <ul>${d.tips.map(t => `<li>${t}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <h4>Common Mistake</h4>
+      <div class="warn-box">⚠️ ${d.mistake}</div>
+    </div>
+    <div class="modal-section">
+      <h4>Real Scenario</h4>
+      <div class="scenario-box">${d.scenario}</div>
+    </div>
+    <span class="modal-dl-btn">📲 Search "${app.name}" on your app store</span>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderTransport() {
+  const grid = document.getElementById('transportGrid');
+  grid.innerHTML = TRANSPORT.map((t, i) => `
+    <div class="transport-card reveal" style="transition-delay:${i * 0.07}s">
+      <div class="transport-icon">${t.icon}</div>
+      <h3>${t.title}</h3>
+      <p>${t.desc}</p>
+      <div class="expand-content" id="tc${i}">
+        <ul>${t.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>
+      </div>
+      <button class="expand-btn" id="tb${i}" onclick="toggleExpand(${i})">
+        <span class="arrow">›</span> Show Details
+      </button>
+    </div>
+  `).join('');
+}
+
+function toggleExpand(i) {
+  const content = document.getElementById(`tc${i}`);
+  const btn = document.getElementById(`tb${i}`);
+  content.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.innerHTML = content.classList.contains('open')
+    ? '<span class="arrow" style="transform:rotate(90deg);display:inline-block">›</span> Hide Details'
+    : '<span class="arrow">›</span> Show Details';
+}
+
+function renderBanking() {
+  const grid = document.getElementById('bankingGrid');
+  grid.innerHTML = BANKING.map((b, i) => `
+    <div class="banking-card reveal" style="transition-delay:${i * 0.06}s">
+      <h3>${b.icon} ${b.title}</h3>
+      <p>${b.desc}</p>
+      ${b.tip ? `<div class="tip-box">💡 ${b.tip}</div>` : ''}
+      ${b.warn ? `<div class="warn-box">⚠️ ${b.warn}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderFood() {
+  const grid = document.getElementById('foodGrid');
+  grid.innerHTML = FOODS.map((f, i) => `
+    <div class="food-card reveal" data-badges="${f.badges.join(',')}" style="transition-delay:${i * 0.04}s">
+      <div class="food-emoji">${f.emoji}</div>
+      <div class="food-name">${f.name}</div>
+      <div class="food-badges">
+        ${f.badges.includes('vegetarian') ? '<span class="badge badge-veg">Vegetarian</span>' : ''}
+        ${f.badges.includes('no-pork') ? '<span class="badge badge-pork">No Pork</span>' : ''}
+        ${f.badges.includes('no-beef') ? '<span class="badge badge-beef">No Beef</span>' : ''}
+        ${f.badges.includes('halal') ? '<span class="badge badge-halal">Halal</span>' : ''}
+        ${f.badges.length === 0 ? '<span class="badge badge-warn">⚠️ Contains Pork</span>' : ''}
+      </div>
+      <div class="food-note">${f.note}</div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.food-card').forEach(card => {
+        const badges = card.dataset.badges.split(',');
+        if (filter === 'all') { card.classList.remove('hidden'); return; }
+        const show = badges.includes(filter.replace('-', '-'));
+        card.classList.toggle('hidden', !show);
+      });
+    });
+  });
+}
+
+function renderUni() {
+  const acc = document.getElementById('uniAccordion');
+  acc.innerHTML = UNI.map((u, i) => `
+    <div class="uni-item reveal" style="transition-delay:${i * 0.06}s">
+      <div class="uni-header" onclick="toggleUni(${i})">
+        <h3>${u.icon} ${u.title}</h3>
+        <div class="uni-toggle" id="ut${i}">+</div>
+      </div>
+      <div class="uni-body" id="ub${i}">
+        <p>${u.body}</p>
+        <div class="scenario-box">${u.scenario}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleUni(i) {
+  const body = document.getElementById(`ub${i}`);
+  const toggle = document.getElementById(`ut${i}`);
+  body.classList.toggle('open');
+  toggle.textContent = body.classList.contains('open') ? '−' : '+';
+}
+
+function renderEmergency() {
+  document.getElementById('emergencyGrid').innerHTML = EMERGENCY.map((e, i) => `
+    <div class="emergency-card reveal" style="transition-delay:${i * 0.05}s">
+      <div class="emergency-num">${e.num}</div>
+      <div class="emergency-label">${e.label}</div>
+      <div class="emergency-desc">${e.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('dailyGrid').innerHTML = DAILY.map((d, i) => `
+    <div class="daily-card reveal" style="transition-delay:${i * 0.05}s">
+      <h4>${d.icon} ${d.title}</h4>
+      <p>${d.desc}</p>
+    </div>
+  `).join('');
+}
+
+function renderChecklist() {
+  const saved = JSON.parse(localStorage.getItem('koreaChecklist') || '{}');
+  const container = document.getElementById('checklistContainer');
+  let total = 0;
+  container.innerHTML = CHECKLIST_DATA.map(group => {
+    total += group.items.length;
+    return `
+      <div class="checklist-group">
+        <h3>${group.group}</h3>
+        ${group.items.map(item => {
+          const key = item.replace(/\s+/g, '_');
+          const checked = saved[key] || false;
+          return `
+            <div class="check-item ${checked ? 'checked' : ''}" onclick="toggleCheck('${key}', this)">
+              <div class="check-box"><span class="check-icon">✓</span></div>
+              <span class="check-text">${item}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+  document.getElementById('progressTotal').textContent = total;
+  updateProgress();
+}
+
+function toggleCheck(key, el) {
+  el.classList.toggle('checked');
+  const saved = JSON.parse(localStorage.getItem('koreaChecklist') || '{}');
+  saved[key] = el.classList.contains('checked');
+  localStorage.setItem('koreaChecklist', JSON.stringify(saved));
+  updateProgress();
+}
+
+function updateProgress() {
+  const all = document.querySelectorAll('.check-item');
+  const checked = document.querySelectorAll('.check-item.checked');
+  const total = all.length;
+  const done = checked.length;
+  const pct = total ? (done / total) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = done;
+  document.getElementById('progressTotal').textContent = total;
+  const msg = document.getElementById('confettiMsg');
+  msg.classList.toggle('show', done === total && total > 0);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// Scroll reveal
+function initReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  renderApps();
+  renderTransport();
+  renderBanking();
+  renderFood();
+  renderUni();
+  renderEmergency();
+  renderChecklist();
+  setTimeout(initReveal, 100);
+});
+
+window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
